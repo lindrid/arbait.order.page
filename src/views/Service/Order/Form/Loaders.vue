@@ -1,305 +1,361 @@
 <template>
-  <div>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <form @submit.prevent="saveForm()">
-          <div class="row col-xs-12 form-group">
-            <button class="col-xs-5 col-md-1"
-                    @click="clearFields">Стереть</button>
+  <form @submit.prevent="saveForm()">
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl">Адрес</b>
+            <input
+                type="text"
+                id="address"
+                ref="addr"
+                v-model="application.address"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        block w-full p-2.5
+                        dark:bg-gray-700
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-white
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
           </div>
 
-          <div class="row">
-            <div class="col-xs-12 form-group">
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl">Дата</b>
+            <input
+                type="date"
+                id="date"
+                v-model="application.date"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        block w-full p-2.5
+                        dark:bg-gray-700
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-white
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500
+                        text-xl"
+                required
+            >
+          </div>
+          <span class="help-block" v-if="dateError">{{ dateError }}</span>
+
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Время</b>
+            <input id="time_hours"
+                   type="text"
+                   ref="th"
+                   v-model="time_hours"
+                   @focus="$event.target.select()"
+                   class="
+                      bg-gray-50 border
+                      border-gray-300
+                      text-gray-900
+                      text-xl rounded-lg
+                      focus:ring-blue-500
+                      focus:border-blue-500
+                      w-1/6 p-2.5
+                      dark:bg-gray-700
+                      dark:border-gray-600
+                      dark:placeholder-gray-400
+                      dark:text-white
+                      dark:focus:ring-blue-500
+                      dark:focus:border-blue-500"
+                   required
+            >
+
+            <b> : </b>
+
+            <input id="time_minutes"
+                   ref="tm"
+                   type="text"
+                   v-model="time_minutes"
+                   @focus="$event.target.select()"
+                   class="
+                      bg-gray-50 border
+                      border-gray-300
+                      text-gray-900
+                      text-xl rounded-lg
+                      focus:ring-blue-500
+                      focus:border-blue-500
+                      w-1/6 p-2.5
+                      dark:bg-gray-700
+                      dark:border-gray-600
+                      dark:placeholder-gray-400
+                      dark:text-white
+                      dark:focus:ring-blue-500
+                      dark:focus:border-blue-500"
+                   required
+            >
+
+            <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
+            <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
+          </div>
+
+
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Грузчиков</b>
+            <input id="time_hours"
+              type="text"
+              ref="th"
+              v-model="application.worker_total"
+              @focus="$event.target.select()"
+              placeholder="Сколько человек"
+              class="
+                  bg-gray-50 border
+                  border-gray-300
+                  text-right
+                  text-gray-900
+                  text-xl rounded-lg
+                  focus:ring-blue-500
+                  focus:border-blue-500
+                  w-1/6 p-2.5
+                  dark:bg-gray-700
+                  dark:border-gray-600
+                  dark:placeholder-gray-400
+                  dark:text-white
+                  dark:focus:ring-blue-500
+                  dark:focus:border-blue-500"
+              required
+            > <span class="text-xl">чел</span>
+            <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
+          </div>
+
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Оплата</b>
+            <fieldset class="ml-4">
+              <div class="flex items-center ">
+                <input
+                    id="hour_format"
+                    type="radio"
+                    name="pay_format"
+                    v-bind:value="1"
+                    v-model="application.hourly_job"
+
+                    class="
+                          w-4 h-4 border-gray-300
+                          focus:ring-2 focus:ring-blue-300
+                          dark:focus:ring-blue-600
+                          dark:focus:bg-blue-600
+                          dark:bg-gray-700
+                          dark:border-gray-600"
+                    checked
+                >
+                <label for="hour_format"
+                       class="block ml-2 text-xl
+                            font-medium text-gray-900
+                            dark:text-gray-300"
+                >
+                  По часам
+                </label>
+              </div>
+
+              <div class="flex items-center">
+                <input
+                    id="piece_rate_format"
+                    type="radio"
+                    name="pay_format"
+                    v-bind:value="0"
+                    v-model="application.hourly_job"
+                    class=" w-4 h-4 border-gray-300
+                        focus:ring-2 focus:ring-blue-300
+                        dark:focus:ring-blue-600
+                        dark:focus:bg-blue-600
+                        dark:bg-gray-700
+                        dark:border-gray-600"
+                >
+                <label for="piece_rate_format"
+                       class="block ml-2 text-xl
+                            font-medium text-gray-900
+                            dark:text-gray-300"
+                >
+                  Фиксированная (за 8 часов)
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Что делать?</b>
+            <textarea
+              id="text"
+              v-model="application.what_to_do"
+              rows="4"
+              class=" block p-2.5 w-full text-xl
+                      text-black-900 bg-gray-50
+                      rounded-lg border border-gray-300
+                      focus:ring-blue-500 focus:border-blue-500
+                      dark:bg-gray-700 dark:border-gray-600
+                      dark:placeholder-gray-400
+                      dark:text-white dark:focus:ring-blue-500
+                      dark:focus:border-blue-500"
+              required
+            >
+            </textarea>
+          </div>
+
+
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Способ оплаты</b>
+            <fieldset class="ml-4">
+              <div class="flex items-center ">
+                <input
+                    id="pay_method_card"
+                    type="radio"
+                    name="pay_method"
+                    v-bind:value="PAY_METHOD_CARD"
+                    v-model="application.pay_method"
+                    class=" w-4 h-4 border-gray-300
+                            focus:ring-2 focus:ring-blue-300
+                            dark:focus:ring-blue-600
+                            dark:focus:bg-blue-600
+                            dark:bg-gray-700
+                            dark:border-gray-600"
+                    checked
+                >
+                <label
+                  for="pay_method_card"
+                  class="block ml-2 text-xl
+                        font-medium text-gray-900
+                        dark:text-gray-300"
+                >
+                  На карту
+                </label>
+              </div>
+
+              <div class="flex items-center">
+                <input
+                  id="pay_method_cash"
+                  type="radio"
+                  name="pay_format"
+                  v-bind:value="PAY_METHOD_CASH"
+                  v-model="application.pay_method"
+                  class=" w-4 h-4 border-gray-300
+                            focus:ring-2 focus:ring-blue-300
+                            dark:focus:ring-blue-600
+                            dark:focus:bg-blue-600
+                            dark:bg-gray-700
+                            dark:border-gray-600"
+                >
+                <label for="pay_method_cash"
+                  class="block ml-2 text-xl
+                        font-medium text-gray-900
+                        dark:text-gray-300"
+                >
+                  Наличкой
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+            <div class="flex items-center h-5">
               <input
-                  id="address"
-                  ref="addr"
-                  type="text"
-                  v-model="application.address"
-                  class="form-control"
-                  placeholder="Адрес"
-                  required
+                  id="taxi"
+                  type="checkbox"
+                  v-model="application.taxi_was_payed"
+                  class=" w-4 h-4 border border-gray-300
+                          rounded bg-gray-50 focus:ring-3
+                          focus:ring-blue-300 dark:bg-gray-700
+                          dark:border-gray-600
+                          dark:focus:ring-blue-600
+                          dark:ring-offset-gray-800
+                          dark:focus:ring-offset-gray-800"
               >
             </div>
+            <label for="taxi"
+                   class="ml-2 text-xl font-medium
+                          text-gray-900
+                          dark:text-gray-300"
+            >
+              Такси
+            </label>
           </div>
 
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <label class="control-label">Дата</label>
-              <input id="date"
-                     type="text"
-                     v-model="application.date"
-                     @focus="selectDay()"
-                     style="width: 120px;"
-              >
-              <span class="help-block" v-if="dateError">{{ dateError }}</span>
-            </div>
-          </div>
+          <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
+            <input
+              id = "client_phone_number"
+              type="tel"
+              v-model="application.client_phone_number"
+              class="
+                  bg-gray-50 border
+                  border-gray-300
+                  text-gray-900
+                  text-xl rounded-lg
+                  focus:ring-blue-500
+                  focus:border-blue-500
+                  w-3/4 p-2.5
+                  dark:bg-gray-700
+                  dark:border-gray-600
+                  dark:placeholder-gray-400
+                  dark:text-white
+                  dark:focus:ring-blue-500
+                  dark:focus:border-blue-500"
+              required
+            >
 
-          <div class="row mytime">
-            <div class="col-xs-12 form-group">
-              <label class="control-label">Время</label>
-              <input id="time_hours"
-                     type="text"
-                     ref="th"
-                     v-model="time_hours"
-                     @focus="$event.target.select()"
-                     style="width: 70px;"
-              >
+            <button
+              class="btn btn-default"
+              @click="addClientPhone()"
+              :disabled="isClientPhoneAdded"
+            >
+              <i class="glyphicon glyphicon-plus"></i>
+            </button>
 
-              <b> : </b>
-              <input id="time_minutes"
-                     ref="tm"
-                     type="text"
-                     v-model="time_minutes"
-                     @focus="$event.target.select()"
-                     style="width: 70px;"
-              >
-              <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
-              <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
-            </div>
-          </div>
+            <button
+              class="btn btn-default"
+              @click="removeClientPhone()"
+              :disabled="!isClientPhoneAdded"
+            >
+              <i class="glyphicon glyphicon-minus"></i>
+            </button>
 
+            <input v-if="client_has_second_phone"
+                   id = "addl_client_phone_number"
+                   type="tel"
+                   v-model="application.addl_client_phone_number"
+            >
 
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <label class="control-label">Количество: человек / часов</label><br>
-              <input
-                  style="width: 60px;"
-                  id="worker_total"
-                  type="text"
-                  v-model="application.worker_total"
-                  @click="$event.target.select()"
-              >
-              <b> &nbsp; / &nbsp; </b>
-              <input
-                  style="width: 60px;"
-                  id="work_hours"
-                  type="text"
-                  v-show="application.hourly_job"
-                  v-model="application.work_hours[application.hourly_job]"
-                  @click="$event.target.select()"
-              >
-              <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-
-              <label class="control-label">Оплата: от клиента / грузчикам</label><br>
-
-              <button
-                  class="btn btn-default"
-                  v-on:click.stop.prevent="calcSummTotal();"
-              >
-                <i  class="glyphicon glyphicon-arrow-down"></i>
-              </button>
-
-              <input
-                  id="price"
-                  ref="price"
-                  type="text"
-                  v-model="application.price[application.hourly_job]"
-                  style="width: 60px;"
-                  @click="$event.target.select()"
-              >
-
-              <b> &nbsp; / &nbsp; </b>
-
-              <input
-                  id="price_for_worker"
-                  type="text"
-                  v-model="application.price_for_worker[application.hourly_job]"
-                  style="width: 60px;"
-                  @click="$event.target.select()"
-              >
-
-              <span class="help-block" v-if="priceError">{{ priceError }}</span>
-              <span class="help-block" v-if="priceForWorkerError">{{ priceForWorkerError }}</span>
-
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <label class="control-label">Доход / расход / прибыль</label><br>
-
-              <button
-                  class="btn btn-default"
-                  v-on:click.stop.prevent="calcPayValues()"
-              >
-                <i  class="glyphicon glyphicon-arrow-up"></i>
-              </button>
-
-              <input
-                  id = "summ_total"
-                  ref="summ_total"
-                  type="text"
-                  v-model="application.summ_total[application.hourly_job]"
-                  style="width: 80px;"
-              >
-
-
-              <b> &nbsp; / &nbsp; </b>
-
-              <input
-                  id = "summ_w_total"
-                  type="text"
-                  v-model="application.summ_w_total[application.hourly_job]"
-                  style="width: 80px;"
-              >
-
-              <b> &nbsp; / &nbsp; </b>
-
-              <input
-                  id = "profit"
-                  type="text"
-                  v-bind:value="application.summ_total[application.hourly_job] -
-                                        application.summ_w_total[application.hourly_job]"
-                  style="width: 80px;"
-              >
-              <span class="help-block" v-if="error && errors.summ_total">{{ errors.summ_total }}</span>
-              <span class="help-block" v-if="error && errors.summ_w_total">{{ errors.summ_w_total }}</span>
-            </div>
-          </div>
-
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <radio name="rbtn_per_hour_or_piece_rate"
-                     v-bind:value="1" v-model="application.hourly_job"
-              >
-                В час
-              </radio>
-              <radio name="rbtn_per_hour_or_piece_rate"
-                     v-bind:value="0" v-model="application.hourly_job"
-              >
-                Сдельно
-              </radio>
-            </div>
-          </div>
-
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-                            <textarea id="text"
-                                      v-model="application.what_to_do"
-                                      class="form-control form-group"
-                                      placeholder="Что делать?"
-                                      required>
-                            </textarea>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <radio name="rbtn_pay_method"
-                     checked
-                     v-bind:value="PAY_METHOD_CARD" v-model="application.pay_method"
-              >
-                Карта
-              </radio>
-              <radio name="rbtn_pay_method"
-                     v-bind:value="PAY_METHOD_CASH" v-model="application.pay_method"
-              >
-                Наличка
-              </radio>
-              <radio name="rbtn_pay_method"
-                     v-bind:value="PAY_METHOD_ACCOUNT" v-model="application.pay_method"
-              >
-                Расчетный счет
-              </radio>
-            </div>
-          </div>
-
-          <div v-if="application.android_app" class="row">
-            <div class="col-xs-12 form-group">
-              <radio name="rbtn_pay_from"
-                     :checked="action !== 'edit' && application.pay_method === PAY_METHOD_CARD"
-                     v-bind:value="0" v-model="application.client_pay"
-              >
-                От диспетчера
-              </radio>
-              <radio name="rbtn_pay_from"
-                     :checked="action !== 'edit' && application.pay_method === PAY_METHOD_CASH"
-                     v-bind:value="1" v-model="application.client_pay"
-              >
-                От клиента
-              </radio>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <checkbox name="terms" v-model="application.taxi_was_payed">
-                Такси (пометка)
-              </checkbox>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12 form-group">
-              <checkbox name="terms" v-model="application.android_app">
-                Приложение
-              </checkbox>
-            </div>
-          </div>
-
-          <div class="form-group" v-bind:class="{ 'has-error': error && errors.client_phone_number }">
-            <label for="client_phone_number">Телефон клиента</label>
-            <div>
-
-                            <span class="input-group">
-                                 <input
-                                     id = "client_phone_number"
-                                     type="tel"
-                                     v-model="application.client_phone_number"
-                                     required
-                                 >
-                                <button
-                                    class="btn btn-default"
-                                    @click="addClientPhone()"
-                                    :disabled="isClientPhoneAdded"
-                                >
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                </button>
-                                <button
-                                    class="btn btn-default"
-                                    @click="removeClientPhone()"
-                                    :disabled="!isClientPhoneAdded"
-                                >
-                                    <i class="glyphicon glyphicon-minus"></i>
-                                </button>
-                            </span>
-              <input v-if="client_has_second_phone"
-                     id = "addl_client_phone_number"
-                     type="tel"
-                     v-model="application.addl_client_phone_number"
-              >
-            </div>
             <span class="help-block" id="client_phone_number_help_block"
                   v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
                         </span>
           </div>
 
-          <div class="row">
-            <div class="col-xs-3 col-md-1 form-group">
-              <button class="btn btn-success" type="submit">Сохранить</button>
-            </div>
-            <div class="col-xs-3 col-md-1 form-group">
-              <div v-if="this.application.android_app">
-                <router-link to="/apps/android/1" class="btn btn-default">Назад</router-link>
-              </div>
-              <div v-else>
-                <router-link to="/apps" class="btn btn-default">Назад</router-link>
-              </div>
-            </div>
+          <div class="2xl:mt-8 xl:mt-6 mt-4">
+            <button
+                type="submit"
+                class="focus:outline-none text-black bg-yellow-400
+                        hover:bg-yellow-500 focus:ring-4
+                        focus:ring-yellow-300 font-medium
+                        rounded-lg text-xl px-3 py-2.5
+                        mr-2 mb-2 dark:focus:ring-yellow-900"
+            >
+              Сохранить
+            </button>
+
+            <router-link to="router.back()"
+                         class="text-black bg-green-700 hover:bg-green-800
+                                focus:outline-none focus:ring-4
+                                focus:ring-green-300 font-medium rounded-lg
+                                text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
+                                dark:bg-green-600 dark:hover:bg-green-700
+                                dark:focus:ring-green-800"
+            >
+              Назад
+            </router-link>
           </div>
         </form>
-
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>

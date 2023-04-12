@@ -9,15 +9,18 @@
   },
   "dependencies": {
     "@bundled-es-modules/axios": "^0.27.2",
-    "autoprefixer": "^10.4.2",
+    "peers": "^0.1.0",
     "pinia": "^2.0.10",
-    "postcss": "^8.4.5",
-    "tailwindcss": "^3.0.18",
     "vue": "^3.2.25",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "vue3-timepicker": "^1.0.0-beta.2"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
     "@vitejs/plugin-vue": "^2.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.3.1",
     "vite": "^2.7.2"
   },
   "author": "Oka R. Abdillah"
