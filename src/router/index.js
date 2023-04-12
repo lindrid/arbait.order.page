@@ -16,6 +16,12 @@ const routes = [
 		name: 'Blank',
 		path: '/blank',
 		component: () => import('@/views/Blank.vue')
+	},
+	{
+		name: 'ServiceActions',
+		path: '/srv/ops',
+		component: () => import('@/views/Service/Actions.vue'),
+		props: true
 	}
 ]
 

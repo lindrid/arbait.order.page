@@ -6,6 +6,8 @@
 <template>
 	<small @click="router.go(-1)" class="text-green-500">
 		<i class="fa fa-chevron-left"></i>
-		Back
+    <span class="text-xl">
+		  Назад
+    </span>
 	</small>
 </template>

@@ -1,5 +1,5 @@
 <template>
-	<footer class="cursor-pointer">
+	<footer class>
 		<div class="flex items-center justify-center flex gap-6">
 			<template v-for="(route, i) in routes" :key="i">
 				<a @click="movePage(route.to)" class="text-green-500 text-lg hover:text-green-200 duration-300">

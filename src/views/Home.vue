@@ -5,13 +5,19 @@
 				<span class="text-yellow-500 flex items-center justify-center">
 					Арбайт.грузчики
 				</span>
-        <span class="flex items-center justify-center"> и грузоперевозки</span>
+                <span class="flex items-center justify-center"> и грузоперевозки</span>
 			</strong>
-      <div class="flex flex-wrap gap-4 mt-10  flex items-center justify-center">
-        <template v-for="(item, x) in dependencies" :key="x">
-          <Pill class="text-xl" :label="item" />
-        </template>
-      </div>
+          <span>
+            <div class="flex flex-wrap gap-6 mt-10 flex items-center justify-center 2xl:px-[300px] px-[50px]">
+              <template v-for="(item, x) in services" :key="x">
+                <Pill
+                    class="textXl text-center"
+                    @click="movePage(item.route, item.name, item.category)"
+                    :label="item.name"
+                />
+              </template>
+            </div>
+          </span>
 		</section>
 
 		<Footer />
@@ -19,32 +25,41 @@
 </template>
 
 <script setup>
-	import { useCount } from '@/stores/counter'
 	import { useRouter } from 'vue-router'
 	import Pill from '@/components/Pill.vue'
 	import Footer from '@/components/Footer.vue'
 	
-	const count = useCount()
 	const router = useRouter()
 
-	const movePage = to => router.push({ name: to })
+	const movePage = (to, label, category) => router.push({
+    name: to,
+    params: {
+      label: label,
+      category: category
+    }
+  });
 	
-	const dependencies = [
-		"Услуга грузчиков",
-    "Переезд или доставка",
-		"Вывоз мусора",
-    "Услуга разнорабочих",
-	]
-
-	const routes = [
-		{
-			name: 'About',
-			to: 'About'
-		},
-		{
-			name: 'Blank screen',
-			to: 'Blank'
-		}
+	const services = [
+    {
+      name: "Услуга грузчиков",
+      route: 'ServiceActions',
+      category: 'loaders'
+    },
+    {
+      name: "Переезд или доставка",
+      route: 'ServiceActions',
+      category: 'delivery'
+    },
+    {
+      name: "Вывоз мусора",
+      route: 'ServiceActions',
+      category: 'trash'
+    },
+    {
+      name: "Услуга разнорабочих",
+      route: 'ServiceActions',
+      category: 'handyman'
+    },
 	]
 </script>
 
@@ -53,7 +68,12 @@
 		@apply w-full bg-gray-50 py-8 px-5 rounded mb-8;
 	}
 
-	.btn-count {
-		@apply px-3 py-1 bg-indigo-400 text-gray-50 rounded;
-	}
+	.textXl {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.75rem; /* 28px */
+  }
+
+    span {
+      flex:1 0 auto;
+    }
 </style>
