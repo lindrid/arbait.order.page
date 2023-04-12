@@ -19,9 +19,14 @@ const routes = [
 	},
 	{
 		name: 'ServiceActions',
-		path: '/srv/ops',
+		path: '/:category/actions',
 		component: () => import('@/views/Service/Actions.vue'),
 		props: true
+	},
+	{
+		name: 'FormLoaders',
+		path: '/service/order/form/loaders',
+		component: () => import('@/views/Service/Order/Form/Loaders.vue')
 	}
 ]
 

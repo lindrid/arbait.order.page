@@ -34,7 +34,6 @@
 	const movePage = (to, label, category) => router.push({
     name: to,
     params: {
-      label: label,
       category: category
     }
   });

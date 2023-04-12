@@ -1,7 +1,7 @@
 <template>
 	<main>
     <div class="text-black-500 font-bold py-6 text-center">
-        <span class="text-2xl"> {{ label }} </span>
+        <span class="text-2xl"> {{ getLabel(category) }} </span>
     </div>
 
     <section class="px-4">
@@ -11,19 +11,19 @@
         <div class="flex flex-wrap mt-16 flex items-center justify-center 3xl:px-[200px] 2xl:px-[150px] px-[50px]">
 
           <Pill
-                  class="textXl mb-10 text-center"
-                  @click="movePage('Blank')"
-                  :label="pillLabel"
+            class="textXl mb-10 text-center"
+            @click="movePage('Blank')"
+            :label="pillLabel"
           />
 
           <template v-for="(item, x) in actions" :key="x">
             <div
-                    class="mt-5 text-black-500 text-lg hover:text-yellow-500 duration-300 text-center"
+              class="mt-5 text-black-500 text-lg hover:text-yellow-500 duration-300 text-center"
             >
               <i class="fa fa-chevron-right"></i>
               <span
-                      class="text-2xl mx-2 "
-                      @click="movePage(item.route)"
+                class="text-2xl mx-2 "
+                @click="movePage(category)"
               >
                 {{ item.name }}
               </span>
@@ -57,10 +57,6 @@
   ];
 
   const props = defineProps({
-    label: {
-      type: String,
-      default: 'Label'
-    },
     category : {
       type: String,
       default: 'default'
@@ -88,6 +84,21 @@
         break;
     }
     router.push({ name: route });
+  }
+
+  const getLabel = function (category) {
+    switch (category) {
+      case 'loaders':
+        return 'Услуга грузчиков';
+      case 'delivery':
+        return 'Переезд или доставка';
+      case 'trash':
+        return 'Вывоз мусора';
+      case 'handyman':
+        return 'Услуга разнорабочих';
+      default :
+        return 'Неизвестная услуга';
+    }
   }
 </script>
 
