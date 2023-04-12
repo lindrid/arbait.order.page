@@ -12,7 +12,7 @@
 
           <Pill
             class="textXl mb-10 text-center"
-            @click="movePage('Blank')"
+            @click="movePage(category)"
             :label="pillLabel"
           />
 
@@ -23,7 +23,7 @@
               <i class="fa fa-chevron-right"></i>
               <span
                 class="text-2xl mx-2 "
-                @click="movePage(category)"
+                @click="movePage('Blank')"
               >
                 {{ item.name }}
               </span>
@@ -83,6 +83,7 @@
         route = 'Blank';
         break;
     }
+    console.log(category);
     router.push({ name: route });
   }
 

@@ -25,7 +25,7 @@ const routes = [
 	},
 	{
 		name: 'FormLoaders',
-		path: '/service/order/form/loaders',
+		path: '/form/loaders',
 		component: () => import('@/views/Service/Order/Form/Loaders.vue')
 	}
 ]

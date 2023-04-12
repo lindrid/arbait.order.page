@@ -8,19 +8,6 @@
                     @click="clearFields">Стереть</button>
           </div>
 
-          <div class="row  visually-hidden col-xs-12 form-group">
-            <radio name="radiobtn_dispatcher"
-                   v-bind:value="1" v-model="application.dispatcher_id"
-            >
-              Глебас
-            </radio>
-            <radio name="radiobtn_dispatcher"
-                   v-bind:value="2" v-model="application.dispatcher_id"
-            >
-              Димас
-            </radio>
-          </div>
-
           <div class="row">
             <div class="col-xs-12 form-group">
               <input
@@ -57,7 +44,6 @@
                      v-model="time_hours"
                      @focus="$event.target.select()"
                      style="width: 70px;"
-                     v-mask="'99'"
               >
 
               <b> : </b>
@@ -67,7 +53,6 @@
                      v-model="time_minutes"
                      @focus="$event.target.select()"
                      style="width: 70px;"
-                     v-mask="'99'"
               >
               <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
               <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
@@ -318,7 +303,6 @@
 </template>
 
 <script>
-import VueTelInput from 'vue-tel-input';
 
 export default {
 
@@ -675,7 +659,7 @@ export default {
         }
 
       }).catch(function (error) {
-        var words = error.toString().split(' ');
+        /*var words = error.toString().split(' ');
         var errorStatus = words[words.length - 1];
         if (errorStatus == '401') {
           alert("Вы должны залогиниться!");
@@ -693,7 +677,8 @@ export default {
         }
         if (typeof app.errors.what_to_do !== 'undefined') {
           document.getElementById("what_to_do").scrollIntoView({block: "center", behavior: "smooth"});
-        }
+        }*/
+        console.log(error);
       });
     },
 
