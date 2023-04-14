@@ -14,10 +14,10 @@
                         focus:ring-blue-500
                         focus:border-blue-500
                         block w-full p-2.5
-                        dark:bg-gray-700
+                        dark:bg-gray-300
                         dark:border-gray-600
                         dark:placeholder-gray-400
-                        dark:text-white
+                        dark:text-black
                         dark:focus:ring-blue-500
                         dark:focus:border-blue-500"
                 required
@@ -37,10 +37,10 @@
                         focus:ring-blue-500
                         focus:border-blue-500
                         block w-full p-2.5
-                        dark:bg-gray-700
+                        dark:bg-gray-300
                         dark:border-gray-600
                         dark:placeholder-gray-400
-                        dark:text-white
+                        dark:text-black
                         dark:focus:ring-blue-500
                         dark:focus:border-blue-500
                         text-xl"
@@ -64,10 +64,10 @@
                       focus:ring-blue-500
                       focus:border-blue-500
                       w-1/6 p-2.5
-                      dark:bg-gray-700
+                      dark:bg-gray-300
                       dark:border-gray-600
                       dark:placeholder-gray-400
-                      dark:text-white
+                      dark:text-black
                       dark:focus:ring-blue-500
                       dark:focus:border-blue-500"
                    required
@@ -88,10 +88,10 @@
                       focus:ring-blue-500
                       focus:border-blue-500
                       w-1/6 p-2.5
-                      dark:bg-gray-700
+                      dark:bg-gray-300
                       dark:border-gray-600
                       dark:placeholder-gray-400
-                      dark:text-white
+                      dark:text-black
                       dark:focus:ring-blue-500
                       dark:focus:border-blue-500"
                    required
@@ -119,10 +119,10 @@
                   focus:ring-blue-500
                   focus:border-blue-500
                   w-1/6 p-2.5
-                  dark:bg-gray-700
+                  dark:bg-gray-300
                   dark:border-gray-600
                   dark:placeholder-gray-400
-                  dark:text-white
+                  dark:text-black
                   dark:focus:ring-blue-500
                   dark:focus:border-blue-500"
               required
@@ -146,14 +146,14 @@
                           focus:ring-2 focus:ring-blue-300
                           dark:focus:ring-blue-600
                           dark:focus:bg-blue-600
-                          dark:bg-gray-700
+                          dark:bg-gray-300
                           dark:border-gray-600"
                     checked
                 >
                 <label for="hour_format"
                        class="block ml-2 text-xl
-                            font-medium text-gray-900
-                            dark:text-gray-300"
+                              font-medium text-black
+                              dark:text-black"
                 >
                   По часам
                 </label>
@@ -170,13 +170,13 @@
                         focus:ring-2 focus:ring-blue-300
                         dark:focus:ring-blue-600
                         dark:focus:bg-blue-600
-                        dark:bg-gray-700
+                        dark:bg-gray-300
                         dark:border-gray-600"
                 >
                 <label for="piece_rate_format"
                        class="block ml-2 text-xl
-                            font-medium text-gray-900
-                            dark:text-gray-300"
+                              font-medium text-black
+                              dark:text-black"
                 >
                   Фиксированная (за 8 часов)
                 </label>
@@ -195,9 +195,9 @@
                       text-black-900 bg-gray-50
                       rounded-lg border border-gray-300
                       focus:ring-blue-500 focus:border-blue-500
-                      dark:bg-gray-700 dark:border-gray-600
+                      dark:bg-gray-300 dark:border-gray-600
                       dark:placeholder-gray-400
-                      dark:text-white dark:focus:ring-blue-500
+                      dark:text-black dark:focus:ring-blue-500
                       dark:focus:border-blue-500"
               required
             >
@@ -219,15 +219,15 @@
                             focus:ring-2 focus:ring-blue-300
                             dark:focus:ring-blue-600
                             dark:focus:bg-blue-600
-                            dark:bg-gray-700
+                            dark:bg-gray-300
                             dark:border-gray-600"
                     checked
                 >
                 <label
                   for="pay_method_card"
                   class="block ml-2 text-xl
-                        font-medium text-gray-900
-                        dark:text-gray-300"
+                        font-medium text-black
+                        dark:text-black"
                 >
                   На карту
                 </label>
@@ -237,20 +237,20 @@
                 <input
                   id="pay_method_cash"
                   type="radio"
-                  name="pay_format"
+                  name="pay_method"
                   v-bind:value="PAY_METHOD_CASH"
                   v-model="application.pay_method"
                   class=" w-4 h-4 border-gray-300
                             focus:ring-2 focus:ring-blue-300
                             dark:focus:ring-blue-600
                             dark:focus:bg-blue-600
-                            dark:bg-gray-700
+                            dark:bg-gray-300
                             dark:border-gray-600"
                 >
                 <label for="pay_method_cash"
-                  class="block ml-2 text-xl
-                        font-medium text-gray-900
-                        dark:text-gray-300"
+                  class=" block ml-2 text-xl
+                          font-medium text-black
+                          dark:text-black"
                 >
                   Наличкой
                 </label>
@@ -266,7 +266,8 @@
                   v-model="application.taxi_was_payed"
                   class=" w-4 h-4 border border-gray-300
                           rounded bg-gray-50 focus:ring-3
-                          focus:ring-blue-300 dark:bg-gray-700
+                          focus:ring-blue-300
+                          dark:bg-gray-300
                           dark:border-gray-600
                           dark:focus:ring-blue-600
                           dark:ring-offset-gray-800
@@ -276,7 +277,7 @@
             <label for="taxi"
                    class="ml-2 text-xl font-medium
                           text-gray-900
-                          dark:text-gray-300"
+                          dark:text-black"
             >
               Такси
             </label>
@@ -296,10 +297,10 @@
                   focus:ring-blue-500
                   focus:border-blue-500
                   w-3/4 p-2.5
-                  dark:bg-gray-700
+                  dark:bg-gray-300
                   dark:border-gray-600
                   dark:placeholder-gray-400
-                  dark:text-white
+                  dark:text-black
                   dark:focus:ring-blue-500
                   dark:focus:border-blue-500"
               required
@@ -344,16 +345,17 @@
               Сохранить
             </button>
 
-            <router-link to="router.back()"
-                         class="text-black bg-green-700 hover:bg-green-800
-                                focus:outline-none focus:ring-4
-                                focus:ring-green-300 font-medium rounded-lg
-                                text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
-                                dark:bg-green-600 dark:hover:bg-green-700
-                                dark:focus:ring-green-800"
+            <a
+              @click="$router.go(-1)"
+              class=" text-black bg-green-700 hover:bg-green-800
+                      focus:outline-none focus:ring-4
+                      focus:ring-green-300 font-medium rounded-lg
+                      text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
+                      dark:bg-green-600 dark:hover:bg-green-700
+                      dark:focus:ring-green-800"
             >
               Назад
-            </router-link>
+            </a>
           </div>
         </form>
 </template>
@@ -406,7 +408,7 @@ export default {
       PAY_METHOD_CASH: 2,
       PAY_METHOD_ACCOUNT: 3,
 
-      PRICE_PIECE_RATE: 2800,
+      PRICE_PIECE_RATE: 2700,
       PRICE_PER_HOUR: 375,
       PRICE_PR_FOR_WORKER: 2300,
       PRICE_PH_FOR_WORKER: 300,

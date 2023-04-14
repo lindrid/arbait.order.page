@@ -8,7 +8,7 @@
       <BackBtn class="mx-5" />
 
       <span>
-        <div class="flex flex-wrap mt-16 flex items-center justify-center 3xl:px-[200px] 2xl:px-[150px] px-[50px]">
+        <div class="flex flex-wrap mt-16 flex items-center justify-center 3xl:px-[300px] 2xl:px-[200px] px-[50px]">
 
           <Pill
             class="textXl mb-10 text-center"
