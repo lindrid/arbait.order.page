@@ -204,8 +204,20 @@
             </textarea>
           </div>
 
-
           <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <span class="text-xl">
+              <b>Цена - </b>
+              <span v-if="hasApplicationHourlyJob">
+                {{ applicationPrice }} р./час
+              </span>
+              <span v-else>
+                {{ applicationPrice }}
+                {{ Number.isInteger(applicationPrice) ? 'р.' : '' }}
+              </span>
+            </span>
+          </div>
+
+          <div class="2xl:mt-8 xl:mt-6 mt-4">
             <b class="text-xl block">Способ оплаты</b>
             <fieldset class="ml-4">
               <div class="flex items-center ">
@@ -362,14 +374,87 @@
 
 <script>
 
+import _ from 'lodash';
+import {toNumber} from "@vue/shared";
+
 export default {
 
   computed: {
+    isItHardWork() {
+      const words = [
+        'керамогранит', 'керамогранита', 'керамогранитный', 'керамагранит', 'керамагранита', 'керамагранитный',
+        'песок', 'песка', 'песком', 'писок', 'писка', 'писком',
+        'цемент', 'цемента', 'цементом', 'цементам', 'цимент', 'цимента', 'циментом', 'циментам',
+        'пианино', 'пианину', 'пианинно', 'пионинка', 'пионинку', 'пианина', 'пианинна', 'пианинку',
+        'сейф', 'сейфа', 'сейфом',
+        'окно', 'окна', 'окон', 'окнами',
+        'стекло', 'стекла', 'стеклами', 'стекол',
+        'рыба', 'рыбы', 'рыбу', 'рыбой',
+        'мука', 'муки', 'мукой',
+        'тюк', 'тюки', 'тюками', 'тюков', 'тюком'
+      ];
+
+      // БЕЗ не, ничего, нечего
+      const wordsWithNo = [
+        'тяжелый', 'тяжело', 'тяжко', 'тяжкий', 'тяжелого', 'тяжелога', 'тяжелова', 'тяжелово',
+        'трудный', 'трудно', 'трудная', 'трудного', 'трудново', 'труднова'
+      ];
+
+      const whatToDo = this.applicationWhatToDo
+          .toLowerCase()
+          .trim()
+          .replace(/\s\s+/g, ' ');
+
+      for(let i = 0; i < words.length; i++) {
+        if (whatToDo.indexOf(words[i]) !== -1) {
+          return true;
+        }
+      }
+
+      for(let i = 0; i < wordsWithNo.length; i++) {
+        const wordIndex = whatToDo.indexOf(wordsWithNo[i]);
+        if (wordIndex !== -1) {
+          const noWordIndex = whatToDo.indexOf('не');
+          let index = 0, word = '';
+          if (noWordIndex === -1) {
+            const nothingWordIndex = whatToDo.indexOf('ничего');
+            if (nothingWordIndex === -1) {
+              const nothingWordIndex2 = whatToDo.indexOf('нечего');
+              if (nothingWordIndex2 === -1) {
+                return true;
+              } else {
+                index = nothingWordIndex2;
+                word = 'нечего';
+              }
+            } else {
+              index = nothingWordIndex;
+              word = 'ничего';
+            }
+          } else {
+            index = noWordIndex;
+            word = 'не';
+          }
+
+          const between = wordIndex - index - word.length;
+          if (between < 0 || between > 1) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    },
+    applicationWhatToDo() {
+      return this.application.what_to_do;
+    },
     applicationDate() {
       return this.application.date;
     },
     applicationWorkerTotal() {
       return this.application.worker_total;
+    },
+    hasApplicationHourlyJob() {
+      return this.application.hourly_job;
     },
     applicationPrice() {
       return this.application.price[this.application.hourly_job];
@@ -400,72 +485,6 @@ export default {
     },
   },
 
-  data: function () {
-    return {
-      additionClientPhoneKey: 0,
-
-      PAY_METHOD_CARD: 1,
-      PAY_METHOD_CASH: 2,
-      PAY_METHOD_ACCOUNT: 3,
-
-      PRICE_PIECE_RATE: 2700,
-      PRICE_PER_HOUR: 375,
-      PRICE_PR_FOR_WORKER: 2300,
-      PRICE_PH_FOR_WORKER: 300,
-
-      client_has_second_phone: undefined,
-
-      application: {
-        id:0,
-        what_to_do: '',
-        address: '',
-        date: '',
-        time: '',
-        price: {0: 2800, 1: 375},
-        price_for_worker: {0: 2300, 1: 300},
-        hourly_job: 1,
-        edg: 0,
-        pay_method: 1,
-        client_pay: null,
-        client_phone_number: '',
-        addl_client_phone_number: '',
-        state: 1,
-        income: 0,
-        outcome: 0,
-        profit: 0,
-        worker_count: 2,
-        worker_total: 2,
-        work_hours: {0: 1, 1: 2},
-        summ_total: {0: 4800, 1: 750},
-        summ_w_total: {0: 3800, 1: 600},
-        dispatcher_id: 0,
-        taxi_was_payed: false
-      },
-      calc: {
-        'summ': true,
-        'pays': false
-      },
-      cwaIsOpen: 0,   //parsed text area is open or not
-      success: false,
-      time_hours: '',
-      time_minutes: '',
-      action: 'create',
-
-      error: false,
-      errors: {
-        application: undefined,
-        date: undefined,
-        outcome: undefined,
-        worker_total: undefined,
-        price: undefined,
-        price_for_worker: undefined,
-        what_to_do: undefined,
-        time_hours: undefined,
-        time_minutes: undefined
-      },
-    }
-  },
-
   watch: {
     // whenever time_hours changes, this function will run
     /**
@@ -483,8 +502,18 @@ export default {
     },
 
     /**
-     * @param {number} newMinutes
+     * @param {number} newVal
      */
+    applicationWhatToDo: _.debounce(function(newVal){
+      const hardWork = this.isItHardWork;
+      console.log(hardWork);
+      if (hardWork) {
+        this.application.price = this.price_for_hard_work;
+      } else {
+        this.application.price = this.price;
+      }
+    }, 500),
+
     time_minutes: function (newMinutes) {
       this.errors.time_minutes = undefined;
 
@@ -548,7 +577,85 @@ export default {
     },
   },
 
+  data: function () {
+    return {
+      additionClientPhoneKey: 0,
+
+      PAY_METHOD_CARD: 1,
+      PAY_METHOD_CASH: 2,
+      PAY_METHOD_ACCOUNT: 3,
+
+      client_has_second_phone: undefined,
+
+      price: {
+        0: this.APP_PRICE_CONST,
+        1: this.APP_PRICE_PER_HOUR_CONST
+      },
+
+      price_for_hard_work: {
+        0: this.HARD_APP_PRICE_MESSAGE_CONST ,
+        1: this.HARD_APP_PRICE_PER_HOUR_CONST
+      },
+
+      application: {
+        id:0,
+        what_to_do: '',
+        address: '',
+        date: '',
+        time: '',
+        price: {
+          0: this.APP_PRICE_CONST,
+          1: this.APP_PRICE_PER_HOUR_CONST
+        },
+        price_for_worker: {
+          0: this.APP_PRICE_FOR_WORKER_CONST,
+          1: this.APP_PRICE_PH_FOR_WORKER_CONST
+        },
+        hourly_job: 1,
+        edg: 0,
+        pay_method: 1,
+        client_pay: null,
+        client_phone_number: '',
+        addl_client_phone_number: '',
+        state: 1,
+        income: 0,
+        outcome: 0,
+        profit: 0,
+        worker_count: 2,
+        worker_total: 2,
+        work_hours: {0: 1, 1: 2},
+        summ_total: {0: 4800, 1: 750},
+        summ_w_total: {0: 3800, 1: 600},
+        dispatcher_id: 0,
+        taxi_was_payed: false
+      },
+      calc: {
+        'summ': true,
+        'pays': false
+      },
+      cwaIsOpen: 0,   //parsed text area is open or not
+      success: false,
+      time_hours: '',
+      time_minutes: '',
+      action: 'create',
+
+      error: false,
+      errors: {
+        application: undefined,
+        date: undefined,
+        outcome: undefined,
+        worker_total: undefined,
+        price: undefined,
+        price_for_worker: undefined,
+        what_to_do: undefined,
+        time_hours: undefined,
+        time_minutes: undefined
+      },
+    }
+  },
+
   methods: {
+    toNumber,
     /**
      * @param {string} str
      */
@@ -769,6 +876,20 @@ export default {
     },
   },
 
+  /*
+    Create constants
+   */
+  beforeCreate() {
+    this.APP_PRICE_PER_HOUR_CONST = 375;
+    this.HARD_APP_PRICE_PER_HOUR_CONST = 425;
+    this.APP_PRICE_CONST = 2700;
+    this.HARD_APP_PRICE_MESSAGE_CONST = "договорная, вам позвонят после создания заявки"
+
+    this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
+    this.HARD_APP_PRICE_PH_FOR_WORKER = 350;
+    this.APP_PRICE_FOR_WORKER_CONST = 2300;
+  },
+
   mounted () {
     const input = this.$refs.price;
 
@@ -795,40 +916,40 @@ export default {
               // чтобы оно было реактивным, нужно использовать $set
 
               self.$set(self.application, 'summ_total', {
-                0 : self.PRICE_PIECE_RATE * self.application.worker_total,
+                0 : self.APP_PRICE_CONST * self.application.worker_total,
                 1 : self.application.price * self.application.worker_total * 2});
 
               self.$set(self.application, 'summ_w_total', {
-                0 : self.PRICE_PR_FOR_WORKER * self.application.worker_total,
+                0 : self.APP_PRICE_FOR_WORKER_CONST * self.application.worker_total,
                 1 : self.application.price_for_worker * self.application.worker_total * 2});
 
               self.$set(self.application, 'price', {
-                0: self.PRICE_PIECE_RATE,
+                0: self.APP_PRICE_CONST,
                 1: self.application.price
               });
 
               self.$set(self.application, 'price_for_worker', {
-                0: self.PRICE_PR_FOR_WORKER,
+                0: self.APP_PRICE_FOR_WORKER_CONST,
                 1: self.application.price_for_worker
               });
             }
             else {
               self.$set(self.application, 'summ_total', {
                 0 : self.application.price * self.application.worker_total,
-                1 : self.PRICE_PER_HOUR * self.application.worker_total * 2});
+                1 : self.APP_PRICE_PER_HOUR_CONST * self.application.worker_total * 2});
 
               self.$set(self.application, 'summ_w_total', {
                 0 : self.application.price_for_worker * self.application.worker_total,
-                1 : self.PRICE_PH_FOR_WORKER * self.application.worker_total * 2});
+                1 : self.APP_PRICE_PH_FOR_WORKER_CONST * self.application.worker_total * 2});
 
               self.$set(self.application, 'price', {
                 0: self.application.price,
-                1: self.PRICE_PER_HOUR
+                1: self.APP_PRICE_PER_HOUR_CONST
               });
 
               self.$set(self.application, 'price_for_worker', {
                 0: self.application.price_for_worker,
-                1: self.PRICE_PH_FOR_WORKER
+                1: self.APP_PRICE_PH_FOR_WORKER_CONST
               });
             }
 
