@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@bundled-es-modules/axios": "^0.27.2",
+    "lodash": "^4.17.21",
     "peers": "^0.1.0",
     "pinia": "^2.0.10",
     "vue": "^3.2.25",
