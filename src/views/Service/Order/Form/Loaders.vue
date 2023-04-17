@@ -258,6 +258,56 @@
             </fieldset>
           </div>
 
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+          <b class="text-xl block">Этаж</b>
+          <input id="floor"
+            type="text"
+            ref="th"
+            v-model="application.floor"
+            @focus="$event.target.select()"
+            class="
+              bg-gray-50 border
+              border-gray-300
+              text-gray-900
+              text-xl rounded-lg
+              focus:ring-blue-500
+              focus:border-blue-500
+              w-1/6 p-2.5
+              dark:bg-gray-300
+              dark:border-gray-600
+              dark:placeholder-gray-400
+              dark:text-black
+              dark:focus:ring-blue-500
+              dark:focus:border-blue-500"
+            required
+          >
+        </div>
+
+          <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+            <div class="flex items-center h-5">
+              <input
+                  id="floor"
+                  type="checkbox"
+                  v-model="application.elevator"
+                  class=" w-4 h-4 border border-gray-300
+                                rounded bg-gray-50 focus:ring-3
+                                focus:ring-blue-300
+                                dark:bg-gray-300
+                                dark:border-gray-600
+                                dark:focus:ring-blue-600
+                                dark:ring-offset-gray-800
+                                dark:focus:ring-offset-gray-800"
+              >
+            </div>
+            <label for="taxi"
+                   class="ml-2 text-xl font-medium
+                                text-gray-900
+                                dark:text-black"
+            >
+              Есть лифт
+            </label>
+          </div>
+
           <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
             <div class="flex items-center h-5">
               <input
@@ -279,7 +329,7 @@
                           text-gray-900
                           dark:text-black"
             >
-              Такси
+              Такси для грузчиков
             </label>
           </div>
 
@@ -439,7 +489,9 @@ export default {
         summ_total: {0: 4800, 1: 750},
         summ_w_total: {0: 3800, 1: 600},
         dispatcher_id: 0,
-        taxi_was_payed: false
+        taxi_was_payed: false,
+        floor: 1,
+        elevator: false
       },
       calc: {
         'summ': true,
@@ -677,7 +729,9 @@ export default {
             addl_client_phone_number: addl_client_phone_number,
             dispatcher_id: this.application.dispatcher_id,
             android_app: this.application.android_app,
-            taxi_was_payed: this.application.taxi_was_payed
+            taxi_was_payed: this.application.taxi_was_payed,
+            floor: this.application.floor,
+            elevator: this.application.elevator
           }
       ).then(response => {
         console.log(response);
@@ -853,7 +907,6 @@ export default {
     }
 
     this.application.date = this.curday('-');
-    this.$refs.addr.focus();
   },
 }
 </script>
