@@ -298,7 +298,7 @@
           <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
             <div class="flex items-center h-5">
               <input
-                  id="floor"
+                  id="elevator"
                   type="checkbox"
                   v-model="application.elevator"
                   class=" w-4 h-4 border border-gray-300
@@ -311,7 +311,7 @@
                                       dark:focus:ring-offset-gray-800"
               >
             </div>
-            <label for="taxi"
+            <label for="elevator"
                    class="ml-2 text-xl font-medium
                                       text-gray-900
                                       dark:text-black"
@@ -426,7 +426,6 @@
 <script>
 
 import _ from 'lodash';
-import {toNumber} from "@vue/shared";
 
 export default {
 
@@ -567,8 +566,10 @@ export default {
       console.log(hardWork);
       if (hardWork) {
         this.application.price = this.price_for_hard_work;
+        this.application.price_for_worker = this.price_for_worker_hard
       } else {
         this.application.price = this.price;
+        this.application.price_for_worker = this.price_for_worker;
       }
     }, 500),
 
@@ -644,6 +645,16 @@ export default {
         1: this.HARD_APP_PRICE_PER_HOUR_CONST
       },
 
+      price_for_worker: {
+        0: this.APP_PRICE_FOR_WORKER_CONST,
+        1: this.APP_PRICE_PH_FOR_WORKER_CONST
+      },
+
+      price_for_worker_hard: {
+        0: 0 ,
+        1: this.HARD_APP_PRICE_PH_FOR_WORKER
+      },
+
       application: {
         id:0,
         what_to_do: '',
@@ -704,7 +715,6 @@ export default {
   },
 
   methods: {
-    toNumber,
     /**
      * @param {string} str
      */
@@ -836,6 +846,7 @@ export default {
             floor: this.application.floor,
             elevator: this.application.elevator,
             taxi: this.application.taxi,
+            taxi_was_payed: 0
           }
       ).then(response => {
         console.log(response);

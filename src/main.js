@@ -9,7 +9,7 @@ import '@/styles/index.css'
 import '@/styles/app.css'
 
 const instance = axios.create({
-    baseURL: 'https://test.arbait.in/api',
+    baseURL: 'https://arbait.in/api',
     withCredentials: false,
     headers: {
         Accept: 'application/json',
