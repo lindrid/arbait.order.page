@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-  import BackBtn from '@/components/BackBtn.vue'
+  import BackBtn from '@/components/Buttons/Back.vue'
   import { useRouter } from 'vue-router'
   import Pill from '@/components/Pill.vue'
 

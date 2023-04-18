@@ -5,19 +5,22 @@
 				<span class="text-yellow-500 flex items-center justify-center">
 					Арбайт.грузчики
 				</span>
-                <span class="flex items-center justify-center"> и грузоперевозки</span>
+        <span class="flex items-center justify-center">
+          и грузоперевозки
+        </span>
 			</strong>
-          <span>
-            <div class="flex flex-wrap gap-6 mt-10 flex items-center justify-center 2xl:px-[300px] px-[50px]">
-              <template v-for="(item, x) in services" :key="x">
-                <Pill
-                    class="textXl text-center"
-                    @click="movePage(item.route, item.name, item.category)"
-                    :label="item.name"
-                />
-              </template>
-            </div>
-          </span>
+
+      <span>
+        <div class="flex flex-wrap gap-6 mt-10 flex items-center justify-center 2xl:px-[300px] px-[50px]">
+          <template v-for="(item, x) in services" :key="x">
+            <Pill
+                class="textXl text-center"
+                @click="movePage(item.route, item.name, item.category)"
+                :label="item.name"
+            />
+          </template>
+        </div>
+      </span>
 		</section>
 
 		<Footer />

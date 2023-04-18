@@ -23,7 +23,7 @@
 </template>
 <script setup>
 	import Footer from '@/components/Footer.vue'
-	import BackBtn from '@/components/BackBtn.vue'
+	import BackBtn from '@/components/Buttons/Back.vue'
 
 	const about = {
 		name: 'Abdillah',

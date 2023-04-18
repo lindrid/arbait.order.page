@@ -8,16 +8,6 @@ const routes = [
 		component: Home
 	},
 	{
-		name: 'About',
-		path: '/about',
-		component: () => import('@/views/About.vue')
-	},
-	{
-		name: 'Blank',
-		path: '/blank',
-		component: () => import('@/views/Blank.vue')
-	},
-	{
 		name: 'ServiceActions',
 		path: '/:category/actions',
 		component: () => import('@/views/Service/Actions.vue'),
@@ -27,7 +17,22 @@ const routes = [
 		name: 'FormLoaders',
 		path: '/form/loaders',
 		component: () => import('@/views/Service/Order/Form/Loaders.vue')
-	}
+	},
+	{
+		name: 'Finish',
+		path: '/form/finish',
+		component: () => import('@/views/Service/Order/Form/Finish.vue')
+	},
+	{
+		name: 'About',
+		path: '/about',
+		component: () => import('@/views/About.vue')
+	},
+	{
+		name: 'Blank',
+		path: '/blank',
+		component: () => import('@/views/Blank.vue')
+	},
 ]
 
 const router = createRouter({

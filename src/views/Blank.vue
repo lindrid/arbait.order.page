@@ -1,5 +1,5 @@
 <script setup>
-	import BackBtn from '@/components/BackBtn.vue'
+	import BackBtn from '@/components/Buttons/Back.vue'
 </script>
 
 <template>
