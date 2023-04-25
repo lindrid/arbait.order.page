@@ -738,70 +738,6 @@ export default {
       return /^\+?(0|[1-9]\d*)$/.test(str);
     },
 
-    forceRerender() {
-      this.additionClientPhoneKey += 1;
-    },
-
-    clearFields: function ()
-    {
-      var a = this.application;
-      this.application = {
-        id: a.id,
-        what_to_do: '',
-        address: '',
-        date: this.application.date,
-        time: '',
-        price: a.price[a.hourly_job],
-        price_for_worker: a.price_for_worker[a.hourly_job],
-        hourly_job: 1,
-        edg: 0,
-        pay_method: 1,
-        client_pay: null,
-        client_phone_number: '',
-        addl_client_phone_number: '',
-        state: 1,
-        income: 0,
-        outcome: 0,
-        profit: 0,
-        worker_count: 2,
-        worker_total: 2,
-        work_hours: a.work_hours[a.hourly_job],
-        summ_total: a.summ_total[a.hourly_job],
-        summ_w_total: a.summ_w_total[a.hourly_job],
-        dispatcher_id: this.dispatcher_id,
-        taxi: false
-      }
-    },
-
-    calcSummTotal: function ()
-    {
-      var hj = this.application.hourly_job;
-      var app = this.application;
-      var h = app.work_hours[hj];
-      var wt = app.worker_total;
-
-
-      this.$set(app.summ_total, hj, app.price[hj] * h * wt);
-
-      //app.summ_total[hj] = app.price[hj] * h * wt;
-      app.summ_w_total[hj] = app.price_for_worker[hj] * h * wt;
-
-      console.log(app.summ_total[hj]);
-      document.getElementById("summ_total").scrollIntoView({block: "center", behavior: "smooth"});
-    },
-
-    calcPayValues: function ()
-    {
-      var hj = this.application.hourly_job;
-      var app = this.application;
-      var h = app.work_hours[hj];
-      var wt = app.worker_total;
-
-      app.price[hj] = (app.summ_total[hj]) / (h * wt);
-      app.price_for_worker[hj] = (app.summ_w_total[hj]) / (h * wt);
-      document.getElementById("price").scrollIntoView({block: "center", behavior: "smooth"});
-    },
-
     curday: function (sp) {
       var today = new Date();
       var dd = today.getDate();
@@ -1045,10 +981,6 @@ export default {
     }
   },
 }
-</script>
-
-<script setup>
-  import BackBtn from '@/components/Buttons/Back.vue';
 </script>
 
 <style scoped>
