@@ -19,6 +19,11 @@ const routes = [
 		component: () => import('@/views/Service/Order/Form/Loaders.vue')
 	},
 	{
+		name: 'HistoryLoaders',
+		path: '/history/loaders',
+		component: () => import('@/views/Service/Order/History/Loaders.vue')
+	},
+	{
 		name: 'Finish',
 		path: '/form/finish',
 		component: () => import('@/views/Service/Order/Form/Finish.vue')

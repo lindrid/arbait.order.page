@@ -29,10 +29,13 @@
 
 <script setup>
 	import { useRouter } from 'vue-router'
-	import Pill from '@/components/Pill.vue'
+
+  import { useAppHistory } from '@/stores/app/history'
+  import Pill from '@/components/Pill.vue'
 	import Footer from '@/components/Footer.vue'
 	
 	const router = useRouter()
+  const store = useAppHistory();
 
 	const movePage = (to, label, category) => router.push({
     name: to,

@@ -1,34 +1,49 @@
 <template>
 	<main>
     <div class="text-black-500 font-bold py-6 text-center">
-        <span class="text-2xl"> {{ getLabel(category) }} </span>
+      <span class="text-2xl"> {{ getLabel(category) }} </span>
+      <br>
+      <span class="text-xl text-yellow-700"> Оформить заявку </span>
     </div>
 
     <section class="px-4">
       <BackBtn class="mx-5" />
 
       <span>
-        <div class="flex flex-wrap mt-16 flex items-center justify-center 3xl:px-[300px] 2xl:px-[150px] px-[50px]">
+        <div class="
+          flex flex-wrap mt-16 flex items-center justify-center
+          3xl:px-[300px] 2xl:px-[150px] px-[50px]"
+        >
+
+          <Pill
+            class="textXl mb-5 text-center"
+            @click="formPage(category)"
+            :label='labelNewApp'
+          />
 
           <Pill
             class="textXl mb-10 text-center"
-            @click="movePage(category)"
-            :label="pillLabel"
+            @click="historyPage(category)"
+            :label="labelRepeatApp"
           />
 
           <template v-for="(item, x) in actions" :key="x">
             <div
-              class="mt-5 text-black-500 text-lg hover:text-yellow-500 duration-300 text-center"
+              class="
+                mt-5 text-black-500 text-lg hover:text-yellow-500
+                duration-300 text-center
+              "
             >
               <i class="fa fa-chevron-right"></i>
               <span
                 class="text-2xl mx-2 "
-                @click="movePage('Blank')"
+                @click="formPage('Blank')"
               >
                 {{ item.name }}
               </span>
             </div>
           </template>
+
         </div>
       </span>
 
@@ -43,7 +58,8 @@
   import Pill from '@/components/Pill.vue'
 
   const router = useRouter();
-  const pillLabel = "Оформить заявку";
+  const labelNewApp = "Новая заявка";
+  const labelRepeatApp = "Повторить заявку"
 
   const actions = [
     {
@@ -61,30 +77,25 @@
       type: String,
       default: 'default'
     }
-  })
+  });
 
   // methods
-  const movePage = function (category) {
-    let route;
-    switch (category) {
-      case 'loaders':
-        route = 'FormLoaders';
-        break;
-      case 'delivery':
-        route = 'FormLoaders';
-        break;
-      case 'trash':
-        route = 'FormLoaders';
-        break;
-      case 'handyman':
-        route = 'FormLoaders';
-        break;
-      default :
-        route = 'Blank';
-        break;
-    }
+  /**
+   * @param {string} page
+   * @param {string} category
+   */
+  const page = function (page, category) {
+    let path = '/' + page + '/' + category;
     console.log(category);
-    router.push({ name: route });
+    router.push({ path: path });
+  }
+
+  const formPage = category => {
+    return page('form', category);
+  }
+
+  const historyPage = category => {
+    return page('history', category);
   }
 
   const getLabel = function (category) {
@@ -104,11 +115,10 @@
 </script>
 
 <style scoped>
-.textXl {
-  font-size: 1.25rem; /* 20px */
-  line-height: 1.75rem; /* 28px */
-}
-
+  .textXl {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.75rem; /* 28px */
+  }
   .myflex {
     display: flex;
     flex: 1;

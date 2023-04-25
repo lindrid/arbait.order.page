@@ -1,5 +1,17 @@
 <template>
-  <form @submit.prevent="saveForm()">
+  <a
+      @click="$router.go(-1)"
+      class=" text-black bg-green-700 hover:bg-green-800
+                      focus:outline-none focus:ring-4
+                      focus:ring-green-300 font-medium rounded-lg
+                      text-xl px-3 py-2.5 text-center
+                      dark:bg-green-600 dark:hover:bg-green-700
+                      dark:focus:ring-green-800"
+  >
+    Назад
+  </a>
+
+  <form class="mt-6" @submit.prevent="saveForm()">
           <div class="2xl:mt-6 xl:mt-4 mt-2">
             <b class="text-xl">Адрес</b>
             <input
@@ -398,7 +410,6 @@
           <div class="2xl:mt-8 xl:mt-6 mt-4">
             <button
                 type="submit"
-                @click="$router.push({name: 'Finish'})"
                 class="focus:outline-none text-black bg-yellow-400
                         hover:bg-yellow-500 focus:ring-4
                         focus:ring-yellow-300 font-medium
@@ -424,15 +435,19 @@
 </template>
 
 <script>
-
+import { useAppHistory } from '@/stores/app/history';
+import router from '@/router';
 import _ from 'lodash';
+
+const store = useAppHistory();
 
 export default {
 
   computed: {
     isItHardWork() {
       const words = [
-        'керамогранит', 'керамогранита', 'керамогранитный', 'керамагранит', 'керамагранита', 'керамагранитный',
+        'керамогранит', 'керамогранита', 'керамогранитный', 'керамагранит',
+        'керамагранита', 'керамагранитный',
         'песок', 'песка', 'песком', 'писок', 'писка', 'писком',
         'цемент', 'цемента', 'цементом', 'цементам', 'цимент', 'цимента', 'циментом', 'циментам',
         'пианино', 'пианину', 'пианинно', 'пионинка', 'пионинку', 'пианина', 'пианинна', 'пианинку',
@@ -446,7 +461,8 @@ export default {
 
       // БЕЗ не, ничего, нечего
       const wordsWithNo = [
-        'тяжелый', 'тяжело', 'тяжко', 'тяжкий', 'тяжелого', 'тяжелога', 'тяжелова', 'тяжелово',
+        'тяжелый', 'тяжелая', 'тяжолый', 'тяжолая', 'тяжело', 'тяжко', 'тяжкий',
+        'тяжелого', 'тяжелога', 'тяжелова', 'тяжелово',
         'трудный', 'трудно', 'трудная', 'трудного', 'трудново', 'труднова'
       ];
 
@@ -561,7 +577,7 @@ export default {
     /**
      * @param {number} newVal
      */
-    applicationWhatToDo: _.debounce(function(newVal){
+    applicationWhatToDo: _.debounce(function(newVal) {
       const hardWork = this.isItHardWork;
       console.log(hardWork);
       if (hardWork) {
@@ -825,7 +841,9 @@ export default {
           this.application.addl_client_phone_number : null;
 
       const app = this;
-
+      store.push(this.application);
+      this.$router.push({name: 'Finish'});
+/*
       this.$axios.post(uri,
           {
             address: this.application.address,
@@ -850,36 +868,11 @@ export default {
           }
       ).then(response => {
         console.log(response);
-        if (response.status == 200) {
+        if (response.status === 200) {
           //this.day_income = response.data.day_income;
           this.success = true;
-          var name = '';
-          localStorage.removeItem('dispatcher_id');
-          localStorage.removeItem('address');
-          localStorage.removeItem('date');
-          localStorage.removeItem('time_hours');
-          localStorage.removeItem('time_minutes');
-          localStorage.removeItem('what_to_do');
-          localStorage.removeItem('price');
-          localStorage.removeItem('price_for_worker');
-          localStorage.removeItem('hourly_job');
-          localStorage.removeItem('pay_method');
-          localStorage.removeItem('client_pay');
-          localStorage.removeItem('client_phone_number');
-          localStorage.removeItem('addl_client_phone_number');
-          localStorage.removeItem('worker_count');
-          localStorage.removeItem('worker_total');
-          localStorage.removeItem('android_app');
-
-          if (this.application.android_app) {
-            this.$router.push({
-              name: 'android_applications_with_page',
-              params: {page: 1}
-            });
-          }
-          else {
-            this.$router.push({name: 'applications'});
-          }
+          store.push(this.application.address);
+          this.$router.push({name: 'Finish'});
         }
         else {
           // а тут что?
@@ -904,9 +897,9 @@ export default {
         }
         if (typeof app.errors.what_to_do !== 'undefined') {
           document.getElementById("what_to_do").scrollIntoView({block: "center", behavior: "smooth"});
-        }*/
+        }
         console.log(error);
-      });
+      });*/
     },
 
     /**
@@ -919,16 +912,6 @@ export default {
       return Number(month) === d.getMonth() + 1;
     },
 
-    selectDay() {
-      var input = document.getElementById("date");
-      var s = input.value;
-      if (s.length) {
-        window.setTimeout(function() {
-          input.setSelectionRange(s.length-2, s.length);
-        }, 0);
-      }
-    },
-
     addClientPhone() {
       this.client_has_second_phone = true;
     },
@@ -936,6 +919,23 @@ export default {
     removeClientPhone() {
       this.client_has_second_phone = false;
     },
+
+    /**
+     *
+     * @param {Application} app
+     */
+    copyValues(app) {
+      this.application.address = app.address;
+      this.application.date = this.curday('-');
+      this.application.worker_total = app.worker_total;
+      this.application.hourly_job = app.hourly_job;
+      this.application.what_to_do = app.what_to_do;
+      this.application.pay_method = app.pay_method;
+      this.application.pay_method = app.pay_method;
+      this.application.floor = app.floor;
+      this.application.elevator = app.elevator;
+      this.application.client_phone_number = app.client_phone_number;
+    }
   },
 
   /*
@@ -961,10 +961,8 @@ export default {
     this.action = path[2];
 
     this.application.dispatcher_id = this.$route.params.user_id;
-    var appType = this.$route.params.type;
-    this.application.android_app = (appType == 'android')? 1 : 0;
 
-    if (this.action == 'edit') {
+    if (this.action === 'edit') {
       this.$axios.get('/application/edit/' + self.$route.params.id)
           .then(function (resp) {
             self.application = resp.data.application;
@@ -1036,9 +1034,21 @@ export default {
     }
 
     this.application.date = this.curday('-');
-    this.$refs.addr.focus();
+
+    const route = router.currentRoute.value;
+    console.log(route);
+    if (route.params.hasOwnProperty('appId')) {
+      const app = store.getApp(route.params.appId);
+      if (app !== null) {
+        this.copyValues(app);
+      }
+    }
   },
 }
+</script>
+
+<script setup>
+  import BackBtn from '@/components/Buttons/Back.vue';
 </script>
 
 <style scoped>
