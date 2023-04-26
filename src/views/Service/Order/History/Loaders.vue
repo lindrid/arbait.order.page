@@ -22,17 +22,16 @@
 import { useAppHistory } from '@/stores/app/history';
 import router from '@/router';
 
-const store = useAppHistory();
-
 export default {
   data: function () {
     return {
       store: useAppHistory()
     }
   },
+
   methods: {
-    openForm(application) {
-      router.push({name: 'FormLoaders', params: {appId: application.id}})
+    openForm(app) {
+      router.push({name: 'FormLoaders', params: {appId: app.id}})
     }
   },
 
@@ -43,20 +42,15 @@ export default {
 
   },
 
-  mounted () {
-    if (store.count === 1) {
-      router.push({name: 'FormLoaders', params: {appId: 0}});
-    }
-  }
+  mounted () {}
 }
 </script>
 
 <script setup>
-import BackBtn from '@/components/Buttons/Back.vue'
+    import BackBtn from '@/components/Buttons/Back.vue'
 
-const title = 'История заявок';
+    const title = 'История заявок';
 </script>
-
 
 <style scoped>
 .visually-hidden {

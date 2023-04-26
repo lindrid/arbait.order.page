@@ -776,7 +776,7 @@ export default {
 
             const app = this;
 
-            this.$axios.post('/application/save_from_site', {
+            this.$axios.post('/application/store_from_site', {
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,
@@ -799,11 +799,10 @@ export default {
             }).then(response => {
                 console.log(response);
                 if (response.status === 200) {
-                    //this.day_income = response.data.day_income;
                     this.success = true;
-
-                    store.push(this.application);
-                    this.$router.push({name: 'Finish'});
+                    this.application.id = response.data;
+                    store.push(this.application, this.current_day('-'));
+                    router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -842,134 +841,55 @@ export default {
         },
 
         addClientPhone() {
-          this.client_has_second_phone = true;
+            this.client_has_second_phone = true;
         },
 
         removeClientPhone() {
-          this.client_has_second_phone = false;
+            this.client_has_second_phone = false;
         },
 
         /**
          *
          * @param {Application} app
          */
-        copyValues(app) {
-      this.application.address = app.address;
-      this.application.date = this.current_day('-');
-      this.application.worker_total = app.worker_total;
-      this.application.hourly_job = app.hourly_job;
-      this.application.what_to_do = app.what_to_do;
-      this.application.pay_method = app.pay_method;
-      this.application.pay_method = app.pay_method;
-      this.application.floor = app.floor;
-      this.application.elevator = app.elevator;
-      this.application.client_phone_number = app.client_phone_number;
-    }
+        saveAppValues(app) {
+            this.application.id = app.id;
+            this.application.address = app.address;
+            this.application.date = this.current_day('-');
+            this.application.worker_total = app.worker_total;
+            this.application.hourly_job = app.hourly_job;
+            this.application.what_to_do = app.what_to_do;
+            this.application.pay_method = app.pay_method;
+            this.application.floor = app.floor;
+            this.application.elevator = app.elevator;
+            this.application.taxi = app.taxi;
+            this.application.client_phone_number = app.client_phone_number;
+        }
     },
 
     beforeCreate() {
-    this.APP_PRICE_PER_HOUR_CONST = 350;
-    this.HARD_APP_PRICE_PER_HOUR_CONST = 400;
-    this.APP_PRICE_CONST = 2700;
-    this.HARD_APP_PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки"
+        this.APP_PRICE_PER_HOUR_CONST = 350;
+        this.HARD_APP_PRICE_PER_HOUR_CONST = 400;
+        this.APP_PRICE_CONST = 2700;
+        this.HARD_APP_PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки"
 
-    this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
-    this.HARD_APP_PRICE_PH_FOR_WORKER = 350;
-    this.APP_PRICE_FOR_WORKER_CONST = 2300;
-  },
+        this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
+        this.HARD_APP_PRICE_PH_FOR_WORKER = 350;
+        this.APP_PRICE_FOR_WORKER_CONST = 2300;
+    },
 
     mounted () {
-    const input = this.$refs.price;
+        this.application.date = this.current_day('-');
 
-    //var dispatcher_name = this.$route.params.dispatcher_name;
-    const self = this;
-    const path = this.$route.path.split("/");
-    this.action = path[2];
-
-    this.application.dispatcher_id = this.$route.params.user_id;
-
-    if (this.action === 'edit') {
-      this.$axios.get('/application/edit/' + self.$route.params.id)
-          .then(function (resp) {
-            self.application = resp.data.application;
-            console.log(self.application);
-            // не реактивное свойство work_hours
-            self.application.work_hours = {0: 1, 1:2};
-
-            if (self.application.hourly_job) {
-              // нельзя использовать просто =
-              // т.к. новое поле объекта не будет реактивным.
-              // чтобы оно было реактивным, нужно использовать $set
-
-              self.$set(self.application, 'summ_total', {
-                0 : self.APP_PRICE_CONST * self.application.worker_total,
-                1 : self.application.price * self.application.worker_total * 2});
-
-              self.$set(self.application, 'summ_w_total', {
-                0 : self.APP_PRICE_FOR_WORKER_CONST * self.application.worker_total,
-                1 : self.application.price_for_worker * self.application.worker_total * 2});
-
-              self.$set(self.application, 'price', {
-                0: self.APP_PRICE_CONST,
-                1: self.application.price
-              });
-
-              self.$set(self.application, 'price_for_worker', {
-                0: self.APP_PRICE_FOR_WORKER_CONST,
-                1: self.application.price_for_worker
-              });
+        const route = router.currentRoute.value;
+        console.log(route);
+        if (route.params.hasOwnProperty('appId')) {
+            const app = store.getApp(route.params.appId);
+            if (app !== null) {
+                this.saveAppValues(app);
             }
-            else {
-              self.$set(self.application, 'summ_total', {
-                0 : self.application.price * self.application.worker_total,
-                1 : self.APP_PRICE_PER_HOUR_CONST * self.application.worker_total * 2});
-
-              self.$set(self.application, 'summ_w_total', {
-                0 : self.application.price_for_worker * self.application.worker_total,
-                1 : self.APP_PRICE_PH_FOR_WORKER_CONST * self.application.worker_total * 2});
-
-              self.$set(self.application, 'price', {
-                0: self.application.price,
-                1: self.APP_PRICE_PER_HOUR_CONST
-              });
-
-              self.$set(self.application, 'price_for_worker', {
-                0: self.application.price_for_worker,
-                1: self.APP_PRICE_PH_FOR_WORKER_CONST
-              });
-            }
-
-            var arr = self.application.time.split(':');
-            self.time_hours = arr[0];
-            self.time_minutes = arr[1];
-
-            if (self.application.addl_client_phone_number) {
-              self.clientHasSecondPhone = true;
-            }
-
-            console.log(self.application);
-          })
-          .catch(function (error) {
-            var words = error.toString().split(' ');
-            var errorStatus = words[words.length - 1];
-            if (errorStatus == '401') {
-              alert("Вы должны залогиниться!");
-              self.$router.push({name: 'login'});
-            }
-          });
-    }
-
-    this.application.date = this.current_day('-');
-
-    const route = router.currentRoute.value;
-    console.log(route);
-    if (route.params.hasOwnProperty('appId')) {
-      const app = store.getApp(route.params.appId);
-      if (app !== null) {
-        this.copyValues(app);
-      }
-    }
-  },
+        }
+    },
 }
 </script>
 

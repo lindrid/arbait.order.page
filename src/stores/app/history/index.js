@@ -60,37 +60,25 @@ export const useAppHistory = defineStore('app',{
     actions: {
         /**
          * @param {Object} app
+         * @param {string} date
          */
-        push (app) {
-            const found = this.apps.find(
-                arrApp => arrApp.address === app.address
-            );
-            if (found) {
-                const index = this.apps.indexOf(found);
-                this.apps[index] = {
-                    address: app.address,
-                    date: this.curday('-'),
-                    worker_total: app.worker_total,
-                    hourly_job: app.hourly_job,
-                    what_to_do: app.what_to_do,
-                    pay_method: app.pay_method,
-                    floor: app.floor,
-                    elevator: app.elevator,
-                    client_phone_number: app.client_phone_number,
-                };
-            } else {
-                this.apps.push({
-                    address: app.address,
-                    date: this.curday('-'),
-                    worker_total: app.worker_total,
-                    hourly_job: app.hourly_job,
-                    what_to_do: app.what_to_do,
-                    pay_method: app.pay_method,
-                    floor: app.floor,
-                    elevator: app.elevator,
-                    client_phone_number: app.client_phone_number,
-                });
-            }
+        push (app, date) {
+            const newApp = {
+                id: app.id,
+                address: app.address,
+                date: date,
+                time: app.time,
+                hourly_job: app.hourly_job,
+                what_to_do: app.what_to_do,
+                pay_method: app.pay_method,
+                worker_total: app.worker_total,
+                floor: app.floor,
+                elevator: app.elevator,
+                taxi: app.taxi,
+                client_phone_number: app.client_phone_number,
+            };
+
+            this.apps.push(newApp);
         },
         /**
          *
@@ -100,7 +88,7 @@ export const useAppHistory = defineStore('app',{
         getApp(appId) {
             const apps = this.apps;
             for(let i = 0; i < apps.length; i++) {
-                if (i === Number(appId)) {
+                if (Number(apps[i].id) === Number(appId)) {
                     return apps[i];
                 }
             }
