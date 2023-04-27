@@ -3,7 +3,7 @@
     <div class="text-black-500 font-bold py-6 text-center">
       <span class="text-2xl"> {{ getLabel(category) }} </span>
       <br>
-      <span class="text-xl text-yellow-700"> Оформить заявку </span>
+      <span class="text-xl text-yellow-500"> Оформить заявку </span>
     </div>
 
     <section class="px-4">
@@ -37,7 +37,7 @@
               <i class="fa fa-chevron-right"></i>
               <span
                 class="text-2xl mx-2 "
-                @click="formPage('Blank')"
+                @click="page(item.route, category)"
               >
                 {{ item.name }}
               </span>
@@ -64,11 +64,11 @@
   const actions = [
     {
       name: "Информация",
-      route: 'Blank'
+      route: 'info'
     },
     {
       name: "Расчитать цену за услугу",
-      route: 'Blank'
+      route: 'calc'
     },
   ];
 

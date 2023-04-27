@@ -24,6 +24,11 @@ const routes = [
 		component: () => import('@/views/Service/Order/History/Loaders.vue')
 	},
 	{
+		name: 'InfoLoaders',
+		path: '/info/loaders',
+		component: () => import('@/views/Service/Order/Information/Loaders.vue')
+	},
+	{
 		name: 'Finish',
 		path: '/form/finish',
 		component: () => import('@/views/Service/Order/Form/Finish.vue')

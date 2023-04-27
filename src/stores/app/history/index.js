@@ -52,8 +52,7 @@ export const useAppHistory = defineStore('app',{
             return state.apps.sort((a, b) => {
                 return (a.date.trim() > b.date.trim())? -1 :
                     (a.date.trim() === b.date.trim())?
-                        (a.time.trim() < b.time.trim())? -1 : 1 :
-                        1
+                        (a.time.trim() < b.time.trim())? -1 : 1 : 1
             });
         }
     },
@@ -81,7 +80,6 @@ export const useAppHistory = defineStore('app',{
             this.apps.push(newApp);
         },
         /**
-         *
          * @param {string} appId
          * @return {Application|null}
          */
