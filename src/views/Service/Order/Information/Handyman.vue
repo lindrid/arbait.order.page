@@ -8,7 +8,7 @@
     <div class="text-black-500 font-bold py-6 text-center">
         <span class="text-2xl"> {{ title }} </span>
         <br>
-        <span class="text-xl text-yellow-500"> Грузчики </span>
+        <span class="text-xl text-yellow-500"> Разнорабочие </span>
     </div>
 	<main>
 		<section class="px-5">
@@ -45,11 +45,11 @@
 
 
                 <span class="text-black-500 font-bold py-2 text-center text-xl">
-                    Расчёт грузчиков
+                    Расчёт разнорабочих
                 </span>
                     <ol class="list-decimal">
                         <li class="mt-2"> &nbsp;
-                            Минимальная оплата за услугу грузчиков рассчитывается за 2 часа,
+                            Минимальная оплата за услугу разнорабочих рассчитывается за 2 часа,
                             вне зависимости от отработанного времени.
                         </li>
                         <li class="mt-2"> &nbsp;
@@ -71,7 +71,7 @@
                 </span>
                 <ol class="list-decimal">
                     <li class="mt-2"> &nbsp;
-                        Если грузчик не пришел на объект к назначенному времени
+                        Если разнорабочий не пришел на объект к назначенному времени
                         (с учетом возможного опоздания по пункту «5» раздела «Срок подачи людей»),
                         заказчик должен уведомить об этом диспетчера, для дальнейшего решения этой проблемы.
                     </li>

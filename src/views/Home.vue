@@ -56,7 +56,7 @@
       category: 'delivery'
     },
     {
-      name: "Вывоз мусора",
+      name: "Вывоз и вынос мусора",
       route: 'ServiceActions',
       category: 'trash'
     },

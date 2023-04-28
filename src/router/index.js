@@ -29,6 +29,21 @@ const routes = [
 		component: () => import('@/views/Service/Order/Information/Loaders.vue')
 	},
 	{
+		name: 'InfoDelivery',
+		path: '/info/delivery',
+		component: () => import('@/views/Service/Order/Information/Delivery.vue')
+	},
+	{
+		name: 'InfoTrash',
+		path: '/info/trash',
+		component: () => import('@/views/Service/Order/Information/Trash.vue')
+	},
+	{
+		name: 'InfoHandyman',
+		path: '/info/handyman',
+		component: () => import('@/views/Service/Order/Information/Handyman.vue')
+	},
+	{
 		name: 'Finish',
 		path: '/form/finish',
 		component: () => import('@/views/Service/Order/Form/Finish.vue')

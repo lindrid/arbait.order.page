@@ -1,22 +1,33 @@
 <template>
 	<main>
+        <div class="text-black-500 font-bold py-6 text-center">
+            <span class="text-2xl"> {{ title }} </span>
+        </div>
 		<section class="bg-gray-50 py-8 px-5 rounded">
-			<div>
 				<BackBtn />
-				<p class="text-3xl my-2 font-medium">
-					Hello, I'm {{ about.name }}
-				</p>
-				<small>
-					{{ about.subs.join(' | ') }}
-				</small>
-			</div>
-			<div class="flex gap-2 mt-3">
-				<template v-for="(item, i) in sosmed" :key="i">
-					<a :href="item.href" target="_blank">
-						<i :class="item.icon" class="text-2xl"></i>
-					</a>
-				</template>
-			</div>	
+            <div class="
+                flex flex-wrap mt-10 flex items-center justify-center
+                3xl:px-[90px] 2xl:px-[45px] px-[15px]"
+            >
+                <ul class="list-disc">
+                    <li>Мы работаем на рынке <b>более 5 лет.</b></li>
+                    <li>
+                        За это время мы выполнили <b>более 9000 заявок</b>,
+                        на которые <b>вышли более 20.000 работников</b>.
+                    </li>
+                    <li>
+                        Количество работников: <b>более 7.000 чел.</b>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="
+                flex flex-wrap mt-10 flex items-center justify-center
+                3xl:px-[90px] 2xl:px-[45px] px-[15px]"
+            >
+                Сейчас у вас появилась возможность сделать заказ через сайт,
+                что дает вам возможность сэкономить на заказе, а нам - упрощает работу!
+            </div>
 		</section>
 		<Footer />
 	</main>
@@ -46,5 +57,7 @@
 			icon: 'fab fa-facebook text-blue-700',
 			href: 'https://facebook.com/abdillahcfc'
 		}
-	]
+	];
+
+    const title = 'О нас';
 </script>
