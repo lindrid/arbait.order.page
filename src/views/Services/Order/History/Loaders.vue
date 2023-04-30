@@ -7,7 +7,7 @@
 
   <BackBtn class="mx-5" />
 
-  <span v-for="(app, x) in store.applications" :key="x">
+  <span v-for="(app, x) in store.applications(LOADER_SERVICE_TYPE, null)" :key="x">
     <div
         class=" mt-5 text-black-500 text-lg hover:text-yellow-500
                 duration-300 text-center "
@@ -25,7 +25,8 @@ import router from '@/router';
 export default {
   data: function () {
     return {
-      store: useAppHistory()
+        store: useAppHistory(),
+        LOADER_SERVICE_TYPE: 0
     }
   },
 

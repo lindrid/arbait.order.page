@@ -5,9 +5,9 @@
 				<span class="text-yellow-500 flex items-center justify-center">
 					Арбайт.грузчики
 				</span>
-        <span class="flex items-center justify-center">
-          и грузоперевозки
-        </span>
+                <span class="flex items-center justify-center">
+                  и грузоперевозки
+                </span>
 			</strong>
 
       <span>
@@ -15,7 +15,7 @@
           <template v-for="(item, x) in services" :key="x">
             <Pill
                 class="textXl text-center"
-                @click="movePage(item.route, item.name, item.category)"
+                @click="movePage(item.service)"
                 :label="item.name"
             />
           </template>
@@ -28,43 +28,42 @@
 </template>
 
 <script setup>
-	import { useRouter } from 'vue-router'
-
-  import { useAppHistory } from '@/stores/app/history'
-  import Pill from '@/components/Pill.vue'
+    import { useRouter } from 'vue-router'
+    import Pill from '@/components/Pill.vue'
 	import Footer from '@/components/Footer.vue'
 	
 	const router = useRouter()
-  const store = useAppHistory();
 
-	const movePage = (to, label, category) => router.push({
-    name: to,
-    params: {
-      category: category
+	const movePage = function (service) {
+        if (service === 'handyman') {
+            router.push({name: 'HandymanCategories'});
+            return;
+        }
+        router.push({
+            name: 'ServiceActions',
+            params: {
+                service: service
+            }
+        });
     }
-  });
 	
 	const services = [
-    {
-      name: "Услуга грузчиков",
-      route: 'ServiceActions',
-      category: 'loaders'
-    },
-    {
-      name: "Переезд или доставка",
-      route: 'ServiceActions',
-      category: 'delivery'
-    },
-    {
-      name: "Вывоз и вынос мусора",
-      route: 'ServiceActions',
-      category: 'trash'
-    },
-    {
-      name: "Услуга разнорабочих",
-      route: 'ServiceActions',
-      category: 'handyman'
-    },
+        {
+          name: "Услуга грузчиков",
+          service: 'loaders'
+        },
+        {
+          name: "Переезд или доставка",
+          service: 'delivery'
+        },
+        {
+          name: "Вывоз и вынос мусора",
+          service: 'trash'
+        },
+        {
+          name: "Услуга разнорабочих",
+          service: 'handyman'
+        },
 	]
 </script>
 
@@ -74,11 +73,11 @@
 	}
 
 	.textXl {
-    font-size: 1.25rem; /* 20px */
-    line-height: 1.75rem; /* 28px */
-  }
+        font-size: 1.25rem; /* 20px */
+        line-height: 1.75rem; /* 28px */
+    }
 
     span {
-      flex:1 0 auto;
+        flex:1 0 auto;
     }
 </style>

@@ -9,44 +9,68 @@ const routes = [
 	},
 	{
 		name: 'ServiceActions',
-		path: '/:category/actions',
-		component: () => import('@/views/Service/Actions.vue'),
+		path: '/:service/actions',
+		component: () => import('@/views/Services/Order/Actions.vue'),
 		props: true
 	},
 	{
+		name: 'HandymanCategories',
+		path: '/handyman/categories',
+		component: () => import('@/views/Services/Handyman/Categories.vue'),
+		props: true
+	},
+
+
+	{
 		name: 'FormLoaders',
 		path: '/form/loaders',
-		component: () => import('@/views/Service/Order/Form/Loaders.vue')
+		component: () => import('@/views/Services/Order/Form/Loaders.vue')
 	},
+	{
+		name: 'FormDecorators',
+		path: '/handyman/form/decorators',
+		component: () => import('@/views/Services/Order/Form/Handyman/Decorators.vue')
+	},
+	{
+		name: 'FormHandyman',
+		path: '/handyman/form/handyman',
+		component: () => import('@/views/Services/Order/Form/Handyman/Others.vue')
+	},
+
+
 	{
 		name: 'HistoryLoaders',
 		path: '/history/loaders',
-		component: () => import('@/views/Service/Order/History/Loaders.vue')
+		component: () => import('@/views/Services/Order/History/Loaders.vue')
 	},
+
+
 	{
 		name: 'InfoLoaders',
 		path: '/info/loaders',
-		component: () => import('@/views/Service/Order/Information/Loaders.vue')
+		component: () => import('@/views/Services/Order/Information/Loaders.vue')
 	},
 	{
 		name: 'InfoDelivery',
 		path: '/info/delivery',
-		component: () => import('@/views/Service/Order/Information/Delivery.vue')
+		component: () => import('@/views/Services/Order/Information/Delivery.vue')
 	},
 	{
 		name: 'InfoTrash',
 		path: '/info/trash',
-		component: () => import('@/views/Service/Order/Information/Trash.vue')
+		component: () => import('@/views/Services/Order/Information/Trash.vue')
 	},
 	{
 		name: 'InfoHandyman',
 		path: '/info/handyman',
-		component: () => import('@/views/Service/Order/Information/Handyman.vue')
+		component: () => import('@/views/Services/Order/Information/Handyman.vue')
 	},
+
+
 	{
 		name: 'Finish',
 		path: '/form/finish',
-		component: () => import('@/views/Service/Order/Form/Finish.vue')
+		component: () => import('@/views/Services/Order/Form/Finish.vue')
 	},
 	{
 		name: 'About',

@@ -643,90 +643,91 @@ export default {
 
     data: function () {
     return {
-      additionClientPhoneKey: 0,
+        additionClientPhoneKey: 0,
 
-      PAY_METHOD_CARD: 1,
-      PAY_METHOD_CASH: 2,
-      PAY_METHOD_ACCOUNT: 3,
+        PAY_METHOD_CARD: 1,
+        PAY_METHOD_CASH: 2,
+        PAY_METHOD_ACCOUNT: 3,
 
-      client_has_second_phone: undefined,
+        client_has_second_phone: undefined,
 
-      price: {
-        0: this.APP_PRICE_CONST,
-        1: this.APP_PRICE_PER_HOUR_CONST
-      },
-
-      price_for_hard_work: {
-        0: this.HARD_APP_PRICE_MESSAGE_CONST ,
-        1: this.HARD_APP_PRICE_PER_HOUR_CONST
-      },
-
-      price_for_worker: {
-        0: this.APP_PRICE_FOR_WORKER_CONST,
-        1: this.APP_PRICE_PH_FOR_WORKER_CONST
-      },
-
-      price_for_worker_hard: {
-        0: 0 ,
-        1: this.HARD_APP_PRICE_PH_FOR_WORKER
-      },
-
-      application: {
-        id:0,
-        what_to_do: '',
-        address: '',
-        date: '',
-        time: '',
         price: {
-          0: this.APP_PRICE_CONST,
-          1: this.APP_PRICE_PER_HOUR_CONST
+            0: this.APP_PRICE_CONST,
+            1: this.APP_PRICE_PER_HOUR_CONST
         },
-        price_for_worker: {
-          0: this.APP_PRICE_FOR_WORKER_CONST,
-          1: this.APP_PRICE_PH_FOR_WORKER_CONST
-        },
-        hourly_job: 1,
-        edg: 0,
-        pay_method: 1,
-        client_pay: null,
-        client_phone_number: '',
-        addl_client_phone_number: '',
-        state: 1,
-        income: 0,
-        outcome: 0,
-        profit: 0,
-        worker_count: 2,
-        worker_total: 2,
-        work_hours: {0: 1, 1: 2},
-        summ_total: {0: 4800, 1: 750},
-        summ_w_total: {0: 3800, 1: 600},
-        dispatcher_id: 0,
-        taxi: false,
-        floor: 1,
-        elevator: false,
-      },
-      calc: {
-        'summ': true,
-        'pays': false
-      },
-      cwaIsOpen: 0,   //parsed text area is open or not
-      success: false,
-      time_hours: '',
-      time_minutes: '',
-      action: 'create',
 
-      error: false,
-      errors: {
-        application: undefined,
-        date: undefined,
-        outcome: undefined,
-        worker_total: undefined,
-        price: undefined,
-        price_for_worker: undefined,
-        what_to_do: undefined,
-        time_hours: undefined,
-        time_minutes: undefined
-      },
+        price_for_hard_work: {
+            0: this.HARD_APP_PRICE_MESSAGE_CONST ,
+            1: this.HARD_APP_PRICE_PER_HOUR_CONST
+        },
+
+        price_for_worker: {
+            0: this.APP_PRICE_FOR_WORKER_CONST,
+            1: this.APP_PRICE_PH_FOR_WORKER_CONST
+        },
+
+        price_for_worker_hard: {
+            0: 0 ,
+            1: this.HARD_APP_PRICE_PH_FOR_WORKER
+        },
+
+        application: {
+            id:0,
+            what_to_do: '',
+            address: '',
+            date: '',
+            time: '',
+            price: {
+              0: this.APP_PRICE_CONST,
+              1: this.APP_PRICE_PER_HOUR_CONST
+            },
+            price_for_worker: {
+              0: this.APP_PRICE_FOR_WORKER_CONST,
+              1: this.APP_PRICE_PH_FOR_WORKER_CONST
+            },
+            hourly_job: 1,
+            edg: 0,
+            pay_method: 1,
+            client_pay: null,
+            client_phone_number: '',
+            addl_client_phone_number: '',
+            state: 1,
+            income: 0,
+            outcome: 0,
+            profit: 0,
+            worker_count: 2,
+            worker_total: 2,
+            work_hours: {0: 1, 1: 2},
+            summ_total: {0: 4800, 1: 750},
+            summ_w_total: {0: 3800, 1: 600},
+            dispatcher_id: 0,
+            taxi: false,
+            floor: 1,
+            elevator: false,
+        },
+        calc: {
+            'summ': true,
+            'pays': false
+        },
+
+        cwaIsOpen: 0,   //parsed text area is open or not
+        success: false,
+        time_hours: '',
+        time_minutes: '',
+        action: 'create',
+
+        error: false,
+        errors: {
+            application: undefined,
+            date: undefined,
+            outcome: undefined,
+            worker_total: undefined,
+            price: undefined,
+            price_for_worker: undefined,
+            what_to_do: undefined,
+            time_hours: undefined,
+            time_minutes: undefined
+        },
     }
   },
 
@@ -777,6 +778,7 @@ export default {
             const app = this;
 
             this.$axios.post('/application/store_from_site', {
+                service_type: this.LOADER_SERVICE_TYPE,
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,
@@ -789,7 +791,6 @@ export default {
                 pay_method: this.application.pay_method,
                 client_pay: this.application.client_pay,
                 client_phone_number: this.application.client_phone_number,
-                addl_client_phone_number: addl_client_phone_number,
                 dispatcher_id: 0,
                 android_app: 1,
                 floor: this.application.floor,
@@ -868,6 +869,8 @@ export default {
     },
 
     beforeCreate() {
+        this.LOADER_SERVICE_TYPE = 0;
+
         this.APP_PRICE_PER_HOUR_CONST = 350;
         this.HARD_APP_PRICE_PER_HOUR_CONST = 400;
         this.APP_PRICE_CONST = 2700;

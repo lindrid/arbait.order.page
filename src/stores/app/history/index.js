@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 /**
  * @typedef {Object} Application - Заявка
  * @property {number} id - id = 0, если не был еще записан в базу
+ * @property {number} service_type - тип услуги (грузчки, разнорабочие, переезды, мусор)
+ * @property {number} category - категория услуги (например, маляры, штукатурщики и тп)
  * @property {string} address - Адрес заявки
  * @property {string} what_to_do - Что делать?
  * @property {string} date - Дата заявки
@@ -30,12 +32,6 @@ export const useAppHistory = defineStore('app',{
     },
     getters: {
         /**
-         * @return {number}
-         */
-        count(state) {
-            return state.apps.length;
-        },
-        /**
          *
          * @param state
          * @return {Application}
@@ -43,18 +39,6 @@ export const useAppHistory = defineStore('app',{
         last(state) {
             return state.apps[this.count - 1]
         },
-        /**
-         *
-         * @param state
-         * @return {Application[]}
-         */
-        applications(state) {
-            return state.apps.sort((a, b) => {
-                return (a.date.trim() > b.date.trim())? -1 :
-                    (a.date.trim() === b.date.trim())?
-                        (a.time.trim() < b.time.trim())? -1 : 1 : 1
-            });
-        }
     },
     actions: {
         /**
@@ -64,6 +48,8 @@ export const useAppHistory = defineStore('app',{
         push (app, date) {
             const newApp = {
                 id: app.id,
+                service_type: app.service_type,
+                category: app.category,
                 address: app.address,
                 date: date,
                 time: app.time,
@@ -91,6 +77,41 @@ export const useAppHistory = defineStore('app',{
                 }
             }
             return null;
+        },
+        /**
+         * @param {number} service_type
+         * @param {number|null} category
+         * @return {number}
+         */
+        count(service_type, category) {
+            const serviceApps = this.apps.filter(app => app.service_type === service_type);
+            let apps = serviceApps;
+            if (category !== null)  {
+                apps = serviceApps.filter(app => app.category === category)
+            }
+            return apps.length;
+        },
+        /**
+         * @param {number} service_type
+         * @param {number|null} category
+         * @return {Application[]}
+         */
+        applications(service_type, category) {
+            /**
+             *
+             * @type {Application[]}
+             */
+            const serviceApps = this.apps.filter(app => app.service_type === service_type);
+            let apps = serviceApps;
+            if (category !== null)  {
+                apps = serviceApps.filter(app => app.category === category)
+            }
+
+            return apps.sort((a, b) => {
+                return (a.date.trim() > b.date.trim())? -1 :
+                    (a.date.trim() === b.date.trim())?
+                        (a.time.trim() < b.time.trim())? -1 : 1 : 1
+            });
         }
     },
     persist: true,
