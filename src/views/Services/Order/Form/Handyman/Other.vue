@@ -508,6 +508,20 @@ export default {
 
     data: function () {
         return {
+            HANDYMAN_SERVICE_TYPE: 1,
+            OTHER_CATEGORY: 3,
+
+            PRICE_MESSAGE_CONST: "договорная, вам позвонят после оформления заявки",
+
+            APP_PRICE_PER_HOUR_CONST: this.PRICE_MESSAGE_CONST,
+            APP_PRICE_CONST: this.PRICE_MESSAGE_CONST,
+
+            APP_PRICE_PER_HOUR_TOOLS_CONST: this.PRICE_MESSAGE_CONST,
+            APP_PRICE_TOOLS_CONST: this.PRICE_MESSAGE_CONST,
+
+            APP_PRICE_PH_FOR_WORKER_CONST: 325,
+            APP_PRICE_FOR_WORKER_CONST: 2400,
+
             additionClientPhoneKey: 0,
 
             PAY_METHOD_CARD: 1,
@@ -653,7 +667,7 @@ export default {
                 console.log(response);
                 if (response.status === 200) {
                     this.success = true;
-                    this.application.id = response.data;
+                    this.application.id = response.data.id;
                     store.push(this.application, this.current_day('-'));
                     router.push({name: 'Finish'});
                 }
@@ -699,37 +713,22 @@ export default {
         }
     },
 
-    beforeCreate() {
-        this.HANDYMAN_SERVICE_TYPE = 1;
-        this.OTHER_CATEGORY = 3;
-
-        this.PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки"
-
-        this.APP_PRICE_PER_HOUR_CONST = this.PRICE_MESSAGE_CONST;
-        this.APP_PRICE_CONST = this.PRICE_MESSAGE_CONST;
-
-        this.APP_PRICE_PER_HOUR_TOOLS_CONST = this.PRICE_MESSAGE_CONST;
-        this.APP_PRICE_TOOLS_CONST = this.PRICE_MESSAGE_CONST;
-
-        this.APP_PRICE_PH_FOR_WORKER_CONST = 325;
-        this.APP_PRICE_FOR_WORKER_CONST = 2400;
+    props: ['appId'],
+    setup(props) {
 
     },
 
-    mounted () {
+    created () {
         this.application.date = this.current_day('-');
 
-        const route = router.currentRoute.value;
-        console.log(route);
-        if (route.params.hasOwnProperty('appId')) {
-            const app = store.getApp(route.params.appId);
-            if (app !== null) {
-                this.saveAppValues(app);
-            }
+        const app = store.getApp(this.appId);
+        if (app !== null) {
+            this.saveAppValues(app);
         }
     },
 }
 </script>
+
 
 <style scoped>
 .visually-hidden {

@@ -105,10 +105,11 @@ export const useAppHistory = defineStore('app',{
              *
              * @type {Application[]}
              */
-            const serviceApps = this.apps.filter(app => app.service_type === service_type);
+            const serviceApps = this.apps.filter(app => Number(app.service_type) === Number(service_type));
             let apps = serviceApps;
+            console.log(apps);
             if (category !== null)  {
-                apps = serviceApps.filter(app => app.category === category)
+                apps = serviceApps.filter(app => Number(app.category) === Number(category))
             }
 
             return apps.sort((a, b) => {

@@ -38,17 +38,32 @@ const routes = [
 	},
 	{
 		name: 'FormHandyman',
-		path: '/form/handyman',
-		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue')
+		path: '/form/handyman/other/:appId',
+		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue'),
+		props: true
+	},
+	{
+		name: 'FormHandyman',
+		path: '/form/handyman/other',
+		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue'),
+		props: true
+	},
+	{
+		name: 'FormHandyman',
+		path: '/form/handyman/other/:appId',
+		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue'),
+		props: true
 	},
 
 	{
 		path: '/history/:service',
-		component: () => import('@/views/Services/Order/History.vue')
+		component: () => import('@/views/Services/Order/History.vue'),
+		props: true
 	},
 	{
 		path: '/history/:service/:category',
-		component: () => import('@/views/Services/Order/History.vue')
+		component: () => import('@/views/Services/Order/History.vue'),
+		props: true
 	},
 
 	{
