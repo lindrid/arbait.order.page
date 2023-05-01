@@ -14,41 +14,47 @@ const routes = [
 		props: true
 	},
 	{
+		name: 'ServiceCategoryActions',
+		path: '/:service/:category/actions',
+		component: () => import('@/views/Services/Order/Actions.vue'),
+		props: true
+	},
+	{
 		name: 'HandymanCategories',
 		path: '/handyman/categories',
 		component: () => import('@/views/Services/Handyman/Categories.vue'),
 		props: true
 	},
 
-
 	{
-		name: 'FormLoaders',
-		path: '/form/loaders',
-		component: () => import('@/views/Services/Order/Form/Loaders.vue')
+		name: 'FormLoader',
+		path: '/form/loader',
+		component: () => import('@/views/Services/Order/Form/Loader.vue')
 	},
 	{
-		name: 'FormDecorators',
-		path: '/handyman/form/decorators',
-		component: () => import('@/views/Services/Order/Form/Handyman/Decorators.vue')
+		name: 'FormDecorator',
+		path: '/form/decorator',
+		component: () => import('@/views/Services/Order/Form/Handyman/Decorator.vue')
 	},
 	{
 		name: 'FormHandyman',
-		path: '/handyman/form/handyman',
-		component: () => import('@/views/Services/Order/Form/Handyman/Others.vue')
+		path: '/form/handyman',
+		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue')
 	},
 
-
 	{
-		name: 'HistoryLoaders',
-		path: '/history/loaders',
-		component: () => import('@/views/Services/Order/History/Loaders.vue')
+		path: '/history/:service',
+		component: () => import('@/views/Services/Order/History.vue')
+	},
+	{
+		path: '/history/:service/:category',
+		component: () => import('@/views/Services/Order/History.vue')
 	},
 
-
 	{
-		name: 'InfoLoaders',
-		path: '/info/loaders',
-		component: () => import('@/views/Services/Order/Information/Loaders.vue')
+		name: 'InfoLoader',
+		path: '/info/loader',
+		component: () => import('@/views/Services/Order/Information/Loader.vue')
 	},
 	{
 		name: 'InfoDelivery',

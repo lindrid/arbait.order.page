@@ -1,7 +1,7 @@
 <template>
 	<main>
         <div class="text-black-500 font-bold py-6 text-center">
-          <span class="text-2xl"> {{ getLabel(service) }} </span>
+          <span class="text-2xl"> {{ getLabel(service, category) }} </span>
           <br>
           <span class="text-xl text-yellow-500"> Оформить заявку </span>
         </div>
@@ -16,14 +16,19 @@
 
                     <Pill
                         class="textXl mb-5 text-center"
-                        @click="formPage(service)"
+                        @click="formPage(service, category)"
                         :label='labelNewApp'
                     />
 
                     <Pill
-                        v-if="store.count(getServiceType(service), category) > 0"
+                        v-if="
+                            store.count(
+                                getServiceVal(service),
+                                getCategoryVal(category)
+                            ) > 0
+                        "
                         class="textXl mb-10 text-center"
-                        @click="historyPage(service)"
+                        @click="historyPage(service, category)"
                         :label="labelRepeatApp"
                     />
 
@@ -38,7 +43,7 @@
                             </i>
                             <span
                                 class="text-2xl mx-2"
-                                @click="page(item.route, service)"
+                                @click="page(item.route, service, category)"
                             >
                                 {{ item.name }}
                             </span>
@@ -52,120 +57,147 @@
 
 <script setup>
     import BackBtn from '@/components/Buttons/Back.vue'
-    import { useRouter } from 'vue-router'
     import Pill from '@/components/Pill.vue'
-    import { useAppHistory } from '@/stores/app/history';
-
-    const router = useRouter();
-    const store = useAppHistory();
-
-    const labelNewApp = "Новая заявка";
-    const labelRepeatApp = "Повторить заявку";
-
-    const LOADER_SERVICE_TYPE = 0;
-    const HANDYMAN_SERVICE_TYPE = 1;
-    const DELIVERY_SERVICE_TYPE = 2;
-    const TRASH_SERVICE_TYPE = 3;
-
-    const HANDYMAN_DIGGER_CATEGORY = 0;
-    const HANDYMAN_PLASTERER_CATEGORY = 1;
-    const HANDYMAN_DECORATOR_CATEGORY = 2;
-    const HANDYMAN_OTHER_CATEGORY = 3;
-
-    const actions = [
-        {
-          name: "Информация",
-          route: 'info'
-        },
-        {
-          name: "Расчитать цену за услугу",
-          route: 'calc'
-        },
-    ];
 
     const props = defineProps({
         service : {
-          type: String,
-          default: 'default'
+            type: String,
+            default: 'loader'
         },
         category : {
-            type: Number,
+            type: String,
             default: null
         }
     });
+</script>
 
-  // methods
-  /**
-   * @param {string} page
-   * @param {string} service
-   */
-    const page = function (page, service) {
-        let path = '/' + page + '/' + service;
-        console.log(service);
-        router.push({ path: path });
-    }
+<script>
+    import {useRouter} from "vue-router";
+    import {useAppHistory} from "@/stores/app/history";
 
-    const formPage = service => {
-        return page('form', service);
-    }
+    export default {
+        data: function() {
+            return {
+                SERVICES: {
+                    loader: {
+                        val: 0,
+                        label: 'Услуга грузчиков'
+                    },
+                    handyman: {
+                        val: 1,
+                        label: 'Услуга разнорабочих'
+                    },
+                    delivery: {
+                        val: 2,
+                        label: 'Переезд или доставка'
+                    },
+                    trash: {
+                        val: 3,
+                        label: 'Вывоз и вынос мусора'
+                    },
+                },
 
-    const historyPage = service => {
-        return page('history', service);
-    }
+                CATEGORIES: {
+                    digger: {
+                        val: 0,
+                        label: 'Услуга землекопов'
+                    },
+                    plasterer: {
+                        val: 1,
+                        label: 'Услуга штукатурщиков'
+                    },
+                    decorator: {
+                        val: 2,
+                        label: 'Услуга маляров'
+                    },
+                    other: {
+                        val: 3,
+                        label: 'Услуга разнорабочих'
+                    },
+                },
 
-    const getLabel = function (service, category) {
-        switch (service) {
-            case 'loaders':
-                return 'Услуга грузчиков';
-            case 'delivery':
-                return 'Переезд или доставка';
-            case 'trash':
-                return 'Вывоз и вынос мусора';
-            case 'handyman':
-                switch (category) {
-                    case HANDYMAN_DIGGER_CATEGORY:
-                        return 'Услуга землекопов';
-                    case HANDYMAN_PLASTERER_CATEGORY:
-                        return 'Услуга штукатурщиков';
-                    case HANDYMAN_DECORATOR_CATEGORY:
-                        return 'Услуга маляров';
-                    case HANDYMAN_OTHER_CATEGORY:
-                        return 'Услуга разнорабочих';
+                router: useRouter(),
+                store: useAppHistory(),
+
+                labelNewApp: "Новая заявка",
+                labelRepeatApp: "Повторить заявку",
+
+                actions: [
+                    {
+                        name: "Информация",
+                        route: 'info'
+                    },
+                    {
+                        name: "Расчитать цену за услугу",
+                        route: 'calc'
+                    },
+                ],
+            }
+        },
+        methods: {
+            /**
+             *
+             * @param {string} service
+             * @return {number}
+             */
+            getServiceVal: function (service) {
+                return this.SERVICES[service].val;
+            },
+            /**
+             * @param {string|null} category
+             * @return {string|null}
+             */
+            getCategoryVal: function (category) {
+                if (category === null)
+                    return null;
+                return this.CATEGORIES[category].val;
+            },
+            /**
+             * @param {string} service
+             * @param {string|null} category
+             * @return {string}
+             */
+            getLabel: function (service, category) {
+                if (category === null) {
+                    return this.SERVICES[service].label;
+                } else {
+                    return this.CATEGORIES[category].label;
                 }
-                return 'Услуга разнорабочих';
-            default :
-                return 'Неизвестная услуга';
-        }
-    }
+            },
+            /**
+             * @param {string} page
+             * @param {string} service
+             * @param {string|null} category
+             */
+            page: function (page, service, category) {
+                let path = '/' + page + '/' + service;
 
-    /**
-     *
-     * @param service
-     * @return {number}
-     */
-    const getServiceType = function (service) {
-        switch (service) {
-            case 'loaders':
-                return LOADER_SERVICE_TYPE;
-            case 'handyman':
-                return HANDYMAN_SERVICE_TYPE;
-            case 'delivery':
-                return DELIVERY_SERVICE_TYPE;
-            case 'trash':
-                return TRASH_SERVICE_TYPE;
-            default :
-                return -1;
-        }
+                if (service === 'handyman') {
+                    if (category !== null) {
+                        path += '/' + category;
+                    }
+                }
+                this.router.push({path: path});
+            },
+
+            formPage: function (service, category) {
+                return this.page('form', service, category);
+            },
+
+            historyPage: function (service, category) {
+                return this.page('history', service, category);
+            },
+        },
     }
 </script>
 
 <style scoped>
-  .textXl {
-    font-size: 1.25rem; /* 20px */
-    line-height: 1.75rem; /* 28px */
-  }
+    .textXl {
+        font-size: 1.25rem; /* 20px */
+        line-height: 1.75rem; /* 28px */
+    }
 
-  span {
-  flex:1 0 auto;
-}
+    span {
+        flex:1 0 auto;
+    }
 </style>

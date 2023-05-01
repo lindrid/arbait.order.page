@@ -50,7 +50,7 @@
 	const services = [
         {
           name: "Услуга грузчиков",
-          service: 'loaders'
+          service: 'loader'
         },
         {
           name: "Переезд или доставка",

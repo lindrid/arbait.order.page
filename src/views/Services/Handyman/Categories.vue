@@ -35,24 +35,26 @@
 	
 	const router = useRouter()
 
-	const movePage = (category) => router.push({path: 'form/' + category});
+	const movePage = (category) => router.push({
+        path: '/handyman/' + category + '/actions',
+    });
 	
 	const categories = [
         {
           name: "Услуга землекопов",
-          category: 'diggers'
+          category: 'digger'
         },
         {
           name: "Услуга штукатурщиков",
-          category: 'plasterers'
+          category: 'plasterer'
         },
         {
           name: "Услуга маляров",
-          category: 'decorators'
+          category: 'decorator'
         },
         {
-          name: "Услуга иных разнорабочих",
-          category: 'handyman'
+          name: "Услуга разнорабочих",
+          category: 'other'
         },
 	]
 </script>

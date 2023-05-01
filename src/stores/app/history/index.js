@@ -85,10 +85,14 @@ export const useAppHistory = defineStore('app',{
          */
         count(service_type, category) {
             const serviceApps = this.apps.filter(app => app.service_type === service_type);
+            console.log(serviceApps);
             let apps = serviceApps;
+            console.log(service_type);
+            console.log(category);
             if (category !== null)  {
-                apps = serviceApps.filter(app => app.category === category)
+                apps = serviceApps.filter(app => Number(app.category) === Number(category))
             }
+            console.log(apps);
             return apps.length;
         },
         /**
