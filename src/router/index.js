@@ -26,30 +26,51 @@ const routes = [
 		props: true
 	},
 
+
 	{
-		name: 'FormLoader',
 		path: '/form/loader',
 		component: () => import('@/views/Services/Order/Form/Loader.vue')
 	},
 	{
-		name: 'FormDecorator',
-		path: '/form/decorator',
-		component: () => import('@/views/Services/Order/Form/Handyman/Decorator.vue')
+		path: '/form/loader/:appId',
+		component: () => import('@/views/Services/Order/Form/Loader.vue'),
+		props: true
+	},
+
+	{
+		path: '/form/handyman/digger',
+		component: () => import('@/views/Services/Order/Form/Handyman/Digger.vue')
 	},
 	{
-		name: 'FormHandyman',
-		path: '/form/handyman/other/:appId',
-		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue'),
+		path: '/form/handyman/digger/:appId',
+		component: () => import('@/views/Services/Order/Form/Handyman/Digger.vue'),
 		props: true
 	},
 	{
-		name: 'FormHandyman',
+		path: '/form/handyman/plasterer',
+		component: () => import('@/views/Services/Order/Form/Handyman/Plasterer.vue'),
+		props: true
+	},
+	{
+		path: '/form/handyman/plasterer/:appId',
+		component: () => import('@/views/Services/Order/Form/Handyman/Plasterer.vue'),
+		props: true
+	},
+	{
+		path: '/form/handyman/decorator',
+		component: () => import('@/views/Services/Order/Form/Handyman/Decorator.vue')
+	},
+	{
+		path: '/form/handyman/decorator/:appId',
+		component: () => import('@/views/Services/Order/Form/Handyman/Decorator.vue'),
+		props: true
+	},
+	{
 		path: '/form/handyman/other',
 		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue'),
 		props: true
 	},
 	{
-		name: 'FormHandyman',
 		path: '/form/handyman/other/:appId',
 		component: () => import('@/views/Services/Order/Form/Handyman/Other.vue'),
 		props: true
@@ -81,9 +102,21 @@ const routes = [
 		path: '/info/trash',
 		component: () => import('@/views/Services/Order/Information/Trash.vue')
 	},
+
 	{
-		name: 'InfoHandyman',
-		path: '/info/handyman',
+		path: '/info/handyman/digger',
+		component: () => import('@/views/Services/Order/Information/Handyman.vue')
+	},
+	{
+		path: '/info/handyman/plasterer',
+		component: () => import('@/views/Services/Order/Information/Handyman.vue')
+	},
+	{
+		path: '/info/handyman/decorator',
+		component: () => import('@/views/Services/Order/Information/Handyman.vue')
+	},
+	{
+		path: '/info/handyman/other',
 		component: () => import('@/views/Services/Order/Information/Handyman.vue')
 	},
 

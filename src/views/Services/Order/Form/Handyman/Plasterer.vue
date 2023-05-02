@@ -115,7 +115,7 @@
 
 
       <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Маляров</b>
+        <b class="text-xl block">Штукатурщиков</b>
         <input id="time_hours"
           type="text"
           ref="th"
@@ -459,9 +459,11 @@ export default {
         applicationTools (newGiveTools) {
             console.log(newGiveTools);
             if (newGiveTools) {
-                this.application.price = this.price_with_tools;
+                this.application.price[this.application.hourly_job] =
+                    this.priceWithTools[this.application.hourly_job];
             } else {
-                this.application.price = this.price;
+                this.application.price[this.application.hourly_job] =
+                    this.price[this.application.hourly_job];
             }
         },
 
@@ -506,9 +508,6 @@ export default {
 
     data: function () {
         return {
-            HANDYMAN_SERVICE_TYPE: 1,
-            DECORATOR_CATEGORY: 2,
-
             additionClientPhoneKey: 0,
 
             PAY_METHOD_CARD: 1,
@@ -521,7 +520,7 @@ export default {
                 1: this.APP_PRICE_PER_HOUR_CONST
             },
 
-            price_with_tools: {
+            priceWithTools: {
                 0: this.APP_PRICE_TOOLS_CONST,
                 1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
             },
@@ -534,7 +533,7 @@ export default {
             application: {
                 id: 0,
                 service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                category: this.PLASTERER_CATEGORY,
                 what_to_do: '',
                 address: '',
                 date: '',
@@ -633,7 +632,7 @@ export default {
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                category: this.PLASTERER_CATEGORY,
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,
@@ -721,16 +720,19 @@ export default {
     },
 
     beforeCreate() {
+        this.HANDYMAN_SERVICE_TYPE = 1;
+        this.PLASTERER_CATEGORY = 1;
+
         this.PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки";
 
-        this.APP_PRICE_PER_HOUR_CONST = 425;
-        this.APP_PRICE_CONST = 3200;
+        this.APP_PRICE_PER_HOUR_CONST = 450;
+        this.APP_PRICE_CONST = 3400;
 
-        this.APP_PRICE_PER_HOUR_TOOLS_CONST = 375;
-        this.APP_PRICE_TOOLS_CONST = 2800;
+        this.APP_PRICE_PER_HOUR_TOOLS_CONST = 400;
+        this.APP_PRICE_TOOLS_CONST = 3000;
 
-        this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
-        this.APP_PRICE_FOR_WORKER_CONST = 2300;
+        this.APP_PRICE_PH_FOR_WORKER_CONST = 325;
+        this.APP_PRICE_FOR_WORKER_CONST = 2500;
     }
 }
 </script>

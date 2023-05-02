@@ -115,7 +115,7 @@
 
 
       <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Маляров</b>
+        <b class="text-xl block">Землекопов</b>
         <input id="time_hours"
           type="text"
           ref="th"
@@ -459,9 +459,11 @@ export default {
         applicationTools (newGiveTools) {
             console.log(newGiveTools);
             if (newGiveTools) {
-                this.application.price = this.price_with_tools;
+                this.application.price[this.application.hourly_job] =
+                    this.priceWithTools[this.application.hourly_job];
             } else {
-                this.application.price = this.price;
+                this.application.price[this.application.hourly_job] =
+                    this.price[this.application.hourly_job];
             }
         },
 
@@ -507,7 +509,18 @@ export default {
     data: function () {
         return {
             HANDYMAN_SERVICE_TYPE: 1,
-            DECORATOR_CATEGORY: 2,
+            DIGGER_CATEGORY: 0,
+
+            PRICE_MESSAGE_CONST: "договорная, вам позвонят после оформления заявки",
+
+            APP_PRICE_PER_HOUR_CONST: 425,
+            APP_PRICE_CONST: 3200,
+
+            APP_PRICE_PER_HOUR_TOOLS_CONST: 375,
+            APP_PRICE_TOOLS_CONST: 2800,
+
+            APP_PRICE_PH_FOR_WORKER_CONST: 325,
+            APP_PRICE_FOR_WORKER_CONST: 2300,
 
             additionClientPhoneKey: 0,
 
@@ -521,7 +534,7 @@ export default {
                 1: this.APP_PRICE_PER_HOUR_CONST
             },
 
-            price_with_tools: {
+            priceWithTools: {
                 0: this.APP_PRICE_TOOLS_CONST,
                 1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
             },
@@ -534,7 +547,7 @@ export default {
             application: {
                 id: 0,
                 service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                category: this.DIGGER_CATEGORY,
                 what_to_do: '',
                 address: '',
                 date: '',
@@ -633,7 +646,7 @@ export default {
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                category: this.DIGGER_CATEGORY,
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,

@@ -459,11 +459,9 @@ export default {
         applicationTools (newGiveTools) {
             console.log(newGiveTools);
             if (newGiveTools) {
-                this.application.price[this.application.hourly_job] =
-                    this.priceWithTools[this.application.hourly_job];
+                this.application.price = this.price_with_tools;
             } else {
-                this.application.price[this.application.hourly_job] =
-                    this.price[this.application.hourly_job];
+                this.application.price = this.price;
             }
         },
 
@@ -511,17 +509,6 @@ export default {
             HANDYMAN_SERVICE_TYPE: 1,
             OTHER_CATEGORY: 3,
 
-            PRICE_MESSAGE_CONST: "договорная, вам позвонят после оформления заявки",
-
-            APP_PRICE_PER_HOUR_CONST: this.PRICE_MESSAGE_CONST,
-            APP_PRICE_CONST: this.PRICE_MESSAGE_CONST,
-
-            APP_PRICE_PER_HOUR_TOOLS_CONST: this.PRICE_MESSAGE_CONST,
-            APP_PRICE_TOOLS_CONST: this.PRICE_MESSAGE_CONST,
-
-            APP_PRICE_PH_FOR_WORKER_CONST: 325,
-            APP_PRICE_FOR_WORKER_CONST: 2400,
-
             additionClientPhoneKey: 0,
 
             PAY_METHOD_CARD: 1,
@@ -534,7 +521,7 @@ export default {
                 1: this.APP_PRICE_PER_HOUR_CONST
             },
 
-            priceWithTools: {
+            price_with_tools: {
                 0: this.APP_PRICE_TOOLS_CONST,
                 1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
             },
@@ -700,6 +687,8 @@ export default {
          */
         saveAppValues(app) {
             this.application.id = app.id;
+            this.application.service_type = app.service_type;
+            this.application.category = app.category;
             this.application.address = app.address;
             this.application.date = this.current_day('-');
             this.application.worker_total = app.worker_total;
@@ -710,6 +699,10 @@ export default {
             this.application.elevator = app.elevator;
             this.application.taxi = app.taxi;
             this.application.client_phone_number = app.client_phone_number;
+            this.application.price_for_worker =  {
+                0: this.APP_PRICE_FOR_WORKER_CONST,
+                1: this.APP_PRICE_PH_FOR_WORKER_CONST
+            };
         }
     },
 
@@ -718,13 +711,31 @@ export default {
 
     },
 
+    beforeCreate() {
+        this.PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки";
+
+        this.APP_PRICE_PER_HOUR_CONST = this.PRICE_MESSAGE_CONST;
+        this.APP_PRICE_CONST = this.PRICE_MESSAGE_CONST;
+
+        this.APP_PRICE_PER_HOUR_TOOLS_CONST = this.PRICE_MESSAGE_CONST;
+        this.APP_PRICE_TOOLS_CONST = this.PRICE_MESSAGE_CONST;
+
+        this.APP_PRICE_PH_FOR_WORKER_CONST = 325;
+        this.APP_PRICE_FOR_WORKER_CONST = 2400;
+    },
+
     created () {
         this.application.date = this.current_day('-');
 
-        const app = store.getApp(this.appId);
-        if (app !== null) {
-            this.saveAppValues(app);
+        if (this.appId) {
+            console.log(this.appId);
+            const app = store.getApp(this.appId);
+            if (app !== null) {
+                this.saveAppValues(app);
+            }
         }
+
+        console.log(this.application);
     },
 }
 </script>
