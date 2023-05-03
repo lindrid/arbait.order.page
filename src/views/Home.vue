@@ -2,7 +2,7 @@
 	<main>
 		<section class="section">
 			<strong class="text-3xl ml-5">
-				<span class="text-yellow-500 flex items-center justify-center">
+				<span class="text-yellow-600 flex items-center justify-center">
 					Арбайт.грузчики
 				</span>
                 <span class="flex items-center justify-center">
@@ -38,6 +38,9 @@
         if (service === 'handyman') {
             router.push({name: 'HandymanCategories'});
             return;
+        } else if (service === 'moving') {
+            router.push({name: 'MovingCategories'});
+            return;
         }
         router.push({
             name: 'ServiceActions',
@@ -53,16 +56,16 @@
           service: 'loader'
         },
         {
+            name: "Услуга разнорабочих",
+            service: 'handyman'
+        },
+        {
           name: "Переезд или доставка",
-          service: 'delivery'
+          service: 'moving'
         },
         {
           name: "Вывоз и вынос мусора",
           service: 'trash'
-        },
-        {
-          name: "Услуга разнорабочих",
-          service: 'handyman'
         },
 	]
 </script>

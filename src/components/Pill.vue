@@ -5,8 +5,8 @@
                   2xl:px-7 2xl:py-4
                   px-5 py-2
                   rounded-xl text-base"
+          v-html="label"
     >
-		{{ label }}
 	</span>
 </template>
 

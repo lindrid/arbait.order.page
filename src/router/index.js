@@ -19,10 +19,18 @@ const routes = [
 		component: () => import('@/views/Services/Order/Actions.vue'),
 		props: true
 	},
+
+
 	{
 		name: 'HandymanCategories',
 		path: '/handyman/categories',
 		component: () => import('@/views/Services/Handyman/Categories.vue'),
+		props: true
+	},
+	{
+		name: 'MovingCategories',
+		path: '/moving/categories',
+		component: () => import('@/views/Services/Moving/Categories.vue'),
 		props: true
 	},
 
@@ -93,9 +101,9 @@ const routes = [
 		component: () => import('@/views/Services/Order/Information/Loader.vue')
 	},
 	{
-		name: 'InfoDelivery',
-		path: '/info/delivery',
-		component: () => import('@/views/Services/Order/Information/Delivery.vue')
+		name: 'InfoMoving',
+		path: '/info/moving',
+		component: () => import('@/views/Services/Order/Information/Moving.vue')
 	},
 	{
 		name: 'InfoTrash',

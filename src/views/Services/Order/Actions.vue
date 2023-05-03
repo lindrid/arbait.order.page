@@ -1,9 +1,13 @@
 <template>
 	<main>
         <div class="text-black-500 font-bold py-6 text-center">
-          <span class="text-2xl"> {{ getLabel(service, category) }} </span>
+          <strong
+              class="text-3xl"
+              v-html="getLabel(service, category)"
+          >
+          </strong>
           <br>
-          <span class="text-xl text-yellow-500"> Оформить заявку </span>
+          <strong class="text-2xl text-yellow-500"> Оформить заявку </strong>
         </div>
 
         <section class="px-4">
@@ -24,7 +28,7 @@
                         v-if="
                             store.count(
                                 getServiceVal(service),
-                                getCategoryVal(category)
+                                getCategoryVal(service, category)
                             ) > 0
                         "
                         class="textXl mb-10 text-center"
@@ -87,7 +91,7 @@
                         val: 1,
                         label: 'Услуга разнорабочих'
                     },
-                    delivery: {
+                    moving: {
                         val: 2,
                         label: 'Переезд или доставка'
                     },
@@ -97,7 +101,7 @@
                     },
                 },
 
-                CATEGORIES: {
+                HANDYMAN_CATEGORIES: {
                     digger: {
                         val: 0,
                         label: 'Услуга землекопов'
@@ -113,6 +117,25 @@
                     other: {
                         val: 3,
                         label: 'Услуга разнорабочих'
+                    },
+                },
+
+                MOVING_CATEGORIES: {
+                    flatbed: {
+                        val: 0,
+                        label: 'Переезд: бортовой грузовик'
+                    },
+                    van2t: {
+                        val: 1,
+                        label: 'Переезд: будка до 2т <br> (1.9м / 2м / 3м)'
+                    },
+                    van3t: {
+                        val: 2,
+                        label: 'Переезд: будка от 2 до 3т <br> (2.1м / 2м / 4м)'
+                    },
+                    van4t: {
+                        val: 3,
+                        label: 'Переезд: будка более 4т'
                     },
                 },
 
@@ -144,13 +167,17 @@
                 return this.SERVICES[service].val;
             },
             /**
+             * @param {string} service
              * @param {string|null} category
              * @return {string|null}
              */
-            getCategoryVal: function (category) {
+            getCategoryVal: function (service, category) {
                 if (category === null)
                     return null;
-                return this.CATEGORIES[category].val;
+                if (service === 'handyman') {
+                    return this.HANDYMAN_CATEGORIES[category].val;
+                }
+                return this.MOVING_CATEGORIES[category].val;
             },
             /**
              * @param {string} service
@@ -161,7 +188,10 @@
                 if (category === null) {
                     return this.SERVICES[service].label;
                 } else {
-                    return this.CATEGORIES[category].label;
+                    if (service === 'handyman') {
+                        return this.HANDYMAN_CATEGORIES[category].label;
+                    }
+                    return this.MOVING_CATEGORIES[category].label;
                 }
             },
             /**
@@ -188,6 +218,10 @@
                 return this.page('history', service, category);
             },
         },
+
+        created() {
+            console.log('created!');
+        }
     }
 </script>
 

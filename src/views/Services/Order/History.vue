@@ -52,7 +52,7 @@ const props = defineProps({
                 SERVICES: {
                     loader:  0,
                     handyman: 1,
-                    delivery: 2,
+                    moving: 2,
                     trash: 3,
                 },
 
