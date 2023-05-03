@@ -121,20 +121,24 @@
                 },
 
                 MOVING_CATEGORIES: {
-                    flatbed: {
+                    van: {
                         val: 0,
-                        label: 'Переезд: бортовой грузовик'
+                        label: 'Переезд <br> Микроавтобус'
                     },
-                    van2t: {
+                    flatbed: {
                         val: 1,
+                        label: 'Переезд <br> Бортовой грузовик'
+                    },
+                    lorry2: {
+                        val: 2,
                         label: 'Переезд: будка до 2т <br> (1.9м / 2м / 3м)'
                     },
-                    van3t: {
-                        val: 2,
+                    lorry3: {
+                        val: 3,
                         label: 'Переезд: будка от 2 до 3т <br> (2.1м / 2м / 4м)'
                     },
-                    van4t: {
-                        val: 3,
+                    lorry4: {
+                        val: 4,
                         label: 'Переезд: будка более 4т'
                     },
                 },
@@ -202,7 +206,7 @@
             page: function (page, service, category) {
                 let path = '/' + page + '/' + service;
 
-                if (service === 'handyman') {
+                if (service === 'handyman' || service === 'moving') {
                     if (category !== null) {
                         path += '/' + category;
                     }

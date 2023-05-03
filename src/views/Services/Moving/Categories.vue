@@ -46,20 +46,24 @@
 	
 	const categories = [
         {
-          name: "Открытый бортовик",
+            name: "Микроавтобус",
+            category: 'van'
+        },
+        {
+          name: "Открытый бортовик <br> (длина до 3м)",
           category: 'flatbed'
         },
         {
           name: "Закрытая будка до 2т <br> (1.9м / 2м / 3м)",
-          category: 'van2t'
+          category: 'lorry2'
         },
         {
           name: "Закрытая будка от 2 до 3т <br> (2.1м / 2м / 4м)",
-          category: 'van3t'
+          category: 'lorry3'
         },
         {
           name: "Будка более 4т",
-          category: 'van4t'
+          category: 'lorry4'
         },
 	]
 </script>
