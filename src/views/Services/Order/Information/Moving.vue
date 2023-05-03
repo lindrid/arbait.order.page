@@ -2,6 +2,21 @@
 	import BackBtn from '@/components/Buttons/Back.vue'
 
     const title = 'Информация';
+
+    const props = defineProps({
+        category: {
+            type: String,
+            default: null
+        }
+    });
+
+    const MOVING_PRICES = {
+        van: 550,
+        flatbed: 700,
+        lorry2: 800,
+        lorry3: 900,
+        lorry4: 1100,
+    };
 </script>
 
 <template>
@@ -12,6 +27,9 @@
     </div>
 	<main>
 		<section class="px-5">
+            <div v-if="category != null">
+                Цена за машину: {{ MOVING_PRICES[category] }} р/час
+            </div>
 			<BackBtn />
 
             <div class="

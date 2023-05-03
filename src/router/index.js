@@ -100,11 +100,18 @@ const routes = [
 		path: '/info/loader',
 		component: () => import('@/views/Services/Order/Information/Loader.vue')
 	},
+
 	{
 		name: 'InfoMoving',
 		path: '/info/moving',
 		component: () => import('@/views/Services/Order/Information/Moving.vue')
 	},
+	{
+		path: '/info/moving/:category',
+		component: () => import('@/views/Services/Order/Information/Moving.vue'),
+		props: true
+	},
+
 	{
 		name: 'InfoTrash',
 		path: '/info/trash',

@@ -7,7 +7,7 @@
           >
           </strong>
           <br>
-          <strong class="text-2xl text-yellow-500"> Оформить заявку </strong>
+          <strong class="text-2xl text-yellow-600"> Оформить заявку </strong>
         </div>
 
         <section class="px-4">
