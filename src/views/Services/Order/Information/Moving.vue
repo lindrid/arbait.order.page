@@ -11,11 +11,11 @@
     });
 
     const MOVING_PRICES = {
-        van: 550,
-        flatbed: 700,
-        lorry2: 800,
-        lorry3: 900,
-        lorry4: 1100,
+        van: 600,
+        flatbed: 850,
+        lorry2: 950,
+        lorry3: 1150,
+        lorry4: 'договорная, звоните диспетчеру',
     };
 </script>
 
@@ -27,9 +27,6 @@
     </div>
 	<main>
 		<section class="px-5">
-            <div v-if="category != null">
-                Цена за машину: {{ MOVING_PRICES[category] }} р/час
-            </div>
 			<BackBtn />
 
             <div class="

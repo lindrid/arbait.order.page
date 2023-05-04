@@ -38,9 +38,6 @@
         if (service === 'handyman') {
             router.push({name: 'HandymanCategories'});
             return;
-        } else if (service === 'moving') {
-            router.push({name: 'MovingCategories'});
-            return;
         }
         router.push({
             name: 'ServiceActions',

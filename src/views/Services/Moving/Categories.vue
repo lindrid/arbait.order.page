@@ -3,7 +3,7 @@
 		<section class="section">
 			<strong class="text-3xl ml-5">
                 <div class="flex items-center justify-center">
-                    Переезд
+                    Переезд или доставка
                 </div>
             </strong>
                 <strong

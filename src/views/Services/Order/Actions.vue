@@ -206,11 +206,17 @@
             page: function (page, service, category) {
                 let path = '/' + page + '/' + service;
 
-                if (service === 'handyman' || service === 'moving') {
+                if (service === 'handyman') {
                     if (category !== null) {
                         path += '/' + category;
                     }
                 }
+                if (service === 'moving') {
+                    return this.router.push({
+                        name: 'MovingCategories'
+                    });
+                }
+
                 this.router.push({path: path});
             },
 
