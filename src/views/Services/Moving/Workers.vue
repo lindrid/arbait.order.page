@@ -9,7 +9,7 @@
                 <strong
                     class="text-2xl text-yellow-600 flex items-center justify-center mb-5"
                 >
-                    Выбор машины
+                    Нужны грузчики?
                 </strong>
 
                 <BackBtn />
@@ -18,13 +18,16 @@
                 flex flex-wrap gap-6 mt-10 flex
                 items-center justify-center 2xl:px-[300px] px-[50px]
             ">
-                <template v-for="(item, x) in categories" :key="x">
-                    <Pill
-                        class="textXl text-center"
-                        @click="movePage(item.category)"
-                        :label="item.name"
-                    />
-                </template>
+                <Pill
+                    class="textXl text-center"
+                    @click="movePage(category, true)"
+                    :label="'Да'"
+                />
+                <Pill
+                    class="textXl text-center"
+                    @click="movePage(category, false)"
+                    :label="'Нет'"
+                />
             </div>
 		</section>
 
@@ -40,32 +43,16 @@
 	
 	const router = useRouter()
 
-	const movePage = (category) => router.push({
-        path: '/form' + '/moving/' + category,
+	const movePage = (category, answer) => router.push({
+        path: '/form' + '/moving/' + category + '/' + answer,
     });
-	
-	const categories = [
-        {
-            name: "Микроавтобус",
-            category: 'van'
-        },
-        {
-          name: "Открытый бортовик <br> (длина до 3м)",
-          category: 'flatbed'
-        },
-        {
-          name: "Закрытая будка до 2т <br> (1.9м / 2м / 3м)",
-          category: 'lorry2'
-        },
-        {
-          name: "Закрытая будка от 2 до 3т <br> (2.1м / 2м / 4м)",
-          category: 'lorry3'
-        },
-        {
-          name: "Будка более 4т",
-          category: 'lorry4'
-        },
-	]
+
+    const props = defineProps({
+        category : {
+            type: String,
+            default: null
+        }
+    });
 </script>
 
 <style scoped>
