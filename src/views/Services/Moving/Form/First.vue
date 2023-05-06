@@ -1,19 +1,19 @@
 <template>
-  <a
-      @click="$router.go(-1)"
-      class=" text-black bg-green-700 hover:bg-green-800
-                      focus:outline-none focus:ring-4
-                      focus:ring-green-300 font-medium rounded-lg
-                      text-xl px-3 py-2.5 text-center
-                      dark:bg-green-600 dark:hover:bg-green-700
-                      dark:focus:ring-green-800"
-  >
-    Назад
-  </a>
+    <a
+        @click="$router.go(-1)"
+        class="text-black bg-green-700 hover:bg-green-800
+              focus:outline-none focus:ring-4
+              focus:ring-green-300 font-medium rounded-lg
+              text-xl px-3 py-2.5 text-center
+              dark:bg-green-600 dark:hover:bg-green-700
+              dark:focus:ring-green-800"
+    >
+        Назад
+    </a>
 
-  <form class="mt-6" @submit.prevent="saveForm()">
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Адрес</b>
+    <form class="mt-6" @submit.prevent="saveForm()">
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+        <b class="text-xl">Начало маршрута</b>
         <input
             type="text"
             id="address"
@@ -34,9 +34,33 @@
                     dark:focus:border-blue-500"
             required
         >
-      </div>
+        </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+          <b class="text-xl">Конец маршрута</b>
+          <input
+              type="text"
+              id="address_to"
+              ref="addr_to"
+              v-model="application.address_to"
+              class=" bg-gray-50 border
+                    border-gray-300
+                    text-gray-900
+                    text-xl rounded-lg
+                    focus:ring-blue-500
+                    focus:border-blue-500
+                    block w-full p-2.5
+                    dark:bg-gray-300
+                    dark:border-gray-600
+                    dark:placeholder-gray-400
+                    dark:text-black
+                    dark:focus:ring-blue-500
+                    dark:focus:border-blue-500"
+              required
+          >
+        </div>
+
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
         <b class="text-xl">Дата</b>
         <input
             type="date"
@@ -58,10 +82,10 @@
                     text-xl"
             required
         >
-      </div>
-      <span class="help-block" v-if="dateError">{{ dateError }}</span>
+        </div>
+        <span class="help-block" v-if="dateError">{{ dateError }}</span>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
         <b class="text-xl block">Время</b>
         <input id="time_hours"
                type="text"
@@ -111,209 +135,81 @@
 
         <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
         <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
-      </div>
+        </div>
 
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <span class="text-xl">
+                <b class="text-red-700">Цена - </b>
+                <span v-if="hasApplicationHourlyJob">
+                    {{ applicationDriverPrice }}
+                    {{ Number.isInteger(applicationDriverPrice) ? 'р/час' : '' }}
+                </span>
+            </span>
+        </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Штукатурщиков</b>
-        <input id="time_hours"
-          type="text"
-          ref="th"
-          v-model="application.worker_total"
-          @focus="$event.target.select()"
-          placeholder="Сколько человек"
-          class="
-              bg-gray-50 border
-              border-gray-300
-              text-right
-              text-gray-900
-              text-xl rounded-lg
-              focus:ring-blue-500
-              focus:border-blue-500
-              w-1/6 p-2.5
-              dark:bg-gray-300
-              dark:border-gray-600
-              dark:placeholder-gray-400
-              dark:text-black
-              dark:focus:ring-blue-500
-              dark:focus:border-blue-500"
-          required
-        > <span class="text-xl">чел</span>
-        <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
-      </div>
+        <div class="2xl:mt-8 xl:mt-6 mt-4">
+            <b class="text-xl block">Способ оплаты</b>
+            <fieldset class="ml-4">
+                <div class="flex items-center ">
+                    <input
+                        id="pay_method_card"
+                        type="radio"
+                        name="pay_method"
+                        v-bind:value="PAY_METHOD_CARD"
+                        v-model="application.pay_method"
+                        class=" w-4 h-4 border-gray-300
+                                focus:ring-2 focus:ring-blue-300
+                                dark:focus:ring-blue-600
+                                dark:focus:bg-blue-600
+                                dark:bg-gray-300
+                                dark:border-gray-600"
+                        checked
+                    >
+                    <label
+                        for="pay_method_card"
+                        class="block ml-2 text-xl
+                            font-medium text-black
+                            dark:text-black"
+                    >
+                        На карту
+                    </label>
+                </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Что делать?</b>
-        <textarea
-          id="text"
-          v-model="application.what_to_do"
-          rows="4"
-          class=" block p-2.5 w-full text-xl
-                  text-black-900 bg-gray-50
-                  rounded-lg border border-gray-300
-                  focus:ring-blue-500 focus:border-blue-500
-                  dark:bg-gray-300 dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-          required
+                <div class="flex items-center">
+                    <input
+                        id="pay_method_cash"
+                        type="radio"
+                        name="pay_method"
+                        v-bind:value="PAY_METHOD_CASH"
+                        v-model="application.pay_method"
+                        class=" w-4 h-4 border-gray-300
+                                focus:ring-2 focus:ring-blue-300
+                                dark:focus:ring-blue-600
+                                dark:focus:bg-blue-600
+                                dark:bg-gray-300
+                                dark:border-gray-600"
+                    >
+                    <label for="pay_method_cash"
+                        class=" block ml-2 text-xl
+                              font-medium text-black
+                              dark:text-black"
+                    >
+                        Наличкой
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div
+            v-if="workers !== 'yes'"
+            class="2xl:mt-6 xl:mt-4 mt-2"
         >
-        </textarea>
-      </div>
-
-      <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
-          <div class="flex items-center h-5">
-              <input
-                  id="taxi"
-                  type="checkbox"
-                  v-model="application.give_tools"
-                  class=" w-4 h-4 border border-gray-300
-                      rounded bg-gray-50 focus:ring-3
-                      focus:ring-blue-300
-                      dark:bg-gray-300
-                      dark:border-gray-600
-                      dark:focus:ring-blue-600
-                      dark:ring-offset-gray-800
-                      dark:focus:ring-offset-gray-800"
-              >
-          </div>
-          <label for="taxi"
-                 class="ml-2 text-xl font-medium
-                      text-gray-900
-                      dark:text-black"
-          >
-              Предоставлю инструмент (цена будет меньше)
-          </label>
-      </div>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-          <b class="text-xl block">Оплата</b>
-          <fieldset class="ml-4">
-              <div class="flex items-center ">
-                  <input
-                      id="hour_format"
-                      type="radio"
-                      name="pay_format"
-                      v-bind:value="1"
-                      v-model="application.hourly_job"
-
-                      class="
-                      w-4 h-4 border-gray-300
-                      focus:ring-2 focus:ring-blue-300
-                      dark:focus:ring-blue-600
-                      dark:focus:bg-blue-600
-                      dark:bg-gray-300
-                      dark:border-gray-600"
-                      checked
-                  >
-                  <label for="hour_format"
-                         class="block ml-2 text-xl
-                          font-medium text-black
-                          dark:text-black"
-                  >
-                      По часам
-                  </label>
-              </div>
-
-              <div class="flex items-center">
-                  <input
-                      id="piece_rate_format"
-                      type="radio"
-                      name="pay_format"
-                      v-bind:value="0"
-                      v-model="application.hourly_job"
-                      class=" w-4 h-4 border-gray-300
-                    focus:ring-2 focus:ring-blue-300
-                    dark:focus:ring-blue-600
-                    dark:focus:bg-blue-600
-                    dark:bg-gray-300
-                    dark:border-gray-600"
-                  >
-                  <label for="piece_rate_format"
-                         class="block ml-2 text-xl
-                          font-medium text-black
-                          dark:text-black"
-                  >
-                      Фиксированная (за 8 часов)
-                  </label>
-              </div>
-          </fieldset>
-      </div>
-
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <span class="text-xl">
-          <b class="text-red-700">Цена - </b>
-          <span v-if="hasApplicationHourlyJob">
-            {{ applicationPrice }}
-          </span>
-          <span v-else>
-            {{ applicationPrice }}
-            {{ Number.isInteger(applicationPrice) ? 'р.' : '' }}
-          </span>
-        </span>
-      </div>
-
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
-        <b class="text-xl block">Способ оплаты</b>
-        <fieldset class="ml-4">
-          <div class="flex items-center ">
+            <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
             <input
-                id="pay_method_card"
-                type="radio"
-                name="pay_method"
-                v-bind:value="PAY_METHOD_CARD"
-                v-model="application.pay_method"
-                class=" w-4 h-4 border-gray-300
-                        focus:ring-2 focus:ring-blue-300
-                        dark:focus:ring-blue-600
-                        dark:focus:bg-blue-600
-                        dark:bg-gray-300
-                        dark:border-gray-600"
-                checked
-            >
-            <label
-              for="pay_method_card"
-              class="block ml-2 text-xl
-                    font-medium text-black
-                    dark:text-black"
-            >
-              На карту
-            </label>
-          </div>
-
-          <div class="flex items-center">
-            <input
-              id="pay_method_cash"
-              type="radio"
-              name="pay_method"
-              v-bind:value="PAY_METHOD_CASH"
-              v-model="application.pay_method"
-              class=" w-4 h-4 border-gray-300
-                        focus:ring-2 focus:ring-blue-300
-                        dark:focus:ring-blue-600
-                        dark:focus:bg-blue-600
-                        dark:bg-gray-300
-                        dark:border-gray-600"
-            >
-            <label for="pay_method_cash"
-              class=" block ml-2 text-xl
-                      font-medium text-black
-                      dark:text-black"
-            >
-              Наличкой
-            </label>
-          </div>
-        </fieldset>
-      </div>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
-        <input
-          id = "client_phone_number"
-          type="tel"
-          v-model="application.client_phone_number"
-          class="
+                id = "client_phone_number"
+                type="tel"
+                v-model="application.client_phone_number"
+                class="
               bg-gray-50 border
               border-gray-300
               text-gray-900
@@ -327,15 +223,15 @@
               dark:text-black
               dark:focus:ring-blue-500
               dark:focus:border-blue-500"
-          required
-        >
+                required
+            >
 
-        <span class="help-block" id="client_phone_number_help_block"
-              v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
-        </span>
-      </div>
+            <span class="help-block" id="client_phone_number_help_block"
+                  v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
+            </span>
+        </div>
 
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
+        <div class="2xl:mt-8 xl:mt-6 mt-4">
             <button
                 type="submit"
                 class="focus:outline-none text-black bg-yellow-400
@@ -344,7 +240,7 @@
                         rounded-lg text-xl px-3 py-2.5
                         mr-2 mb-2 dark:focus:ring-yellow-900"
             >
-              Оформить
+              {{ this.workers === 'yes' ? 'Далее' : 'Оформить' }}
             </button>
 
             <a
@@ -359,12 +255,11 @@
               Назад
             </a>
           </div>
-        </form>
+    </form>
 </template>
 
 <script>
 import { useAppHistory } from '@/stores/app/history';
-import router from '@/router';
 import _ from 'lodash';
 
 const store = useAppHistory();
@@ -387,11 +282,11 @@ export default {
         hasApplicationHourlyJob() {
           return this.application.hourly_job;
         },
-        applicationPrice() {
-          return this.application.price[this.application.hourly_job];
+        applicationDriverPrice() {
+          return this.application.driver_price[this.application.hourly_job];
         },
-        applicationPriceForWorker() {
-          return this.application.price_for_worker[this.application.hourly_job];
+        applicationPriceForDriver() {
+          return this.application.price_for_driver[this.application.hourly_job];
         },
         isClientPhoneAdded() {
           return this.client_has_second_phone;
@@ -408,11 +303,11 @@ export default {
         workerTotalError() {
           return this.errors.worker_total;
         },
-        priceError() {
-          return this.errors.price;
+        driverPriceError() {
+          return this.errors.driver_price;
         },
         priceForWorkerError() {
-            return this.errors.price_for_worker;
+            return this.errors.price_for_driver;
         },
     },
 
@@ -453,21 +348,6 @@ export default {
         },
 
         /**
-         * @param newGiveTools
-         * @see applicationTools()
-         */
-        applicationTools (newGiveTools) {
-            console.log(newGiveTools);
-            if (newGiveTools) {
-                this.application.price[this.application.hourly_job] =
-                    this.priceWithTools[this.application.hourly_job];
-            } else {
-                this.application.price[this.application.hourly_job] =
-                    this.price[this.application.hourly_job];
-            }
-        },
-
-        /**
          * @param {string} newWorkerTotal
          * @see applicationWorkerTotal
          */
@@ -483,31 +363,32 @@ export default {
 
         /**
          * @param {number} newPrice
-         * @see applicationPrice
+         * @see applicationDriverPrice
          */
-        applicationPrice: function (newPrice) {
-            this.errors.price = undefined;
+        applicationDriverPrice: function (newPrice) {
+            this.errors.driver_price = undefined;
 
             if (newPrice <= 0) {
-                this.errors.price = 'Неверная цена!';
+                this.errors.driver_price = 'Неверная цена!';
             }
         },
 
         /**
          * @param {number} newPriceForWorker
-         * @see applicationPriceForWorker
+         * @see applicationPriceForDriver
          */
-        applicationPriceForWorker: function (newPriceForWorker) {
-            this.errors.price_for_worker = undefined;
+        applicationPriceForDriver: function (newPriceForWorker) {
+            this.errors.price_for_driver = undefined;
 
             if (newPriceForWorker <= 0) {
-                this.errors.price_for_worker = 'Неверная цена для рабочего!';
+                this.errors.price_for_driver = 'Неверная цена для водителя!';
             }
         },
     },
 
     data: function () {
         return {
+            MOVING_SERVICE_TYPE: 2,
             additionClientPhoneKey: 0,
 
             PAY_METHOD_CARD: 1,
@@ -515,54 +396,35 @@ export default {
 
             client_has_second_phone: undefined,
 
-            price: {
-                0: this.APP_PRICE_CONST,
-                1: this.APP_PRICE_PER_HOUR_CONST
-            },
-
-            priceWithTools: {
-                0: this.APP_PRICE_TOOLS_CONST,
-                1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
-            },
-
-            price_for_worker: {
-                0: this.APP_PRICE_FOR_WORKER_CONST,
-                1: this.APP_PRICE_PH_FOR_WORKER_CONST
-            },
-
             application: {
                 id: 0,
-                service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.PLASTERER_CATEGORY,
+                service_type: this.MOVING_SERVICE_TYPE,
+                category: this.category,
                 what_to_do: '',
                 address: '',
+                address_to: '',
                 date: '',
                 time: '',
-                price: {
+                driver_price: {
                   0: this.APP_PRICE_CONST,
                   1: this.APP_PRICE_PER_HOUR_CONST
                 },
-                price_for_worker: {
-                  0: this.APP_PRICE_FOR_WORKER_CONST,
-                  1: this.APP_PRICE_PH_FOR_WORKER_CONST
+                price_for_driver: {
+                  0: this.APP_PRICE_FOR_DRIVER_CONST,
+                  1: this.APP_PRICE_PH_FOR_DRIVER_CONST
                 },
                 hourly_job: 1,
                 edg: 0,
                 pay_method: 1,
                 client_pay: null,
                 client_phone_number: '',
-                addl_client_phone_number: '',
                 state: 1,
                 income: 0,
                 outcome: 0,
                 profit: 0,
                 worker_count: 2,
                 worker_total: 2,
-                work_hours: {0: 1, 1: 2},
-                summ_total: {0: 4800, 1: 750},
-                summ_w_total: {0: 3800, 1: 600},
                 dispatcher_id: 0,
-                give_tools: false,
             },
             calc: {
                 'summ': true,
@@ -580,8 +442,8 @@ export default {
                 date: undefined,
                 outcome: undefined,
                 worker_total: undefined,
-                price: undefined,
-                price_for_worker: undefined,
+                driver_price: undefined,
+                price_for_driver: undefined,
                 what_to_do: undefined,
                 time_hours: undefined,
                 time_minutes: undefined
@@ -630,36 +492,54 @@ export default {
                 return;
             }
 
-            this.$axios.post('/application/store_from_site', {
-                service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.PLASTERER_CATEGORY,
-                address: this.application.address,
-                date: this.application.date,
-                time: this.application.time,
-                worker_total: this.application.worker_total,
-                price: this.application.price[this.application.hourly_job],
-                price_for_worker: this.application.price_for_worker[this.application.hourly_job],
-                hourly_job: this.application.hourly_job,
-                what_to_do: this.application.what_to_do,
-                give_tools: this.application.give_tools,
-                edg: this.application.edg,
-                pay_method: this.application.pay_method,
-                client_pay: this.application.client_pay,
-                client_phone_number: this.application.client_phone_number,
-                dispatcher_id: 0,
-                android_app: 1,
-                taxi_was_payed: 0,
-            }).then(response => {
-                console.log(response);
-                if (response.status === 200) {
-                    this.success = true;
-                    this.application.id = response.data.id;
-                    store.push(this.application, this.current_day('-'));
-                    router.push({name: 'Finish'});
-                }
-            }).catch(function (error) {
-                console.log(error);
-            })
+            if (this.workers === 'yes') {
+                this.$router.push({
+                    name: 'MovingSecondForm',
+                    params: {
+                        application: this.application,
+                        category: this.category
+                    }
+                });
+            } else {
+                this.$axios.post('/application/store_from_site', {
+                    service_type: this.HANDYMAN_SERVICE_TYPE,
+                    category: this.category,
+                    address: this.application.address,
+                    address_to: this.application.address_to,
+                    date: this.application.date,
+                    time: this.application.time,
+                    worker_total: this.application.worker_total,
+                    driver_price: this.application.driver_price[this.application.hourly_job],
+                    price_for_driver: this.application.price_for_driver[this.application.hourly_job],
+                    hourly_job: this.application.hourly_job,
+                    what_to_do: this.application.what_to_do,
+                    give_tools: this.application.give_tools,
+                    edg: this.application.edg,
+                    pay_method: this.application.pay_method,
+                    client_pay: this.application.client_pay,
+                    client_phone_number: this.application.client_phone_number,
+                    dispatcher_id: 0,
+                    android_app: 1,
+                    taxi_was_payed: 0,
+                }).then(response => {
+                    console.log(response);
+                    if (response.status === 200) {
+                        this.success = true;
+                        this.application.id = response.data.id;
+                        store.push(this.application, this.current_day('-'));
+                        this.$router.push({name: 'Finish'});
+                        this.$router.push({
+                            path: '/form/moving/second',
+                            params: {
+                                application: this.application
+                            }
+
+                        });
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
         },
 
         /**
@@ -689,6 +569,7 @@ export default {
             this.application.service_type = app.service_type;
             this.application.category = app.category;
             this.application.address = app.address;
+            this.application.address_to = app.address_to;
             this.application.date = this.current_day('-');
             this.application.worker_total = app.worker_total;
             this.application.hourly_job = app.hourly_job;
@@ -698,14 +579,14 @@ export default {
             this.application.elevator = app.elevator;
             this.application.taxi = app.taxi;
             this.application.client_phone_number = app.client_phone_number;
-            this.application.price_for_worker =  {
-                0: this.APP_PRICE_FOR_WORKER_CONST,
-                1: this.APP_PRICE_PH_FOR_WORKER_CONST
+            this.application.price_for_driver =  {
+                0: this.APP_PRICE_FOR_DRIVER_CONST,
+                1: this.APP_PRICE_PH_FOR_DRIVER_CONST
             };
         }
     },
 
-    props: ['appId'],
+    props: ['appId', 'category', 'workers'],
     setup(props) {
 
     },
@@ -717,22 +598,28 @@ export default {
         if (app !== null) {
             this.saveAppValues(app);
         }
+
+        console.log('application: ' + app);
+        console.log('category' + this.category);
+        console.log('workers' + this.workers);
     },
 
     beforeCreate() {
-        this.HANDYMAN_SERVICE_TYPE = 1;
-        this.PLASTERER_CATEGORY = 1;
-
         this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
 
-        this.APP_PRICE_PER_HOUR_CONST = 450;
-        this.APP_PRICE_CONST = 3400;
+        this.MOVING_PRICES = {
+            van: 600,
+            flatbed: 850,
+            lorry2: 950,
+            lorry3: 1150,
+            lorry4: this.PRICE_MESSAGE_CONST
+        };
 
-        this.APP_PRICE_PER_HOUR_TOOLS_CONST = 400;
-        this.APP_PRICE_TOOLS_CONST = 3000;
+        this.APP_PRICE_PER_HOUR_CONST = this.MOVING_PRICES[this.category];
+        this.APP_PRICE_CONST = this.PRICE_MESSAGE_CONST;
 
-        this.APP_PRICE_PH_FOR_WORKER_CONST = 325;
-        this.APP_PRICE_FOR_WORKER_CONST = 2500;
+        this.APP_PRICE_PH_FOR_DRIVER_CONST = this.MOVING_PRICES[this.category] - 100;
+        this.APP_PRICE_FOR_DRIVER_CONST = this.PRICE_MESSAGE_CONST;
     }
 }
 </script>

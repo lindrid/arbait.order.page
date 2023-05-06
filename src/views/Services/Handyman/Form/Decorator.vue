@@ -141,7 +141,7 @@
         > <span class="text-xl">чел</span>
         <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
       </div>
-
+а
       <div class="2xl:mt-6 xl:mt-4 mt-2">
         <b class="text-xl block">Что делать?</b>
         <textarea
@@ -721,7 +721,7 @@ export default {
     },
 
     beforeCreate() {
-        this.PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки";
+        this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
 
         this.APP_PRICE_PER_HOUR_CONST = 425;
         this.APP_PRICE_CONST = 3200;

@@ -712,7 +712,7 @@ export default {
     },
 
     beforeCreate() {
-        this.PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки";
+        this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
 
         this.APP_PRICE_PER_HOUR_CONST = this.PRICE_MESSAGE_CONST;
         this.APP_PRICE_CONST = this.PRICE_MESSAGE_CONST;

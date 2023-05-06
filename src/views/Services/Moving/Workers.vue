@@ -20,12 +20,12 @@
             ">
                 <Pill
                     class="textXl text-center"
-                    @click="movePage(category, true)"
+                    @click="movePage(category, 'yes')"
                     :label="'Да'"
                 />
                 <Pill
                     class="textXl text-center"
-                    @click="movePage(category, false)"
+                    @click="movePage(category, 'no')"
                     :label="'Нет'"
                 />
             </div>

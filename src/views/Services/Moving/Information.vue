@@ -9,14 +9,6 @@
             default: null
         }
     });
-
-    const MOVING_PRICES = {
-        van: 600,
-        flatbed: 850,
-        lorry2: 950,
-        lorry3: 1150,
-        lorry4: 'договорная, звоните диспетчеру',
-    };
 </script>
 
 <template>

@@ -22,8 +22,8 @@ const pinia = createPinia();
 pinia.use(piniaPluginPersistedState);
 
 const app = createApp(App)
-.use(router)
-.use(pinia);
+    .use(router)
+    .use(pinia);
 
 app.config.globalProperties.$axios = instance;
 

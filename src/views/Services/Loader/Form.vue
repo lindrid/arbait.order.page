@@ -874,7 +874,7 @@ export default {
         this.APP_PRICE_PER_HOUR_CONST = 350;
         this.HARD_APP_PRICE_PER_HOUR_CONST = 400;
         this.APP_PRICE_CONST = 2700;
-        this.HARD_APP_PRICE_MESSAGE_CONST = "договорная, вам позвонят после оформления заявки"
+        this.HARD_APP_PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки"
 
         this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
         this.HARD_APP_PRICE_PH_FOR_WORKER = 350;

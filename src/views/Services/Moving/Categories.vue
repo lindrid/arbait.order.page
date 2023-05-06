@@ -41,7 +41,7 @@
 	const router = useRouter()
 
 	const movePage = (category) => router.push({
-        path: '/form' + '/moving/' + category,
+        path: '/moving/' + 'workers/' + category,
     });
 	
 	const categories = [

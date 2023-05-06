@@ -90,7 +90,13 @@ const routes = [
 	},
 	{
 		path: '/form/moving/:category/:workers',
-		component: () => import('@/views/Services/Handyman/Form/Other.vue'),
+		component: () => import('@/views/Services/Moving/Form/First.vue'),
+		props: true
+	},
+	{
+		name: 'MovingSecondForm',
+		path: '/form/moving/second/:category/:application',
+		component: () => import('@/views/Services/Moving/Form/Second.vue'),
 		props: true
 	},
 

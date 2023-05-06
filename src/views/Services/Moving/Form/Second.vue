@@ -13,116 +13,14 @@
 
   <form class="mt-6" @submit.prevent="saveForm()">
       <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Адрес</b>
-        <input
-            type="text"
-            id="address"
-            ref="addr"
-            v-model="application.address"
-            class=" bg-gray-50 border
-                    border-gray-300
-                    text-gray-900
-                    text-xl rounded-lg
-                    focus:ring-blue-500
-                    focus:border-blue-500
-                    block w-full p-2.5
-                    dark:bg-gray-300
-                    dark:border-gray-600
-                    dark:placeholder-gray-400
-                    dark:text-black
-                    dark:focus:ring-blue-500
-                    dark:focus:border-blue-500"
-            required
-        >
-      </div>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Дата</b>
-        <input
-            type="date"
-            id="date"
-            v-model="application.date"
-            class=" bg-gray-50 border
-                    border-gray-300
-                    text-gray-900
-                    rounded-lg
-                    focus:ring-blue-500
-                    focus:border-blue-500
-                    block w-full p-2.5
-                    dark:bg-gray-300
-                    dark:border-gray-600
-                    dark:placeholder-gray-400
-                    dark:text-black
-                    dark:focus:ring-blue-500
-                    dark:focus:border-blue-500
-                    text-xl"
-            required
-        >
-      </div>
-      <span class="help-block" v-if="dateError">{{ dateError }}</span>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Время</b>
-        <input id="time_hours"
-               type="text"
-               ref="th"
-               v-model="time_hours"
-               @focus="$event.target.select()"
-               class="
-                  bg-gray-50 border
-                  border-gray-300
-                  text-gray-900
-                  text-xl rounded-lg
-                  focus:ring-blue-500
-                  focus:border-blue-500
-                  w-1/6 p-2.5
-                  dark:bg-gray-300
-                  dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black
-                  dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-               required
-        >
-
-        <b> : </b>
-
-        <input id="time_minutes"
-               ref="tm"
-               type="text"
-               v-model="time_minutes"
-               @focus="$event.target.select()"
-               class="
-                  bg-gray-50 border
-                  border-gray-300
-                  text-gray-900
-                  text-xl rounded-lg
-                  focus:ring-blue-500
-                  focus:border-blue-500
-                  w-1/6 p-2.5
-                  dark:bg-gray-300
-                  dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black
-                  dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-               required
-        >
-
-        <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
-        <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
-      </div>
-
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Землекопов</b>
-        <input id="time_hours"
-          type="text"
-          ref="th"
-          v-model="application.worker_total"
-          @focus="$event.target.select()"
-          placeholder="Сколько человек"
-          class="
+          <b class="text-xl block">Грузчиков</b>
+          <input id="time_hours"
+                 type="text"
+                 ref="th"
+                 v-model="application.worker_total"
+                 @focus="$event.target.select()"
+                 placeholder="Сколько человек"
+                 class="
               bg-gray-50 border
               border-gray-300
               text-right
@@ -137,109 +35,10 @@
               dark:text-black
               dark:focus:ring-blue-500
               dark:focus:border-blue-500"
-          required
-        > <span class="text-xl">чел</span>
-        <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
+                 required
+          > <span class="text-xl">чел</span>
+          <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
       </div>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Что делать?</b>
-        <textarea
-          id="text"
-          v-model="application.what_to_do"
-          rows="4"
-          class=" block p-2.5 w-full text-xl
-                  text-black-900 bg-gray-50
-                  rounded-lg border border-gray-300
-                  focus:ring-blue-500 focus:border-blue-500
-                  dark:bg-gray-300 dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-          required
-        >
-        </textarea>
-      </div>
-
-      <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
-          <div class="flex items-center h-5">
-              <input
-                  id="taxi"
-                  type="checkbox"
-                  v-model="application.give_tools"
-                  class=" w-4 h-4 border border-gray-300
-                      rounded bg-gray-50 focus:ring-3
-                      focus:ring-blue-300
-                      dark:bg-gray-300
-                      dark:border-gray-600
-                      dark:focus:ring-blue-600
-                      dark:ring-offset-gray-800
-                      dark:focus:ring-offset-gray-800"
-              >
-          </div>
-          <label for="taxi"
-                 class="ml-2 text-xl font-medium
-                      text-gray-900
-                      dark:text-black"
-          >
-              Предоставлю инструмент (цена будет меньше)
-          </label>
-      </div>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-          <b class="text-xl block">Оплата</b>
-          <fieldset class="ml-4">
-              <div class="flex items-center ">
-                  <input
-                      id="hour_format"
-                      type="radio"
-                      name="pay_format"
-                      v-bind:value="1"
-                      v-model="application.hourly_job"
-
-                      class="
-                      w-4 h-4 border-gray-300
-                      focus:ring-2 focus:ring-blue-300
-                      dark:focus:ring-blue-600
-                      dark:focus:bg-blue-600
-                      dark:bg-gray-300
-                      dark:border-gray-600"
-                      checked
-                  >
-                  <label for="hour_format"
-                         class="block ml-2 text-xl
-                          font-medium text-black
-                          dark:text-black"
-                  >
-                      По часам
-                  </label>
-              </div>
-
-              <div class="flex items-center">
-                  <input
-                      id="piece_rate_format"
-                      type="radio"
-                      name="pay_format"
-                      v-bind:value="0"
-                      v-model="application.hourly_job"
-                      class=" w-4 h-4 border-gray-300
-                    focus:ring-2 focus:ring-blue-300
-                    dark:focus:ring-blue-600
-                    dark:focus:bg-blue-600
-                    dark:bg-gray-300
-                    dark:border-gray-600"
-                  >
-                  <label for="piece_rate_format"
-                         class="block ml-2 text-xl
-                          font-medium text-black
-                          dark:text-black"
-                  >
-                      Фиксированная (за 8 часов)
-                  </label>
-              </div>
-          </fieldset>
-      </div>
-
 
       <div class="2xl:mt-6 xl:mt-4 mt-2">
         <span class="text-xl">
@@ -388,10 +187,10 @@ export default {
           return this.application.hourly_job;
         },
         applicationPrice() {
-          return this.application.price[this.application.hourly_job];
+          return this.application.price;
         },
         applicationPriceForWorker() {
-          return this.application.price_for_worker[this.application.hourly_job];
+          return this.application.price_for_worker;
         },
         isClientPhoneAdded() {
           return this.client_has_second_phone;
@@ -459,11 +258,9 @@ export default {
         applicationTools (newGiveTools) {
             console.log(newGiveTools);
             if (newGiveTools) {
-                this.application.price[this.application.hourly_job] =
-                    this.priceWithTools[this.application.hourly_job];
+                this.application.price = this.price_with_tools;
             } else {
-                this.application.price[this.application.hourly_job] =
-                    this.price[this.application.hourly_job];
+                this.application.price = this.price;
             }
         },
 
@@ -508,19 +305,10 @@ export default {
 
     data: function () {
         return {
-            HANDYMAN_SERVICE_TYPE: 1,
-            DIGGER_CATEGORY: 0,
+            MOVING_SERVICE_TYPE: 2,
+            MOVING_CATEGORIES: {
 
-            PRICE_MESSAGE_CONST: "договорная, с вами свяжутся после оформления заявки",
-
-            APP_PRICE_PER_HOUR_CONST: 425,
-            APP_PRICE_CONST: 3200,
-
-            APP_PRICE_PER_HOUR_TOOLS_CONST: 375,
-            APP_PRICE_TOOLS_CONST: 2800,
-
-            APP_PRICE_PH_FOR_WORKER_CONST: 325,
-            APP_PRICE_FOR_WORKER_CONST: 2300,
+            },
 
             additionClientPhoneKey: 0,
 
@@ -534,7 +322,7 @@ export default {
                 1: this.APP_PRICE_PER_HOUR_CONST
             },
 
-            priceWithTools: {
+            price_with_tools: {
                 0: this.APP_PRICE_TOOLS_CONST,
                 1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
             },
@@ -544,40 +332,6 @@ export default {
                 1: this.APP_PRICE_PH_FOR_WORKER_CONST
             },
 
-            application: {
-                id: 0,
-                service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DIGGER_CATEGORY,
-                what_to_do: '',
-                address: '',
-                date: '',
-                time: '',
-                price: {
-                  0: this.APP_PRICE_CONST,
-                  1: this.APP_PRICE_PER_HOUR_CONST
-                },
-                price_for_worker: {
-                  0: this.APP_PRICE_FOR_WORKER_CONST,
-                  1: this.APP_PRICE_PH_FOR_WORKER_CONST
-                },
-                hourly_job: 1,
-                edg: 0,
-                pay_method: 1,
-                client_pay: null,
-                client_phone_number: '',
-                addl_client_phone_number: '',
-                state: 1,
-                income: 0,
-                outcome: 0,
-                profit: 0,
-                worker_count: 2,
-                worker_total: 2,
-                work_hours: {0: 1, 1: 2},
-                summ_total: {0: 4800, 1: 750},
-                summ_w_total: {0: 3800, 1: 600},
-                dispatcher_id: 0,
-                give_tools: false,
-            },
             calc: {
                 'summ': true,
                 'pays': false
@@ -646,8 +400,9 @@ export default {
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DIGGER_CATEGORY,
+                category: this.DECORATOR_CATEGORY,
                 address: this.application.address,
+                address_to: this.application.address_to,
                 date: this.application.date,
                 time: this.application.time,
                 worker_total: this.application.worker_total,
@@ -703,6 +458,7 @@ export default {
             this.application.service_type = app.service_type;
             this.application.category = app.category;
             this.application.address = app.address;
+            this.application.address_to = app.address_to;
             this.application.date = this.current_day('-');
             this.application.worker_total = app.worker_total;
             this.application.hourly_job = app.hourly_job;
@@ -719,18 +475,17 @@ export default {
         }
     },
 
-    props: ['appId'],
+    props: ['category', 'application'],
     setup(props) {
 
     },
 
     created () {
-        this.application.date = this.current_day('-');
-
-        const app = store.getApp(this.appId);
-        if (app !== null) {
-            this.saveAppValues(app);
-        }
+        console.log('application: ');
+        const str = JSON.stringify(this.application, null, 4);
+        console.log(str);
+        console.log(this.application.address);
+        console.log('category' + this.category);
     },
 
     beforeCreate() {
