@@ -113,7 +113,7 @@
 
 
         <div class="2xl:mt-6 xl:mt-4 mt-2">
-            <b class="text-xl block">Маляров</b>
+            <b class="text-xl block">{{ label }}</b>
             <input id="time_hours"
                 type="text"
                 ref="th"
@@ -534,9 +534,6 @@ export default {
 
     data: function () {
         return {
-            HANDYMAN_SERVICE_TYPE: 1,
-            DECORATOR_CATEGORY: 2,
-
             additionClientPhoneKey: 0,
 
             PAY_METHOD_CARD: 1,
@@ -637,7 +634,7 @@ export default {
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                category: this.CATEGORIES[this.category],
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,
@@ -647,7 +644,7 @@ export default {
                 hourly_job: this.application.hourly_job,
                 what_to_do: this.application.what_to_do,
                 give_tools: this.application.give_tools,
-                edg: this.application.edg,
+                edg: false,
                 pay_method: this.application.pay_method,
                 client_pay: this.application.client_pay,
                 client_phone_number: this.application.client_phone_number,
@@ -707,12 +704,15 @@ export default {
         }
     },
 
-    props: ['appId'],
+    props: ['appId', 'label', 'category'],
     setup(props) {
 
     },
 
     created () {
+        console.log(this.label);
+        console.log(this.category);
+
         this.application.date = this.current_day('-');
         this.application.price = this.PRICE[true];
         this.application.price_for_worker = this.PRICE_FOR_WORKER[true];
@@ -724,6 +724,14 @@ export default {
     },
 
     beforeCreate() {
+        this.HANDYMAN_SERVICE_TYPE = 1;
+        this.CATEGORIES = {
+            digger: 0,
+            plasterer: 1,
+            decorator: 2,
+            another: 3,
+        };
+
         this.TOOLS_PRICE_FOR_HOUR = 50;
         this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
 

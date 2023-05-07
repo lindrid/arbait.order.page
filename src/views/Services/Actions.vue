@@ -217,7 +217,9 @@
                     });
                 }
 
-                this.router.push({path: path});
+                this.router.push({
+                    path: path,
+                });
             },
 
             formPage: function (service, category) {

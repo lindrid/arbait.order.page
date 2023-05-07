@@ -46,42 +46,16 @@ const routes = [
 	},
 
 	{
-		path: '/form/handyman/digger',
-		component: () => import('@/views/Services/Handyman/Form/Digger.vue')
-	},
-	{
-		path: '/form/handyman/digger/:appId',
-		component: () => import('@/views/Services/Handyman/Form/Digger.vue'),
+		path: '/form/handyman/:category',
+		component: () => import('@/views/Services/Handyman/Form.vue'),
 		props: true
 	},
 	{
-		path: '/form/handyman/plasterer',
-		component: () => import('@/views/Services/Handyman/Form/Plasterer.vue'),
+		path: '/form/handyman/:category/:appId',
+		component: () => import('@/views/Services/Handyman/Form.vue'),
 		props: true
 	},
-	{
-		path: '/form/handyman/plasterer/:appId',
-		component: () => import('@/views/Services/Handyman/Form/Plasterer.vue'),
-		props: true
-	},
-	{
-		path: '/form/handyman/decorator',
-		component: () => import('@/views/Services/Handyman/Form/Decorator.vue')
-	},
-	{
-		path: '/form/handyman/decorator/:appId',
-		component: () => import('@/views/Services/Handyman/Form/Decorator.vue'),
-		props: true
-	},
-	{
-		path: '/form/handyman/other',
-		component: () => import('@/views/Services/Handyman/Form/Other.vue')
-	},
-	{
-		path: '/form/handyman/other/:appId',
-		component: () => import('@/views/Services/Handyman/Form/Other.vue'),
-		props: true
-	},
+
 
 	{
 		path: '/moving/workers/:category',
