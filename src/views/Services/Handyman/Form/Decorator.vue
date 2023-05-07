@@ -1,344 +1,348 @@
 <template>
-  <a
-      @click="$router.go(-1)"
-      class=" text-black bg-green-700 hover:bg-green-800
-                      focus:outline-none focus:ring-4
-                      focus:ring-green-300 font-medium rounded-lg
-                      text-xl px-3 py-2.5 text-center
-                      dark:bg-green-600 dark:hover:bg-green-700
-                      dark:focus:ring-green-800"
-  >
-    Назад
-  </a>
+    <a
+        @click="$router.go(-1)"
+        class=" text-black bg-green-700 hover:bg-green-800
+              focus:outline-none focus:ring-4
+              focus:ring-green-300 font-medium rounded-lg
+              text-xl px-3 py-2.5 text-center
+              dark:bg-green-600 dark:hover:bg-green-700
+              dark:focus:ring-green-800"
+    >
+        Назад
+    </a>
 
-  <form class="mt-6" @submit.prevent="saveForm()">
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Адрес</b>
-        <input
-            type="text"
-            id="address"
-            ref="addr"
-            v-model="application.address"
-            class=" bg-gray-50 border
-                    border-gray-300
-                    text-gray-900
-                    text-xl rounded-lg
-                    focus:ring-blue-500
-                    focus:border-blue-500
-                    block w-full p-2.5
-                    dark:bg-gray-300
-                    dark:border-gray-600
-                    dark:placeholder-gray-400
-                    dark:text-black
-                    dark:focus:ring-blue-500
-                    dark:focus:border-blue-500"
-            required
-        >
-      </div>
+    <form class="mt-6" @submit.prevent="saveForm()">
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl">Адрес</b>
+            <input
+                type="text"
+                id="address"
+                ref="addr"
+                v-model="application.address"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        block w-full p-2.5
+                        dark:bg-gray-300
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
+        </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Дата</b>
-        <input
-            type="date"
-            id="date"
-            v-model="application.date"
-            class=" bg-gray-50 border
-                    border-gray-300
-                    text-gray-900
-                    rounded-lg
-                    focus:ring-blue-500
-                    focus:border-blue-500
-                    block w-full p-2.5
-                    dark:bg-gray-300
-                    dark:border-gray-600
-                    dark:placeholder-gray-400
-                    dark:text-black
-                    dark:focus:ring-blue-500
-                    dark:focus:border-blue-500
-                    text-xl"
-            required
-        >
-      </div>
-      <span class="help-block" v-if="dateError">{{ dateError }}</span>
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl">Дата</b>
+            <input
+                type="date"
+                id="date"
+                v-model="application.date"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        block w-full p-2.5
+                        dark:bg-gray-300
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500
+                        text-xl"
+                required
+            >
+        </div>
+        <span class="help-block" v-if="dateError">{{ dateError }}</span>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Время</b>
-        <input id="time_hours"
-               type="text"
-               ref="th"
-               v-model="time_hours"
-               @focus="$event.target.select()"
-               class="
-                  bg-gray-50 border
-                  border-gray-300
-                  text-gray-900
-                  text-xl rounded-lg
-                  focus:ring-blue-500
-                  focus:border-blue-500
-                  w-1/6 p-2.5
-                  dark:bg-gray-300
-                  dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black
-                  dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-               required
-        >
-
-        <b> : </b>
-
-        <input id="time_minutes"
-               ref="tm"
-               type="text"
-               v-model="time_minutes"
-               @focus="$event.target.select()"
-               class="
-                  bg-gray-50 border
-                  border-gray-300
-                  text-gray-900
-                  text-xl rounded-lg
-                  focus:ring-blue-500
-                  focus:border-blue-500
-                  w-1/6 p-2.5
-                  dark:bg-gray-300
-                  dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black
-                  dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-               required
-        >
-
-        <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
-        <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
-      </div>
-
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Маляров</b>
-        <input id="time_hours"
-          type="text"
-          ref="th"
-          v-model="application.worker_total"
-          @focus="$event.target.select()"
-          placeholder="Сколько человек"
-          class="
-              bg-gray-50 border
-              border-gray-300
-              text-right
-              text-gray-900
-              text-xl rounded-lg
-              focus:ring-blue-500
-              focus:border-blue-500
-              w-1/6 p-2.5
-              dark:bg-gray-300
-              dark:border-gray-600
-              dark:placeholder-gray-400
-              dark:text-black
-              dark:focus:ring-blue-500
-              dark:focus:border-blue-500"
-          required
-        > <span class="text-xl">чел</span>
-        <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
-      </div>
-а
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Что делать?</b>
-        <textarea
-          id="text"
-          v-model="application.what_to_do"
-          rows="4"
-          class=" block p-2.5 w-full text-xl
-                  text-black-900 bg-gray-50
-                  rounded-lg border border-gray-300
-                  focus:ring-blue-500 focus:border-blue-500
-                  dark:bg-gray-300 dark:border-gray-600
-                  dark:placeholder-gray-400
-                  dark:text-black dark:focus:ring-blue-500
-                  dark:focus:border-blue-500"
-          required
-        >
-        </textarea>
-      </div>
-
-      <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
-          <div class="flex items-center h-5">
-              <input
-                  id="taxi"
-                  type="checkbox"
-                  v-model="application.give_tools"
-                  class=" w-4 h-4 border border-gray-300
-                      rounded bg-gray-50 focus:ring-3
-                      focus:ring-blue-300
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Время</b>
+            <input id="time_hours"
+                   type="text"
+                   ref="th"
+                   v-model="time_hours"
+                   @focus="$event.target.select()"
+                   class="
+                      bg-gray-50 border
+                      border-gray-300
+                      text-gray-900
+                      text-xl rounded-lg
+                      focus:ring-blue-500
+                      focus:border-blue-500
+                      w-1/6 p-2.5
                       dark:bg-gray-300
                       dark:border-gray-600
-                      dark:focus:ring-blue-600
-                      dark:ring-offset-gray-800
-                      dark:focus:ring-offset-gray-800"
-              >
-          </div>
-          <label for="taxi"
-                 class="ml-2 text-xl font-medium
-                      text-gray-900
-                      dark:text-black"
-          >
-              Предоставлю инструмент (цена будет меньше)
-          </label>
-      </div>
+                      dark:placeholder-gray-400
+                      dark:text-black
+                      dark:focus:ring-blue-500
+                      dark:focus:border-blue-500"
+                   required
+            >
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-          <b class="text-xl block">Оплата</b>
-          <fieldset class="ml-4">
-              <div class="flex items-center ">
-                  <input
-                      id="hour_format"
-                      type="radio"
-                      name="pay_format"
-                      v-bind:value="1"
-                      v-model="application.hourly_job"
+            <b> : </b>
 
-                      class="
-                      w-4 h-4 border-gray-300
-                      focus:ring-2 focus:ring-blue-300
-                      dark:focus:ring-blue-600
-                      dark:focus:bg-blue-600
-                      dark:bg-gray-300
-                      dark:border-gray-600"
-                      checked
-                  >
-                  <label for="hour_format"
-                         class="block ml-2 text-xl
-                          font-medium text-black
+            <input id="time_minutes"
+                ref="tm"
+                type="text"
+                v-model="time_minutes"
+                @focus="$event.target.select()"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        w-1/6 p-2.5
+                        dark:bg-gray-300
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
+            <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
+            <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
+        </div>
+
+
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Маляров</b>
+            <input id="time_hours"
+                type="text"
+                ref="th"
+                v-model="application.worker_total"
+                @focus="$event.target.select()"
+                placeholder="Сколько человек"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-right
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        w-1/6 p-2.5
+                        dark:bg-gray-300
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
+            <span class="text-xl">чел</span>
+            <span class="help-block"
+                  v-if="workerTotalError"
+            >
+                {{ workerTotalError }}
+            </span>
+        </div>
+
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Что делать?</b>
+            <textarea
+                id="text"
+                v-model="application.what_to_do"
+                rows="4"
+                class=" block p-2.5 w-full text-xl
+                        text-black-900 bg-gray-50
+                        rounded-lg border border-gray-300
+                        focus:ring-blue-500 focus:border-blue-500
+                        dark:bg-gray-300 dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
+            </textarea>
+        </div>
+
+        <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+            <div class="flex items-center h-5">
+                <input
+                    id="taxi"
+                    type="checkbox"
+                    v-model="application.give_tools"
+                    class="w-4 h-4 border border-gray-300
+                          rounded bg-gray-50 focus:ring-3
+                          focus:ring-blue-300
+                          dark:bg-gray-300
+                          dark:border-gray-600
+                          dark:focus:ring-blue-600
+                          dark:ring-offset-gray-800
+                          dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="taxi"
+                    class="ml-2 text-xl font-medium
+                          text-gray-900
                           dark:text-black"
-                  >
-                      По часам
-                  </label>
-              </div>
+            >
+                Предоставлю инструмент (цена будет меньше)
+            </label>
+        </div>
 
-              <div class="flex items-center">
-                  <input
-                      id="piece_rate_format"
-                      type="radio"
-                      name="pay_format"
-                      v-bind:value="0"
-                      v-model="application.hourly_job"
-                      class=" w-4 h-4 border-gray-300
-                    focus:ring-2 focus:ring-blue-300
-                    dark:focus:ring-blue-600
-                    dark:focus:bg-blue-600
-                    dark:bg-gray-300
-                    dark:border-gray-600"
-                  >
-                  <label for="piece_rate_format"
-                         class="block ml-2 text-xl
-                          font-medium text-black
-                          dark:text-black"
-                  >
-                      Фиксированная (за 8 часов)
-                  </label>
-              </div>
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Оплата</b>
+            <fieldset class="ml-4">
+                <div class="flex items-center ">
+                    <input
+                        id="hour_format"
+                        type="radio"
+                        name="pay_format"
+                        v-bind:value="1"
+                        v-model="application.hourly_job"
+
+                        class="w-4 h-4 border-gray-300
+                            focus:ring-2 focus:ring-blue-300
+                            dark:focus:ring-blue-600
+                            dark:focus:bg-blue-600
+                            dark:bg-gray-300
+                            dark:border-gray-600"
+                        checked
+                    >
+                    <label for="hour_format"
+                        class="block ml-2 text-xl
+                            font-medium text-black
+                            dark:text-black"
+                    >
+                        По часам
+                    </label>
+                </div>
+
+                <div class="flex items-center">
+                    <input
+                        id="piece_rate_format"
+                        type="radio"
+                        name="pay_format"
+                        v-bind:value="0"
+                        v-model="application.hourly_job"
+                        class=" w-4 h-4 border-gray-300
+                            focus:ring-2 focus:ring-blue-300
+                            dark:focus:ring-blue-600
+                            dark:focus:bg-blue-600
+                            dark:bg-gray-300
+                            dark:border-gray-600"
+                    >
+                    <label for="piece_rate_format"
+                        class="block ml-2 text-xl
+                            font-medium text-black
+                            dark:text-black"
+                    >
+                        Фиксированная (за 8 часов)
+                    </label>
+                </div>
           </fieldset>
-      </div>
+        </div>
 
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <span class="text-xl">
-          <b class="text-red-700">Цена - </b>
-          <span v-if="hasApplicationHourlyJob">
-            {{ applicationPrice }}
-          </span>
-          <span v-else>
-            {{ applicationPrice }}
-            {{ Number.isInteger(applicationPrice) ? 'р.' : '' }}
-          </span>
-        </span>
-      </div>
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <span class="text-xl">
+                <b class="text-red-700">Цена - </b>
+                <span>
+                    {{ applicationPrice }}
+                    {{
+                        Number.isInteger(applicationPrice) ?
+                            applicationHourlyJob ? 'р/час' : 'р.' :
+                            ''
+                    }}
+                </span>
+            </span>
+        </div>
 
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
-        <b class="text-xl block">Способ оплаты</b>
-        <fieldset class="ml-4">
-          <div class="flex items-center ">
+        <div class="2xl:mt-8 xl:mt-6 mt-4">
+            <b class="text-xl block">Способ оплаты</b>
+            <fieldset class="ml-4">
+                <div class="flex items-center ">
+                    <input
+                        id="pay_method_card"
+                        type="radio"
+                        name="pay_method"
+                        v-bind:value="PAY_METHOD_CARD"
+                        v-model="application.pay_method"
+                        class=" w-4 h-4 border-gray-300
+                            focus:ring-2 focus:ring-blue-300
+                            dark:focus:ring-blue-600
+                            dark:focus:bg-blue-600
+                            dark:bg-gray-300
+                            dark:border-gray-600"
+                        checked
+                    >
+                    <label
+                        for="pay_method_card"
+                        class="block ml-2 text-xl
+                            font-medium text-black
+                            dark:text-black"
+                    >
+                        На карту
+                    </label>
+                </div>
+
+                <div class="flex items-center">
+                    <input
+                        id="pay_method_cash"
+                        type="radio"
+                        name="pay_method"
+                        v-bind:value="PAY_METHOD_CASH"
+                        v-model="application.pay_method"
+                        class=" w-4 h-4 border-gray-300
+                                focus:ring-2 focus:ring-blue-300
+                                dark:focus:ring-blue-600
+                                dark:focus:bg-blue-600
+                                dark:bg-gray-300
+                                dark:border-gray-600"
+                    >
+                    <label for="pay_method_cash"
+                        class=" block ml-2 text-xl
+                        font-medium text-black
+                        dark:text-black"
+                    >
+                        Наличкой
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
             <input
-                id="pay_method_card"
-                type="radio"
-                name="pay_method"
-                v-bind:value="PAY_METHOD_CARD"
-                v-model="application.pay_method"
-                class=" w-4 h-4 border-gray-300
-                        focus:ring-2 focus:ring-blue-300
-                        dark:focus:ring-blue-600
-                        dark:focus:bg-blue-600
+                id = "client_phone_number"
+                type="tel"
+                v-model="application.client_phone_number"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        w-3/4 p-2.5
                         dark:bg-gray-300
-                        dark:border-gray-600"
-                checked
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
             >
-            <label
-              for="pay_method_card"
-              class="block ml-2 text-xl
-                    font-medium text-black
-                    dark:text-black"
+
+            <span
+                class="help-block" id="client_phone_number_help_block"
+                v-if="error && errors.client_phone_number"
             >
-              На карту
-            </label>
-          </div>
+                {{ errors.client_phone_number }}
+            </span>
+        </div>
 
-          <div class="flex items-center">
-            <input
-              id="pay_method_cash"
-              type="radio"
-              name="pay_method"
-              v-bind:value="PAY_METHOD_CASH"
-              v-model="application.pay_method"
-              class=" w-4 h-4 border-gray-300
-                        focus:ring-2 focus:ring-blue-300
-                        dark:focus:ring-blue-600
-                        dark:focus:bg-blue-600
-                        dark:bg-gray-300
-                        dark:border-gray-600"
-            >
-            <label for="pay_method_cash"
-              class=" block ml-2 text-xl
-                      font-medium text-black
-                      dark:text-black"
-            >
-              Наличкой
-            </label>
-          </div>
-        </fieldset>
-      </div>
-
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
-        <input
-          id = "client_phone_number"
-          type="tel"
-          v-model="application.client_phone_number"
-          class="
-              bg-gray-50 border
-              border-gray-300
-              text-gray-900
-              text-xl rounded-lg
-              focus:ring-blue-500
-              focus:border-blue-500
-              w-3/4 p-2.5
-              dark:bg-gray-300
-              dark:border-gray-600
-              dark:placeholder-gray-400
-              dark:text-black
-              dark:focus:ring-blue-500
-              dark:focus:border-blue-500"
-          required
-        >
-
-        <span class="help-block" id="client_phone_number_help_block"
-              v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
-        </span>
-      </div>
-
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
+        <div class="2xl:mt-8 xl:mt-6 mt-4">
             <button
                 type="submit"
-                class="focus:outline-none text-black bg-yellow-400
+                class=" focus:outline-none text-black bg-yellow-400
                         hover:bg-yellow-500 focus:ring-4
                         focus:ring-yellow-300 font-medium
                         rounded-lg text-xl px-3 py-2.5
@@ -348,18 +352,18 @@
             </button>
 
             <a
-              @click="$router.go(-1)"
-              class=" text-black bg-green-700 hover:bg-green-800
-                      focus:outline-none focus:ring-4
-                      focus:ring-green-300 font-medium rounded-lg
-                      text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
-                      dark:bg-green-600 dark:hover:bg-green-700
-                      dark:focus:ring-green-800"
+                @click="$router.go(-1)"
+                class=" text-black bg-green-700 hover:bg-green-800
+                        focus:outline-none focus:ring-4
+                        focus:ring-green-300 font-medium rounded-lg
+                        text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
+                        dark:bg-green-600 dark:hover:bg-green-700
+                        dark:focus:ring-green-800"
             >
-              Назад
+                Назад
             </a>
-          </div>
-        </form>
+        </div>
+    </form>
 </template>
 
 <script>
@@ -370,7 +374,6 @@ import _ from 'lodash';
 const store = useAppHistory();
 
 export default {
-
     computed: {
         applicationWhatToDo() {
             return this.application.what_to_do;
@@ -384,14 +387,14 @@ export default {
         applicationWorkerTotal() {
           return this.application.worker_total;
         },
-        hasApplicationHourlyJob() {
+        applicationHourlyJob() {
           return this.application.hourly_job;
         },
         applicationPrice() {
-          return this.application.price[this.application.hourly_job];
+          return this.application.price;
         },
         applicationPriceForWorker() {
-          return this.application.price_for_worker[this.application.hourly_job];
+          return this.application.price_for_worker;
         },
         isClientPhoneAdded() {
           return this.client_has_second_phone;
@@ -459,9 +462,9 @@ export default {
         applicationTools (newGiveTools) {
             console.log(newGiveTools);
             if (newGiveTools) {
-                this.application.price = this.price_with_tools;
+                this.application.price = this.PRICE_WITH_TOOLS[!!this.application.hourly_job];
             } else {
-                this.application.price = this.price;
+                this.application.price = this.PRICE[!!this.application.hourly_job];
             }
         },
 
@@ -488,6 +491,8 @@ export default {
 
             if (newPrice <= 0) {
                 this.errors.price = 'Неверная цена!';
+            } else {
+                this.application.price = newPrice;
             }
         },
 
@@ -500,8 +505,31 @@ export default {
 
             if (newPriceForWorker <= 0) {
                 this.errors.price_for_worker = 'Неверная цена для рабочего!';
+            } else {
+                this.application.price_for_worker = newPriceForWorker;
             }
         },
+
+        /**
+         *
+         * @param {number} newVal
+         * @see applicationHourlyJob
+         */
+        applicationHourlyJob: function (newVal) {
+            if (this.application.give_tools) {
+                this.application.price = this.PRICE[!!newVal] - this.TOOLS_PRICE_FOR_HOUR;
+                this.application.price_for_worker = this.PRICE_FOR_WORKER[!!newVal] +
+                    this.TOOLS_PRICE_FOR_HOUR;
+            } else {
+                this.application.price = this.PRICE[!!newVal];
+                this.application.price_for_worker = this.PRICE_FOR_WORKER[!!newVal];
+            }
+
+            if (!!newVal === false && this.application.give_tools) {
+                this.application.price -= 7 * this.TOOLS_PRICE_FOR_HOUR;
+                this.application.price_for_worker += 7 * this.TOOLS_PRICE_FOR_HOUR;
+            }
+        }
     },
 
     data: function () {
@@ -515,56 +543,32 @@ export default {
             PAY_METHOD_CASH: 2,
 
             client_has_second_phone: undefined,
-
-            price: {
-                0: this.APP_PRICE_CONST,
-                1: this.APP_PRICE_PER_HOUR_CONST
-            },
-
-            price_with_tools: {
-                0: this.APP_PRICE_TOOLS_CONST,
-                1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
-            },
-
-            price_for_worker: {
-                0: this.APP_PRICE_FOR_WORKER_CONST,
-                1: this.APP_PRICE_PH_FOR_WORKER_CONST
-            },
-
+            /**
+             * @type {Application}
+             */
             application: {
                 id: 0,
                 service_type: this.HANDYMAN_SERVICE_TYPE,
                 category: this.DECORATOR_CATEGORY,
-                what_to_do: '',
                 address: '',
+                address_to: null,
+                what_to_do: '',
                 date: '',
                 time: '',
-                price: {
-                  0: this.APP_PRICE_CONST,
-                  1: this.APP_PRICE_PER_HOUR_CONST
-                },
-                price_for_worker: {
-                  0: this.APP_PRICE_FOR_WORKER_CONST,
-                  1: this.APP_PRICE_PH_FOR_WORKER_CONST
-                },
-                hourly_job: 1,
-                edg: 0,
+                price: 0,
+                price_for_worker: 0,
+                driver_price: null,
+                price_for_driver: null,
+                hourly_job: true,
                 pay_method: 1,
-                client_pay: null,
-                client_phone_number: '',
-                addl_client_phone_number: '',
-                state: 1,
-                income: 0,
-                outcome: 0,
-                profit: 0,
-                worker_count: 2,
                 worker_total: 2,
-                work_hours: {0: 1, 1: 2},
-                summ_total: {0: 4800, 1: 750},
-                summ_w_total: {0: 3800, 1: 600},
-                dispatcher_id: 0,
+                floor: null,
+                elevator: null,
+                taxi: false,
                 give_tools: false,
+                client_phone_number: '',
             },
+
             calc: {
                 'summ': true,
                 'pays': false
@@ -638,8 +642,8 @@ export default {
                 date: this.application.date,
                 time: this.application.time,
                 worker_total: this.application.worker_total,
-                price: this.application.price[this.application.hourly_job],
-                price_for_worker: this.application.price_for_worker[this.application.hourly_job],
+                price: this.application.price,
+                price_for_worker: this.application.price_for_worker,
                 hourly_job: this.application.hourly_job,
                 what_to_do: this.application.what_to_do,
                 give_tools: this.application.give_tools,
@@ -655,7 +659,7 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
-                    store.push(this.application, this.current_day('-'));
+                    store.push(this.application);
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -699,10 +703,7 @@ export default {
             this.application.elevator = app.elevator;
             this.application.taxi = app.taxi;
             this.application.client_phone_number = app.client_phone_number;
-            this.application.price_for_worker =  {
-                0: this.APP_PRICE_FOR_WORKER_CONST,
-                1: this.APP_PRICE_PH_FOR_WORKER_CONST
-            };
+            this.application.price_for_worker = this.PRICE_FOR_WORKER[app.hourly_job];
         }
     },
 
@@ -713,6 +714,8 @@ export default {
 
     created () {
         this.application.date = this.current_day('-');
+        this.application.price = this.PRICE[true];
+        this.application.price_for_worker = this.PRICE_FOR_WORKER[true];
 
         const app = store.getApp(this.appId);
         if (app !== null) {
@@ -721,16 +724,33 @@ export default {
     },
 
     beforeCreate() {
+        this.TOOLS_PRICE_FOR_HOUR = 50;
         this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
 
         this.APP_PRICE_PER_HOUR_CONST = 425;
         this.APP_PRICE_CONST = 3200;
 
-        this.APP_PRICE_PER_HOUR_TOOLS_CONST = 375;
-        this.APP_PRICE_TOOLS_CONST = 2800;
+        this.APP_PRICE_PER_HOUR_TOOLS_CONST = this.APP_PRICE_PER_HOUR_CONST -
+            this.TOOLS_PRICE_FOR_HOUR;
+        this.APP_PRICE_TOOLS_CONST = this.APP_PRICE_CONST - 8 * this.TOOLS_PRICE_FOR_HOUR;
 
         this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
         this.APP_PRICE_FOR_WORKER_CONST = 2300;
+
+        this.PRICE = {
+            false: this.APP_PRICE_CONST,
+            true: this.APP_PRICE_PER_HOUR_CONST
+        };
+
+        this.PRICE_WITH_TOOLS = {
+            false: this.APP_PRICE_TOOLS_CONST,
+            true: this.APP_PRICE_PER_HOUR_TOOLS_CONST
+        };
+
+        this.PRICE_FOR_WORKER = {
+            false: this.APP_PRICE_FOR_WORKER_CONST,
+            true: this.APP_PRICE_PH_FOR_WORKER_CONST
+        };
     }
 }
 </script>

@@ -14,9 +14,7 @@
     import { useRouter } from 'vue-router'
 
     const router = useRouter()
-
     const movePage = to => router.push({ name: to })
-
     const dependencies = [
         "Vue v.3.2.25",
         "Tailwindcss v.3.0.18",
@@ -26,7 +24,6 @@
         "Postcss v.8.4.5",
         "Autoprefixer v.10.4.2"
     ]
-
     const routes = [
         {
             name: 'О нас',
