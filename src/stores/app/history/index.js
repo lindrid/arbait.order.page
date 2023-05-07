@@ -19,6 +19,7 @@ const createNewApp = function (app) {
         floor: app.floor,
         elevator: app.elevator,
         taxi: app.taxi,
+        give_tools: app.give_tools,
         client_phone_number: app.client_phone_number,
     };
 }
@@ -57,7 +58,6 @@ export const useAppHistory = defineStore('app',{
     actions: {
         /**
          * @param {Application} app
-         * @param {string} date
          */
         push (app) {
             this.apps.push(createNewApp(app));
@@ -124,8 +124,9 @@ export const useAppHistory = defineStore('app',{
 
             return apps.sort((a, b) => {
                 return (a.date.trim() > b.date.trim())? -1 :
-                    (a.date.trim() === b.date.trim())?
-                        (a.time.trim() > b.time.trim())? -1 : 1 : 1
+                            (a.date.trim() === b.date.trim())?
+                                (a.time.trim() > b.time.trim())? -1 : 1
+                            : 1
             });
         }
     },

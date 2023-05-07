@@ -460,12 +460,8 @@ export default {
          * @see applicationTools()
          */
         applicationTools (newGiveTools) {
-            console.log(newGiveTools);
-            if (newGiveTools) {
-                this.application.price = this.PRICE_WITH_TOOLS[!!this.application.hourly_job];
-            } else {
-                this.application.price = this.PRICE[!!this.application.hourly_job];
-            }
+            this.application.price = this.getPrice();
+            this.application.price_for_worker = this.getPriceForWorker();
         },
 
         /**
@@ -516,19 +512,9 @@ export default {
          * @see applicationHourlyJob
          */
         applicationHourlyJob: function (newVal) {
-            if (this.application.give_tools) {
-                this.application.price = this.PRICE[!!newVal] - this.TOOLS_PRICE_FOR_HOUR;
-                this.application.price_for_worker = this.PRICE_FOR_WORKER[!!newVal] +
-                    this.TOOLS_PRICE_FOR_HOUR;
-            } else {
-                this.application.price = this.PRICE[!!newVal];
-                this.application.price_for_worker = this.PRICE_FOR_WORKER[!!newVal];
-            }
+            this.application.price = this.getPrice();
+            this.application.price_for_worker = this.getPriceForWorker();
 
-            if (!!newVal === false && this.application.give_tools) {
-                this.application.price -= 7 * this.TOOLS_PRICE_FOR_HOUR;
-                this.application.price_for_worker += 7 * this.TOOLS_PRICE_FOR_HOUR;
-            }
         }
     },
 
@@ -699,9 +685,31 @@ export default {
             this.application.floor = app.floor;
             this.application.elevator = app.elevator;
             this.application.taxi = app.taxi;
+            this.application.give_tools = app.give_tools;
             this.application.client_phone_number = app.client_phone_number;
-            this.application.price_for_worker = this.PRICE_FOR_WORKER[app.hourly_job];
-        }
+            this.application.price_for_worker = this.getPriceForWorker();
+        },
+
+        getPrice() {
+            const app = this.application;
+            const gt = app.give_tools;
+            const tpph = this.TOOLS_PRICE_PER_HOUR;
+            const apph = this.APP_PRICE_PER_HOUR_CONST;
+            const ap = this.APP_PRICE_CONST;
+
+            return app.hourly_job?
+                apph[this.category] - Number(gt) * tpph :
+                ap[this.category] - 8 * Number(gt) * tpph;
+        },
+
+        getPriceForWorker() {
+            const app = this.application;
+            const opfh = this.OUR_PRICE_FOR_HOUR;
+
+            return app.hourly_job?
+                this.getPrice() - opfh :
+                this.getPrice() - 8 * opfh
+        },
     },
 
     props: ['appId', 'label', 'category'],
@@ -710,12 +718,13 @@ export default {
     },
 
     created () {
+        console.log(this.appId);
         console.log(this.label);
         console.log(this.category);
 
         this.application.date = this.current_day('-');
-        this.application.price = this.PRICE[true];
-        this.application.price_for_worker = this.PRICE_FOR_WORKER[true];
+        this.application.price = this.getPrice();
+        this.application.price_for_worker = this.getPriceForWorker();
 
         const app = store.getApp(this.appId);
         if (app !== null) {
@@ -729,35 +738,38 @@ export default {
             digger: 0,
             plasterer: 1,
             decorator: 2,
-            another: 3,
+            other: 3,
         };
 
-        this.TOOLS_PRICE_FOR_HOUR = 50;
+        this.TOOLS_PRICE_PER_HOUR = 50;
+        this.OUR_PRICE_FOR_HOUR = 75;
+
         this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
 
-        this.APP_PRICE_PER_HOUR_CONST = 425;
-        this.APP_PRICE_CONST = 3200;
-
-        this.APP_PRICE_PER_HOUR_TOOLS_CONST = this.APP_PRICE_PER_HOUR_CONST -
-            this.TOOLS_PRICE_FOR_HOUR;
-        this.APP_PRICE_TOOLS_CONST = this.APP_PRICE_CONST - 8 * this.TOOLS_PRICE_FOR_HOUR;
-
-        this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
-        this.APP_PRICE_FOR_WORKER_CONST = 2300;
-
-        this.PRICE = {
-            false: this.APP_PRICE_CONST,
-            true: this.APP_PRICE_PER_HOUR_CONST
+        this.APP_PRICE_PER_HOUR_CONST = {
+            digger: 425,
+            plasterer: 450,
+            decorator: 425,
+            other: 425
+        };
+        this.APP_PRICE_PH_FOR_WORKER_CONST = {
+            digger: 350,
+            plasterer: 375,
+            decorator: 350,
+            other: 375
         };
 
-        this.PRICE_WITH_TOOLS = {
-            false: this.APP_PRICE_TOOLS_CONST,
-            true: this.APP_PRICE_PER_HOUR_TOOLS_CONST
+        this.APP_PRICE_CONST = {
+            digger: 3200,
+            plasterer: 3400,
+            decorator: 3200,
+            other: 3200
         };
-
-        this.PRICE_FOR_WORKER = {
-            false: this.APP_PRICE_FOR_WORKER_CONST,
-            true: this.APP_PRICE_PH_FOR_WORKER_CONST
+        this.APP_PRICE_FOR_WORKER_CONST = {
+            digger: 2700,
+            plasterer: 2900,
+            decorator: 2700,
+            other: 2700
         };
     }
 }
