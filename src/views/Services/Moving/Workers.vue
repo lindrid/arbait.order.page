@@ -20,12 +20,12 @@
             ">
                 <Pill
                     class="textXl text-center"
-                    @click="movePage(category, 'yes')"
+                    @click="movePage(category, 'yes', appId)"
                     :label="'Да'"
                 />
                 <Pill
                     class="textXl text-center"
-                    @click="movePage(category, 'no')"
+                    @click="movePage(category, 'no', appId)"
                     :label="'Нет'"
                 />
             </div>
@@ -40,16 +40,23 @@
     import BackBtn from '@/components/Buttons/Back.vue';
     import Pill from '@/components/Pill.vue'
 	import Footer from '@/components/Footer.vue'
-	
+
 	const router = useRouter()
 
-	const movePage = (category, answer) => router.push({
-        path: '/form' + '/moving/' + category + '/' + answer,
-    });
+	const movePage = function (category, answer, appId) {
+        const id = (appId === null) ? '' : '/' + appId;
+        router.push({
+            path: '/form' + '/moving/' + category + '/' + answer + id,
+        });
+    }
 
     const props = defineProps({
-        category : {
+        category: {
             type: String,
+            default: null
+        },
+        appId: {
+            type: Number,
             default: null
         }
     });
@@ -61,11 +68,11 @@
 	}
 
 	.textXl {
-    font-size: 1.25rem; /* 20px */
-    line-height: 1.75rem; /* 28px */
-  }
+        font-size: 1.25rem; /* 20px */
+        line-height: 1.75rem; /* 28px */
+    }
 
     span {
-      flex:1 0 auto;
+        flex:1 0 auto;
     }
 </style>

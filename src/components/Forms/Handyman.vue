@@ -368,6 +368,9 @@
 
 <script>
 import { useAppHistory } from '@/stores/app/history';
+import { ServiceTypes } from "@/consts/service_type";
+import { HandymanCategories } from "@/consts/categories/handyman";
+
 import router from '@/router';
 import _ from 'lodash';
 
@@ -531,8 +534,8 @@ export default {
              */
             application: {
                 id: 0,
-                service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                service_type: ServiceTypes['handyman'].val,
+                category: HandymanCategories[this.category].val,
                 address: '',
                 address_to: null,
                 what_to_do: '',
@@ -619,7 +622,7 @@ export default {
             }
 
             this.$axios.post('/application/store_from_site', {
-                service_type: this.HANDYMAN_SERVICE_TYPE,
+                service_type: this.application.service_type,
                 category: this.CATEGORIES[this.category],
                 address: this.application.address,
                 date: this.application.date,
@@ -697,9 +700,11 @@ export default {
             const apph = this.APP_PRICE_PER_HOUR_CONST;
             const ap = this.APP_PRICE_CONST;
 
+            let multiplier = gt ? 1 : 0;
+            
             return app.hourly_job?
-                apph[this.category] - Number(gt) * tpph :
-                ap[this.category] - 8 * Number(gt) * tpph;
+                apph[this.category] - multiplier * tpph:
+                ap[this.category] - 8 * multiplier * tpph;
         },
 
         getPriceForWorker() {
@@ -722,18 +727,17 @@ export default {
         console.log(this.label);
         console.log(this.category);
 
-        this.application.date = this.current_day('-');
-        this.application.price = this.getPrice();
-        this.application.price_for_worker = this.getPriceForWorker();
-
         const app = store.getApp(this.appId);
         if (app !== null) {
             this.saveAppValues(app);
         }
+
+        this.application.date = this.current_day('-');
+        this.application.price = this.getPrice();
+        this.application.price_for_worker = this.getPriceForWorker();
     },
 
     beforeCreate() {
-        this.HANDYMAN_SERVICE_TYPE = 1;
         this.CATEGORIES = {
             digger: 0,
             plasterer: 1,

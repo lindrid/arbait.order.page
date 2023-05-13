@@ -11,10 +11,10 @@
     Назад
   </a>
 
-  <form class="mt-6" @submit.prevent="saveForm()">
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-          <b class="text-xl block">Грузчиков</b>
-          <input id="time_hours"
+    <form class="mt-6" @submit.prevent="saveForm()">
+        <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <b class="text-xl block">Грузчиков</b>
+            <input id="time_hours"
                  type="text"
                  ref="th"
                  v-model="application.worker_total"
@@ -36,105 +36,255 @@
               dark:focus:ring-blue-500
               dark:focus:border-blue-500"
                  required
-          > <span class="text-xl">чел</span>
-          <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
-      </div>
+            > <span class="text-xl">чел</span>
+            <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
+        </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <span class="text-xl">
-          <b class="text-red-700">Цена - </b>
-          <span v-if="hasApplicationHourlyJob">
-            {{ applicationPrice }}
-          </span>
-          <span v-else>
-            {{ applicationPrice }}
-            {{ Number.isInteger(applicationPrice) ? 'р.' : '' }}
-          </span>
-        </span>
-      </div>
+        <div
+            class="2xl:mt-6 xl:mt-4 mt-2"
+        >
+            <b class="text-xl block">Опишите задачу</b>
+            <textarea
+                id="text"
+                v-model="application.what_to_do"
+                rows="4"
+                class=" block p-2.5 w-full text-xl
+                        text-black-900 bg-gray-50
+                        rounded-lg border border-gray-300
+                        focus:ring-blue-500 focus:border-blue-500
+                        dark:bg-gray-300 dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
+            </textarea>
+        </div>
 
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
-        <b class="text-xl block">Способ оплаты</b>
-        <fieldset class="ml-4">
-          <div class="flex items-center ">
+        <div class="2xl:mt-6 xl:mt-8 mt-6">
+            <b class="text-xl block">Начало: этаж</b>
             <input
-                id="pay_method_card"
-                type="radio"
-                name="pay_method"
-                v-bind:value="PAY_METHOD_CARD"
-                v-model="application.pay_method"
-                class=" w-4 h-4 border-gray-300
-                        focus:ring-2 focus:ring-blue-300
-                        dark:focus:ring-blue-600
-                        dark:focus:bg-blue-600
+                id="floor"
+                type="text"
+                ref="th"
+                v-model="application.floor"
+                @focus="$event.target.select()"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        w-1/6 p-2.5
                         dark:bg-gray-300
-                        dark:border-gray-600"
-                checked
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
             >
-            <label
-              for="pay_method_card"
-              class="block ml-2 text-xl
-                    font-medium text-black
-                    dark:text-black"
-            >
-              На карту
-            </label>
-          </div>
+        </div>
 
-          <div class="flex items-center">
+        <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+            <div class="flex items-center h-5">
+                <input
+                    id="elevator"
+                    type="checkbox"
+                    v-model="application.elevator"
+                    class=" w-4 h-4 border border-gray-300
+                            rounded bg-gray-50 focus:ring-3
+                            focus:ring-blue-300
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:focus:ring-blue-600
+                            dark:ring-offset-gray-800
+                            dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="elevator"
+                   class=" ml-2 text-xl font-medium
+                        text-gray-900
+                        dark:text-black"
+            >
+                Есть лифт (начало)
+            </label>
+        </div>
+
+        <div class="2xl:mt-6 xl:mt-6 mt-3">
+            <b class="text-xl block">Конец: этаж</b>
             <input
-              id="pay_method_cash"
-              type="radio"
-              name="pay_method"
-              v-bind:value="PAY_METHOD_CASH"
-              v-model="application.pay_method"
-              class=" w-4 h-4 border-gray-300
-                        focus:ring-2 focus:ring-blue-300
-                        dark:focus:ring-blue-600
-                        dark:focus:bg-blue-600
+                id="floor_to"
+                type="text"
+                ref="th"
+                v-model="application.floor_to"
+                @focus="$event.target.select()"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        w-1/6 p-2.5
                         dark:bg-gray-300
-                        dark:border-gray-600"
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
             >
-            <label for="pay_method_cash"
-              class=" block ml-2 text-xl
-                      font-medium text-black
-                      dark:text-black"
-            >
-              Наличкой
-            </label>
-          </div>
-        </fieldset>
-      </div>
+        </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
-        <input
-          id = "client_phone_number"
-          type="tel"
-          v-model="application.client_phone_number"
-          class="
-              bg-gray-50 border
-              border-gray-300
-              text-gray-900
-              text-xl rounded-lg
-              focus:ring-blue-500
-              focus:border-blue-500
-              w-3/4 p-2.5
-              dark:bg-gray-300
-              dark:border-gray-600
-              dark:placeholder-gray-400
-              dark:text-black
-              dark:focus:ring-blue-500
-              dark:focus:border-blue-500"
-          required
+        <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+            <div class="flex items-center h-5">
+                <input
+                    id="elevator_to"
+                    type="checkbox"
+                    v-model="application.elevator_to"
+                    class=" w-4 h-4 border border-gray-300
+                            rounded bg-gray-50 focus:ring-3
+                            focus:ring-blue-300
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:focus:ring-blue-600
+                            dark:ring-offset-gray-800
+                            dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="elevator_to"
+                   class=" ml-2 text-xl font-medium
+                        text-gray-900
+                        dark:text-black"
+            >
+                Есть лифт (конец)
+            </label>
+        </div>
+
+        <div class="flex items-start 2xl:mt-10 xl:mt-8 mt-4">
+            <div class="flex items-center h-5">
+                <input
+                    id="taxi"
+                    type="checkbox"
+                    v-model="application.taxi"
+                    class=" w-4 h-4 border border-gray-300
+                            rounded bg-gray-50 focus:ring-3
+                            focus:ring-blue-300
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:focus:ring-blue-600
+                            dark:ring-offset-gray-800
+                            dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="taxi"
+                   class=" ml-2 text-xl font-medium
+                        text-gray-900
+                        dark:text-black"
+            >
+                Такси для грузчиков
+            </label>
+        </div>
+
+        <div class="2xl:mt-6 xl:mt-6 mt-4">
+            <span class="text-xl">
+                <b class="text-red-700">Цена - </b>
+                <span>
+                    {{ applicationPrice }}
+                    {{
+                        Number.isInteger(applicationPrice) ?
+                            applicationHourlyJob ? 'р/час за 1 чел.' : 'р. за 1 чел.' :
+                            ''
+                    }}
+                </span>
+            </span>
+        </div>
+
+        <div class="2xl:mt-8 xl:mt-6 mt-4">
+            <b class="text-xl block">Способ оплаты</b>
+            <fieldset class="ml-4">
+                <div class="flex items-center ">
+                    <input
+                        id="pay_method_card"
+                        type="radio"
+                        name="pay_method"
+                        v-bind:value="PayMethod.CARD"
+                        v-model="application.pay_method"
+                        class=" w-4 h-4 border-gray-300
+                                focus:ring-2 focus:ring-blue-300
+                                dark:focus:ring-blue-600
+                                dark:focus:bg-blue-600
+                                dark:bg-gray-300
+                                dark:border-gray-600"
+                        checked
+                    >
+                    <label
+                      for="pay_method_card"
+                      class="block ml-2 text-xl
+                            font-medium text-black
+                            dark:text-black"
+                    >
+                      На карту
+                    </label>
+                </div>
+
+                <div class="flex items-center">
+                    <input
+                      id="pay_method_cash"
+                      type="radio"
+                      name="pay_method"
+                      v-bind:value="PayMethod.CASH"
+                      v-model="application.pay_method"
+                      class=" w-4 h-4 border-gray-300
+                                focus:ring-2 focus:ring-blue-300
+                                dark:focus:ring-blue-600
+                                dark:focus:bg-blue-600
+                                dark:bg-gray-300
+                                dark:border-gray-600"
+                    >
+                    <label for="pay_method_cash"
+                      class=" block ml-2 text-xl
+                              font-medium text-black
+                              dark:text-black"
+                    >
+                      Наличкой
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="2xl:mt-6 xl:mt-6 mt-4">
+            <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
+            <input
+                id = "client_phone_number"
+                type="tel"
+                v-model="application.client_phone_number"
+                class=" bg-gray-50 border
+                        border-gray-300
+                        text-gray-900
+                        text-xl rounded-lg
+                        focus:ring-blue-500
+                        focus:border-blue-500
+                        w-3/4 p-2.5
+                        dark:bg-gray-300
+                        dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black
+                        dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
         >
 
-        <span class="help-block" id="client_phone_number_help_block"
-              v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
+        <span
+            v-if="error && errors.client_phone_number"
+            id="client_phone_number_help_block"
+            class="help-block"
+        >
+            {{ errors.client_phone_number }}
         </span>
-      </div>
+        </div>
 
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
+        <div class="2xl:mt-8 xl:mt-6 mt-4">
             <button
                 type="submit"
                 class="focus:outline-none text-black bg-yellow-400
@@ -143,36 +293,59 @@
                         rounded-lg text-xl px-3 py-2.5
                         mr-2 mb-2 dark:focus:ring-yellow-900"
             >
-              Оформить
+                Оформить
             </button>
 
             <a
-              @click="$router.go(-1)"
-              class=" text-black bg-green-700 hover:bg-green-800
-                      focus:outline-none focus:ring-4
-                      focus:ring-green-300 font-medium rounded-lg
-                      text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
-                      dark:bg-green-600 dark:hover:bg-green-700
-                      dark:focus:ring-green-800"
+                @click="$router.go(-1)"
+                class=" text-black bg-green-700 hover:bg-green-800
+                        focus:outline-none focus:ring-4
+                        focus:ring-green-300 font-medium rounded-lg
+                        text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
+                        dark:bg-green-600 dark:hover:bg-green-700
+                        dark:focus:ring-green-800"
             >
-              Назад
+                Назад
             </a>
-          </div>
-        </form>
+        </div>
+    </form>
 </template>
 
-<script>
-import { useAppHistory } from '@/stores/app/history';
-import router from '@/router';
-import _ from 'lodash';
+<script setup>
+    import {PayMethod, Price} from '@/consts/pay';
+</script>
 
-const store = useAppHistory();
+<script>
+    import { useAppHistory } from '@/stores/app/history';
+    import { useNewAppStore } from '@/stores/app/new';
+    import { PayMethod, Price } from '@/consts/pay';
+    import { ServiceTypes } from "@/consts/service_type";
+    import { isItHardWork } from "@/services/application";
+
+    import router from '@/router';
+    import _ from 'lodash';
+    import { MovingCategories } from "@/consts/categories/moving";
+
+    const historyStore = useAppHistory();
+    const newAppStore = useNewAppStore();
 
 export default {
 
     computed: {
         applicationWhatToDo() {
             return this.application.what_to_do;
+        },
+        applicationFloor() {
+            return this.application.floor;
+        },
+        applicationFloorTo() {
+            return this.application.floor_to;
+        },
+        applicationElevator() {
+            return this.application.elevator;
+        },
+        applicationElevatorTo() {
+            return this.application.elevator_to;
         },
         applicationTools() {
             return this.application.give_tools;
@@ -183,8 +356,11 @@ export default {
         applicationWorkerTotal() {
           return this.application.worker_total;
         },
-        hasApplicationHourlyJob() {
+        applicationHourlyJob() {
           return this.application.hourly_job;
+        },
+        applicationPayMethod() {
+            return this.application.pay_method;
         },
         applicationPrice() {
           return this.application.price;
@@ -216,121 +392,126 @@ export default {
     },
 
     watch: {
-        // whenever time_hours changes, this function will run
         /**
-         * @param {number} newHours
+         * @see applicationFloor
          */
-        time_hours: _.debounce(function (newHours) {
-            this.errors.time_hours = undefined;
+        applicationFloor: _.debounce(function (newFloor) {
+            if (this.saved_app_values) {
+                console.log(newFloor);
 
-            if (newHours < 0 || newHours > 24) {
-                this.error = true;
-                this.errors.time_hours = 'Неверное количество часов';
+                this.setPrice();
+                if (!!this.application.elevator === false) {
+                    this.increasePriceForFloor(newFloor);
+                }
+                if (!!this.application.elevator_to === false) {
+                    this.increasePriceForFloor(this.application.floor_to);
+                }
+
+                newAppStore.saveApp(this.application);
+            }
+        }, 250),
+
+        /**
+         * @see applicationFloorTo
+         */
+        applicationFloorTo: _.debounce(function (newFloor) {
+            if (this.saved_app_values) {
+                console.log(newFloor);
+
+                this.setPrice();
+                if (!!this.application.elevator_to === false) {
+                    this.increasePriceForFloor(newFloor);
+                }
+                if (!!this.application.elevator === false) {
+                    this.increasePriceForFloor(this.application.floor);
+                }
+
+                newAppStore.saveApp(this.application);
+            }
+        }, 250),
+
+        /**
+         * @see applicationElevator
+         */
+        applicationElevator: _.debounce(function (newElevator) {
+            if (this.saved_app_values) {
+                this.setPrice();
+                if (!!newElevator === false) {
+                    this.increasePriceForFloor(this.application.floor);
+                }
+                if (!!this.application.elevator_to === false) {
+                    this.increasePriceForFloor(this.application.floor_to);
+                }
+                newAppStore.saveApp(this.application);
+            }
+        }, 250),
+
+        /**
+         * @see applicationElevatorTo
+         */
+        applicationElevatorTo: _.debounce(function (newElevator) {
+            if (this.saved_app_values) {
+                this.setPrice();
+                if (!!this.application.elevator === false) {
+                    this.increasePriceForFloor(this.application.floor);
+                }
+                if (!!newElevator === false) {
+                    this.increasePriceForFloor(this.application.floor_to);
+                }
+                newAppStore.saveApp(this.application);
+            }
+        }, 250),
+
+        /**
+         * @param {number} newPayMethod
+         * @see applicationPayMethod
+         */
+        applicationPayMethod: _.debounce(function (newPayMethod) {
+            if (this.saved_app_values) {
+                newAppStore.saveApp(this.application);
             }
         }, 500),
-
-        time_minutes: _.debounce(function (newMinutes) {
-            this.errors.time_minutes = undefined;
-
-            if (newMinutes < 0 || newMinutes > 60) {
-                this.error = true;
-                this.errors.time_minutes = 'Неверное количество минут';
-            }
-        }, 500),
-
-        /**
-         * @param {string} newDate The date of the application.
-         * @see applicationDate()
-         */
-        applicationDate: function(newDate) {
-            this.errors.date = undefined;
-
-            const date = newDate.split("-");
-            if (!this.isValidDate(date[0], date[1], date[2])) {
-                this.errors.date = "Неправильная дата!";
-            }
-        },
-
-        /**
-         * @param newGiveTools
-         * @see applicationTools()
-         */
-        applicationTools (newGiveTools) {
-            console.log(newGiveTools);
-            if (newGiveTools) {
-                this.application.price = this.price_with_tools;
-            } else {
-                this.application.price = this.price;
-            }
-        },
-
         /**
          * @param {string} newWorkerTotal
          * @see applicationWorkerTotal
          */
-        applicationWorkerTotal: function (newWorkerTotal) {
+        applicationWorkerTotal: _.debounce(function (newWorkerTotal) {
             this.errors.worker_total = undefined;
-            console.log(typeof(newWorkerTotal));
-            console.log(newWorkerTotal);
 
             if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
                 this.errors.worker_total = 'Неверное количество работников!';
+            } else {
+                if (this.saved_app_values) {
+                    newAppStore.saveApp(this.application);
+                }
             }
-        },
-
+        }, 500),
         /**
-         * @param {number} newPrice
-         * @see applicationPrice
+         * @param {number} newVal
          */
-        applicationPrice: function (newPrice) {
-            this.errors.price = undefined;
+        applicationWhatToDo: _.debounce(function(newVal) {
+            if (this.saved_app_values) {
+                this.application.hardWork = isItHardWork(newVal);
+                console.log(this.application.hardWork);
 
-            if (newPrice <= 0) {
-                this.errors.price = 'Неверная цена!';
+                this.application.price = this.application.hardWork ?
+                    Price.perHour.LOADER.hard :
+                    Price.perHour.LOADER.normal;
+
+                this.application.price_for_worker =
+                    this.application.price -
+                    Price.perHour.OUR_FOR_LOADERS;
+
+                newAppStore.saveApp(this.application);
             }
-        },
-
-        /**
-         * @param {number} newPriceForWorker
-         * @see applicationPriceForWorker
-         */
-        applicationPriceForWorker: function (newPriceForWorker) {
-            this.errors.price_for_worker = undefined;
-
-            if (newPriceForWorker <= 0) {
-                this.errors.price_for_worker = 'Неверная цена для рабочего!';
-            }
-        },
+        }, 500),
     },
 
     data: function () {
         return {
-            MOVING_SERVICE_TYPE: 2,
-            MOVING_CATEGORIES: {
-
-            },
-
             additionClientPhoneKey: 0,
 
-            PAY_METHOD_CARD: 1,
-            PAY_METHOD_CASH: 2,
-
             client_has_second_phone: undefined,
-
-            price: {
-                0: this.APP_PRICE_CONST,
-                1: this.APP_PRICE_PER_HOUR_CONST
-            },
-
-            price_with_tools: {
-                0: this.APP_PRICE_TOOLS_CONST,
-                1: this.APP_PRICE_PER_HOUR_TOOLS_CONST
-            },
-
-            price_for_worker: {
-                0: this.APP_PRICE_FOR_WORKER_CONST,
-                1: this.APP_PRICE_PH_FOR_WORKER_CONST
-            },
 
             calc: {
                 'summ': true,
@@ -341,6 +522,43 @@ export default {
             time_hours: '',
             time_minutes: '',
             action: 'create',
+
+            saved_app_values: false,
+
+            /**
+             * @type {Application}
+             */
+            application: {
+                id: 0,
+                service_type: ServiceTypes.MOVING,
+                category: this.category,
+                what_to_do: '',
+                address: '',
+                address_to: '',
+                date: '',
+                time: '',
+                driver_price: 0,
+                price_for_driver: 0,
+                price: 0,
+                price_for_worker: 0,
+                hourly_job: 1,
+                edg: 0,
+                pay_method: 1,
+                client_pay: null,
+                client_phone_number: '',
+                state: 1,
+                income: 0,
+                outcome: 0,
+                profit: 0,
+                floor: 1,
+                floor_to: 1,
+                elevator: false,
+                elevator_to: false,
+                worker_count: 2,
+                worker_total: 2,
+                dispatcher_id: 0,
+                hardWork: false,
+            },
 
             error: false,
             errors: {
@@ -358,6 +576,53 @@ export default {
     },
 
     methods: {
+        /**
+         * Добавка к цене за этажы:
+         *
+         * 4-6 +25
+         *
+         * 7-9 +50
+         *
+         * 10-12 +75
+         *
+         * 13-15 +100
+         *
+         * @param {number} newFloor
+         */
+        increasePriceForFloor(newFloor) {
+            let addition = 0;
+            if (4 <= newFloor && newFloor <= 6) {
+                addition = 25;
+            } else if (7 <= newFloor && newFloor <= 9) {
+                addition = 50;
+            } else if (10 <= newFloor && newFloor <= 12) {
+                addition = 75;
+            } else if (12 < newFloor) {
+                addition = 100;
+            }
+
+            this.application.price += addition;
+            this.application.price_for_worker += addition;
+
+            if (this.application.price > 450) {
+                this.application.price = 450;
+            }
+
+            if (this.application.price_for_worker > 400) {
+                this.application.price_for_worker = 400;
+            }
+        },
+
+        setPrice() {
+            console.log('setprice');
+            this.application.price = this.application.hardWork ?
+                Price.perHour.LOADER.hard :
+                Price.perHour.LOADER.normal;
+
+            this.application.price_for_worker =
+                this.application.price -
+                Price.perHour.OUR_FOR_LOADERS;
+        },
         /**
          * @param {string} str
          */
@@ -399,23 +664,26 @@ export default {
             }
 
             this.$axios.post('/application/store_from_site', {
-                service_type: this.HANDYMAN_SERVICE_TYPE,
-                category: this.DECORATOR_CATEGORY,
+                service_type: this.application.service_type,
+                category: MovingCategories[this.category].val,
                 address: this.application.address,
                 address_to: this.application.address_to,
                 date: this.application.date,
                 time: this.application.time,
                 worker_total: this.application.worker_total,
-                price: this.application.price[this.application.hourly_job],
-                price_for_worker: this.application.price_for_worker[this.application.hourly_job],
+                price: this.application.price,
+                price_for_worker: this.application.price_for_worker,
                 hourly_job: this.application.hourly_job,
                 what_to_do: this.application.what_to_do,
                 give_tools: this.application.give_tools,
-                edg: this.application.edg,
                 pay_method: this.application.pay_method,
                 client_pay: this.application.client_pay,
                 client_phone_number: this.application.client_phone_number,
                 dispatcher_id: 0,
+                floor: this.application.floor,
+                floor_to: this.application.floor_to,
+                elevator: this.application.elevator,
+                elevator_to: this.application.elevator_to,
                 android_app: 1,
                 taxi_was_payed: 0,
             }).then(response => {
@@ -423,7 +691,8 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
-                    store.push(this.application, this.current_day('-'));
+                    historyStore.push(this.application);
+                    newAppStore.clearApp();
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -454,51 +723,37 @@ export default {
          * @param {Application} app
          */
         saveAppValues(app) {
-            this.application.id = app.id;
-            this.application.service_type = app.service_type;
-            this.application.category = app.category;
-            this.application.address = app.address;
-            this.application.address_to = app.address_to;
-            this.application.date = this.current_day('-');
-            this.application.worker_total = app.worker_total;
-            this.application.hourly_job = app.hourly_job;
-            this.application.what_to_do = app.what_to_do;
-            this.application.pay_method = app.pay_method;
-            this.application.floor = app.floor;
-            this.application.elevator = app.elevator;
-            this.application.taxi = app.taxi;
-            this.application.client_phone_number = app.client_phone_number;
-            this.application.price_for_worker =  {
-                0: this.APP_PRICE_FOR_WORKER_CONST,
-                1: this.APP_PRICE_PH_FOR_WORKER_CONST
-            };
+            for (const [key, value] of Object.entries(app)) {
+                if (value) {
+                    this.application[key] = value;
+                }
+            }
+            this.application.price_for_worker = this.application.price -
+                Price.perHour.OUR_FOR_LOADERS;
         }
     },
 
-    props: ['category', 'application'],
+    props: {
+        category: String,
+    },
     setup(props) {
 
     },
 
     created () {
+        let app = null;
+        if (newAppStore.appExists) {
+            app = newAppStore.app;
+            this.saveAppValues(app);
+        }
+
         console.log('application: ');
-        const str = JSON.stringify(this.application, null, 4);
-        console.log(str);
-        console.log(this.application.address);
-        console.log('category' + this.category);
+        console.log(app);
+        console.log('category ' + this.category);
     },
 
-    beforeCreate() {
-        this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
-
-        this.APP_PRICE_PER_HOUR_CONST = 425;
-        this.APP_PRICE_CONST = 3200;
-
-        this.APP_PRICE_PER_HOUR_TOOLS_CONST = 375;
-        this.APP_PRICE_TOOLS_CONST = 2800;
-
-        this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
-        this.APP_PRICE_FOR_WORKER_CONST = 2300;
+    updated() {
+        this.saved_app_values = true;
     }
 }
 </script>

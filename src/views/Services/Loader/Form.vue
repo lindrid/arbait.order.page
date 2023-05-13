@@ -436,80 +436,18 @@
 
 <script>
 import { useAppHistory } from '@/stores/app/history';
+import { isItHardWork } from "@/services/application";
+
 import router from '@/router';
 import _ from 'lodash';
+import {Price} from "@/consts/pay";
+import {ServiceTypes} from "@/consts/service_type";
 
 const store = useAppHistory();
 
 export default {
 
     computed: {
-        isItHardWork() {
-          const words = [
-            'керамогранит', 'керамогранита', 'керамогранитный', 'керамагранит',
-            'керамагранита', 'керамагранитный',
-            'песок', 'песка', 'песком', 'писок', 'писка', 'писком',
-            'цемент', 'цемента', 'цементом', 'цементам', 'цимент', 'цимента', 'циментом', 'циментам',
-            'пианино', 'пианину', 'пианинно', 'пионинка', 'пионинку', 'пианина', 'пианинна', 'пианинку',
-            'сейф', 'сейфа', 'сейфом',
-            'окно', 'окна', 'окон', 'окнами',
-            'стекло', 'стекла', 'стеклами', 'стекол',
-            'рыба', 'рыбы', 'рыбу', 'рыбой',
-            'мука', 'муки', 'мукой',
-            'тюк', 'тюки', 'тюками', 'тюков', 'тюком'
-          ];
-
-          // БЕЗ не, ничего, нечего
-          const wordsWithNo = [
-            'тяжелый', 'тяжелая', 'тяжолый', 'тяжолая', 'тяжело', 'тяжко', 'тяжкий',
-            'тяжелого', 'тяжелога', 'тяжелова', 'тяжелово',
-            'трудный', 'трудно', 'трудная', 'трудного', 'трудново', 'труднова'
-          ];
-
-          const whatToDo = this.applicationWhatToDo
-              .toLowerCase()
-              .trim()
-              .replace(/\s\s+/g, ' ');
-
-          for(let i = 0; i < words.length; i++) {
-            if (whatToDo.indexOf(words[i]) !== -1) {
-              return true;
-            }
-          }
-
-          for(let i = 0; i < wordsWithNo.length; i++) {
-            const wordIndex = whatToDo.indexOf(wordsWithNo[i]);
-            if (wordIndex !== -1) {
-              const noWordIndex = whatToDo.indexOf('не');
-              let index = 0, word = '';
-              if (noWordIndex === -1) {
-                const nothingWordIndex = whatToDo.indexOf('ничего');
-                if (nothingWordIndex === -1) {
-                  const nothingWordIndex2 = whatToDo.indexOf('нечего');
-                  if (nothingWordIndex2 === -1) {
-                    return true;
-                  } else {
-                    index = nothingWordIndex2;
-                    word = 'нечего';
-                  }
-                } else {
-                  index = nothingWordIndex;
-                  word = 'ничего';
-                }
-              } else {
-                index = noWordIndex;
-                word = 'не';
-              }
-
-              const between = wordIndex - index - word.length;
-              if (between < 0 || between > 1) {
-                return true;
-              }
-            }
-          }
-
-          return false;
-        },
         applicationWhatToDo() {
           return this.application.what_to_do;
         },
@@ -578,15 +516,16 @@ export default {
      * @param {number} newVal
      */
     applicationWhatToDo: _.debounce(function(newVal) {
-      const hardWork = this.isItHardWork;
+      const hardWork = isItHardWork(newVal);
       console.log(hardWork);
-      if (hardWork) {
-        this.application.price = this.price_for_hard_work;
-        this.application.price_for_worker = this.price_for_worker_hard
-      } else {
-        this.application.price = this.price;
-        this.application.price_for_worker = this.price_for_worker;
-      }
+
+        this.application.price = hardWork ?
+            Price.perHour.LOADER.hard :
+            Price.perHour.LOADER.normal;
+
+        this.application.price_for_worker =
+            this.application.price -
+            Price.perHour.OUR_FOR_LOADERS;
     }, 500),
 
     /**
@@ -673,6 +612,7 @@ export default {
 
         application: {
             id:0,
+            service_type: ServiceTypes.LOADER,
             what_to_do: '',
             address: '',
             date: '',
@@ -778,7 +718,7 @@ export default {
             const app = this;
 
             this.$axios.post('/application/store_from_site', {
-                service_type: this.LOADER_SERVICE_TYPE,
+                service_type: this.application.service_type,
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,
@@ -869,8 +809,6 @@ export default {
     },
 
     beforeCreate() {
-        this.LOADER_SERVICE_TYPE = 0;
-
         this.APP_PRICE_PER_HOUR_CONST = 350;
         this.HARD_APP_PRICE_PER_HOUR_CONST = 400;
         this.APP_PRICE_CONST = 2700;

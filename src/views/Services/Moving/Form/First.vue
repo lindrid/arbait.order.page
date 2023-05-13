@@ -137,9 +137,31 @@
         <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
         </div>
 
+        <div
+            v-if="workers === 'no'"
+            class="2xl:mt-6 xl:mt-4 mt-2"
+        >
+            <b class="text-xl block">Опишите задачу</b>
+            <textarea
+                id="text"
+                v-model="application.what_to_do"
+                rows="4"
+                class=" block p-2.5 w-full text-xl
+                        text-black-900 bg-gray-50
+                        rounded-lg border border-gray-300
+                        focus:ring-blue-500 focus:border-blue-500
+                        dark:bg-gray-300 dark:border-gray-600
+                        dark:placeholder-gray-400
+                        dark:text-black dark:focus:ring-blue-500
+                        dark:focus:border-blue-500"
+                required
+            >
+            </textarea>
+        </div>
+
         <div class="2xl:mt-6 xl:mt-4 mt-2">
             <span class="text-xl">
-                <b class="text-red-700">Цена - </b>
+                <b class="text-red-700">Цена за {{ MovingCategories[category].formLabel }} - </b>
                 <span v-if="hasApplicationHourlyJob">
                     {{ applicationDriverPrice }}
                     {{ Number.isInteger(applicationDriverPrice) ? 'р/час' : '' }}
@@ -147,7 +169,10 @@
             </span>
         </div>
 
-        <div class="2xl:mt-8 xl:mt-6 mt-4">
+        <div
+            v-if="workers !== 'yes'"
+            class="2xl:mt-8 xl:mt-6 mt-4"
+        >
             <b class="text-xl block">Способ оплаты</b>
             <fieldset class="ml-4">
                 <div class="flex items-center ">
@@ -155,7 +180,7 @@
                         id="pay_method_card"
                         type="radio"
                         name="pay_method"
-                        v-bind:value="PAY_METHOD_CARD"
+                        v-bind:value="PayMethod.CARD"
                         v-model="application.pay_method"
                         class=" w-4 h-4 border-gray-300
                                 focus:ring-2 focus:ring-blue-300
@@ -180,7 +205,7 @@
                         id="pay_method_cash"
                         type="radio"
                         name="pay_method"
-                        v-bind:value="PAY_METHOD_CASH"
+                        v-bind:value="PayMethod.CASH"
                         v-model="application.pay_method"
                         class=" w-4 h-4 border-gray-300
                                 focus:ring-2 focus:ring-blue-300
@@ -258,15 +283,31 @@
     </form>
 </template>
 
+<script setup>
+    import { MovingCategories } from "@/consts/categories/moving";
+</script>
+
 <script>
 import { useAppHistory } from '@/stores/app/history';
-import _ from 'lodash';
+import { useNewAppStore } from '@/stores/app/new';
+import { PayMethod, Message, Price } from '@/consts/pay';
+import { ServiceTypes } from "@/consts/service_type";
 
-const store = useAppHistory();
+import _ from 'lodash';
+import {MovingCategories} from "@/consts/categories/moving";
+
+const historyStore = useAppHistory();
+const newAppStore = useNewAppStore();
 
 export default {
 
     computed: {
+        applicationAddress() {
+            return this.application.address;
+        },
+        applicationAddressTo() {
+            return this.application.address_to;
+        },
         applicationWhatToDo() {
             return this.application.what_to_do;
         },
@@ -283,10 +324,10 @@ export default {
           return this.application.hourly_job;
         },
         applicationDriverPrice() {
-          return this.application.driver_price[this.application.hourly_job];
+          return this.application.driver_price;
         },
         applicationPriceForDriver() {
-          return this.application.price_for_driver[this.application.hourly_job];
+          return this.application.price_for_driver;
         },
         isClientPhoneAdded() {
           return this.client_has_second_phone;
@@ -317,33 +358,77 @@ export default {
          * @param {number} newHours
          */
         time_hours: _.debounce(function (newHours) {
-            this.errors.time_hours = undefined;
+            if (this.saved_app_values) {
+                this.errors.time_hours = undefined;
 
-            if (newHours < 0 || newHours > 24) {
-                this.error = true;
-                this.errors.time_hours = 'Неверное количество часов';
+                if (newHours < 0 || newHours > 24) {
+                    this.error = true;
+                    this.errors.time_hours = 'Неверное количество часов';
+                }
+
+                if (!this.appGotFromHistory) {
+                    this.application.time = this.time_hours + ':' + this.time_minutes;
+                    newAppStore.saveApp(this.application);
+                }
             }
         }, 500),
 
         time_minutes: _.debounce(function (newMinutes) {
-            this.errors.time_minutes = undefined;
+            if (this.saved_app_values) {
+                this.errors.time_minutes = undefined;
 
-            if (newMinutes < 0 || newMinutes > 60) {
-                this.error = true;
-                this.errors.time_minutes = 'Неверное количество минут';
+                if (newMinutes < 0 || newMinutes > 60) {
+                    this.error = true;
+                    this.errors.time_minutes = 'Неверное количество минут';
+                }
+
+                if (!this.appGotFromHistory) {
+                    this.application.time = this.time_hours + ':' + this.time_minutes;
+                    newAppStore.saveApp(this.application);
+                }
             }
         }, 500),
+
+        /**
+         * @see applicationAddress
+         * @param newAddress
+         */
+        applicationAddress: function (newAddress) {
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.saveApp(this.application);
+                }
+            }
+        },
+
+        /**
+         * @see applicationAddressTo
+         * @param newAddressTo
+         */
+        applicationAddressTo: function (newAddressTo) {
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.saveApp(this.application);
+                }
+            }
+        },
 
         /**
          * @param {string} newDate The date of the application.
          * @see applicationDate()
          */
         applicationDate: function(newDate) {
-            this.errors.date = undefined;
+            if (this.saved_app_values) {
+                this.errors.date = undefined;
 
-            const date = newDate.split("-");
-            if (!this.isValidDate(date[0], date[1], date[2])) {
-                this.errors.date = "Неправильная дата!";
+                const date = newDate.split("-");
+                if (!this.isValidDate(date[0], date[1], date[2])) {
+                    this.errors.date = "Неправильная дата!";
+                }
+
+                if (!this.appGotFromHistory) {
+                    newAppStore.saveApp(this.application);
+                }
             }
         },
 
@@ -352,67 +437,68 @@ export default {
          * @see applicationWorkerTotal
          */
         applicationWorkerTotal: function (newWorkerTotal) {
-            this.errors.worker_total = undefined;
-            console.log(typeof(newWorkerTotal));
-            console.log(newWorkerTotal);
+            if (this.saved_app_values) {
 
-            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
-                this.errors.worker_total = 'Неверное количество работников!';
+                this.errors.worker_total = undefined;
+                console.log(typeof (newWorkerTotal));
+                console.log(newWorkerTotal);
+
+                if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
+                    this.errors.worker_total = 'Неверное количество работников!';
+                }
+
+                if (!this.appGotFromHistory) {
+                    newAppStore.saveApp(this.application);
+                }
             }
         },
 
         /**
-         * @param {number} newPrice
-         * @see applicationDriverPrice
+         * @see applicationWhatToDo
+         * @param newWhatToDo
          */
-        applicationDriverPrice: function (newPrice) {
-            this.errors.driver_price = undefined;
-
-            if (newPrice <= 0) {
-                this.errors.driver_price = 'Неверная цена!';
+        applicationWhatToDo: function (newWhatToDo) {
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.saveApp(this.application);
+                }
             }
-        },
-
-        /**
-         * @param {number} newPriceForWorker
-         * @see applicationPriceForDriver
-         */
-        applicationPriceForDriver: function (newPriceForWorker) {
-            this.errors.price_for_driver = undefined;
-
-            if (newPriceForWorker <= 0) {
-                this.errors.price_for_driver = 'Неверная цена для водителя!';
-            }
-        },
+        }
     },
+
 
     data: function () {
         return {
-            MOVING_SERVICE_TYPE: 2,
             additionClientPhoneKey: 0,
-
-            PAY_METHOD_CARD: 1,
-            PAY_METHOD_CASH: 2,
 
             client_has_second_phone: undefined,
 
+            saved_app_values: false,
+            appGotFromHistory: false,
+
+            /**
+             * @type {Application}
+             */
             application: {
                 id: 0,
-                service_type: this.MOVING_SERVICE_TYPE,
+                service_type: ServiceTypes.moving.val,
                 category: this.category,
                 what_to_do: '',
                 address: '',
                 address_to: '',
                 date: '',
                 time: '',
-                driver_price: {
-                  0: this.APP_PRICE_CONST,
-                  1: this.APP_PRICE_PER_HOUR_CONST
-                },
-                price_for_driver: {
-                  0: this.APP_PRICE_FOR_DRIVER_CONST,
-                  1: this.APP_PRICE_PH_FOR_DRIVER_CONST
-                },
+
+                price: Price.perHour.LOADER.normal,
+                price_for_worker:
+                    Price.perHour.LOADER.normal -
+                    Price.perHour.OUR_FOR_LOADERS,
+
+                driver_price: Price.perHour.MOVING[this.category],
+                price_for_driver:
+                    Price.perHour.MOVING[this.category] -
+                    Price.perHour.OUR_FOR_DRIVERS,
+
                 hourly_job: 1,
                 edg: 0,
                 pay_method: 1,
@@ -422,6 +508,10 @@ export default {
                 income: 0,
                 outcome: 0,
                 profit: 0,
+                floor: 1,
+                elevator: false,
+                taxi: false,
+                give_tools: null,
                 worker_count: 2,
                 worker_total: 2,
                 dispatcher_id: 0,
@@ -492,29 +582,31 @@ export default {
                 return;
             }
 
-            if (this.workers === 'yes') {
+                if (this.workers === 'yes') {
+                console.log(this.application);
+                newAppStore.saveApp(this.application);
                 this.$router.push({
                     name: 'MovingSecondForm',
                     params: {
-                        application: this.application,
                         category: this.category
                     }
                 });
             } else {
                 this.$axios.post('/application/store_from_site', {
-                    service_type: this.HANDYMAN_SERVICE_TYPE,
-                    category: this.category,
+                    service_type: this.application.service_type,
+                    category: MovingCategories[this.category].val,
                     address: this.application.address,
                     address_to: this.application.address_to,
                     date: this.application.date,
                     time: this.application.time,
-                    worker_total: this.application.worker_total,
-                    driver_price: this.application.driver_price[this.application.hourly_job],
-                    price_for_driver: this.application.price_for_driver[this.application.hourly_job],
+                    worker_total: 0,
+                    price: 1,
+                    price_for_worker: 1,
+                    driver_price: this.application.driver_price,
+                    price_for_driver: this.application.price_for_driver,
                     hourly_job: this.application.hourly_job,
                     what_to_do: this.application.what_to_do,
                     give_tools: this.application.give_tools,
-                    edg: this.application.edg,
                     pay_method: this.application.pay_method,
                     client_pay: this.application.client_pay,
                     client_phone_number: this.application.client_phone_number,
@@ -526,15 +618,8 @@ export default {
                     if (response.status === 200) {
                         this.success = true;
                         this.application.id = response.data.id;
-                        store.push(this.application, this.current_day('-'));
+                        historyStore.push(this.application);
                         this.$router.push({name: 'Finish'});
-                        this.$router.push({
-                            path: '/form/moving/second',
-                            params: {
-                                application: this.application
-                            }
-
-                        });
                     }
                 }).catch(function (error) {
                     console.log(error);
@@ -565,24 +650,11 @@ export default {
          * @param {Application} app
          */
         saveAppValues(app) {
-            this.application.id = app.id;
-            this.application.service_type = app.service_type;
-            this.application.category = app.category;
-            this.application.address = app.address;
-            this.application.address_to = app.address_to;
-            this.application.date = this.current_day('-');
-            this.application.worker_total = app.worker_total;
-            this.application.hourly_job = app.hourly_job;
-            this.application.what_to_do = app.what_to_do;
-            this.application.pay_method = app.pay_method;
-            this.application.floor = app.floor;
-            this.application.elevator = app.elevator;
-            this.application.taxi = app.taxi;
-            this.application.client_phone_number = app.client_phone_number;
-            this.application.price_for_driver =  {
-                0: this.APP_PRICE_FOR_DRIVER_CONST,
-                1: this.APP_PRICE_PH_FOR_DRIVER_CONST
-            };
+            for (const [key, value] of Object.entries(app)) {
+                if (value) {
+                    this.application[key] = value;
+                }
+            }
         }
     },
 
@@ -592,34 +664,42 @@ export default {
     },
 
     created () {
+        console.log(this.saved_app_values);
         this.application.date = this.current_day('-');
+        /**
+         *
+         * @type {Application|null}
+         */
+        let app = null;
 
-        const app = store.getApp(this.appId);
-        if (app !== null) {
-            this.saveAppValues(app);
+        if (this.appId) {
+            app = historyStore.getApp(this.appId);
+            this.appGotFromHistory = true;
+            console.log('app = ');
+            console.log(app);
+            if (app) {
+                this.saveAppValues(app);
+                this.application.date = this.current_day('-');
+            }
+        } else if (newAppStore.appExists) {
+            app = newAppStore.app;
+            if (app) {
+                this.saveAppValues(app);
+                this.time_hours = app.time.slice(0, app.time.indexOf(':'));
+                this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
+            }
         }
+
+        this.application.driver_price = Price.perHour.MOVING[this.category];
+        this.application.price_for_driver = this.application.driver_price - Price.perHour.OUR_FOR_DRIVERS;
 
         console.log('application: ' + app);
         console.log('category' + this.category);
         console.log('workers' + this.workers);
     },
 
-    beforeCreate() {
-        this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
-
-        this.MOVING_PRICES = {
-            van: 600,
-            flatbed: 850,
-            lorry2: 950,
-            lorry3: 1150,
-            lorry4: this.PRICE_MESSAGE_CONST
-        };
-
-        this.APP_PRICE_PER_HOUR_CONST = this.MOVING_PRICES[this.category];
-        this.APP_PRICE_CONST = this.PRICE_MESSAGE_CONST;
-
-        this.APP_PRICE_PH_FOR_DRIVER_CONST = this.MOVING_PRICES[this.category] - 100;
-        this.APP_PRICE_FOR_DRIVER_CONST = this.PRICE_MESSAGE_CONST;
+    updated() {
+        this.saved_app_values = true;
     }
 }
 </script>

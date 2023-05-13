@@ -28,8 +28,12 @@ const routes = [
 		props: true
 	},
 	{
-		name: 'MovingCategories',
 		path: '/categories/moving',
+		component: () => import('@/views/Services/Moving/Categories.vue'),
+		props: true
+	},
+	{
+		path: '/categories/moving/:appId',
 		component: () => import('@/views/Services/Moving/Categories.vue'),
 		props: true
 	},
@@ -58,18 +62,29 @@ const routes = [
 
 
 	{
-		path: '/moving/workers/:category',
+		path: '/moving/:category/workers',
 		component: () => import('@/views/Services/Moving/Workers.vue'),
 		props: true
 	},
+	{
+		path: '/moving/:category/workers/:appId',
+		component: () => import('@/views/Services/Moving/Workers.vue'),
+		props: true
+	},
+
 	{
 		path: '/form/moving/:category/:workers',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
 		props: true
 	},
 	{
+		path: '/form/moving/:category/:workers/:appId',
+		component: () => import('@/views/Services/Moving/Form/First.vue'),
+		props: true
+	},
+	{
 		name: 'MovingSecondForm',
-		path: '/form/moving/second/:category/:application',
+		path: '/form/moving/second/:category/',
 		component: () => import('@/views/Services/Moving/Form/Second.vue'),
 		props: true
 	},

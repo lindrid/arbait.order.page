@@ -14,26 +14,30 @@ const createNewApp = function (app) {
         time: app.time,
         hourly_job: app.hourly_job,
         what_to_do: app.what_to_do,
+        price: app.price,
+        price_for_worker: app.price_for_worker,
+        driver_price: app.driver_price,
+        price_for_driver: app.price_for_driver,
         pay_method: app.pay_method,
         worker_total: app.worker_total,
         floor: app.floor,
+        floor_to: app.floor_to,
         elevator: app.elevator,
+        elevator_to: app.elevator_to,
         taxi: app.taxi,
         give_tools: app.give_tools,
         client_phone_number: app.client_phone_number,
     };
 }
 
-export const useAppHistory = defineStore('app',{
+export const useAppHistory = defineStore('app-history',{
     /**
      * @return {Object}
      * @property {Application[]} apps
-     * @property {Application|null} moving_app
      */
     state: () => {
         return {
             apps: [],
-            movingApp: null
         }
     },
     getters: {
@@ -45,15 +49,6 @@ export const useAppHistory = defineStore('app',{
         last(state) {
             return state.apps[this.count - 1]
         },
-
-        /**
-         *
-         * @param state
-         * @return {Application|null}
-         */
-        movingApp(state) {
-            return state.movingApp;
-        }
     },
     actions: {
         /**
@@ -61,19 +56,6 @@ export const useAppHistory = defineStore('app',{
          */
         push (app) {
             this.apps.push(createNewApp(app));
-        },
-        /**
-         *
-         * @param {Application} app
-         */
-        saveMovingApp(app) {
-            this.movingApp = createNewApp(app);
-        },
-        /**
-         * Set movingApp to null
-         */
-        clearMovingApp() {
-            this.movingApp = null;
         },
         /**
          * @param {string} appId

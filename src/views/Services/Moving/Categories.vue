@@ -18,11 +18,11 @@
                 flex flex-wrap gap-6 mt-10 flex
                 items-center justify-center 2xl:px-[300px] px-[50px]
             ">
-                <template v-for="(item, x) in categories" :key="x">
+                <template v-for="(category, x) in MovingCategories" :key="x">
                     <Pill
                         class="textXl text-center"
-                        @click="movePage(item.category)"
-                        :label="item.name"
+                        @click="movePage(category.route, appId)"
+                        :label="category.name"
                     />
                 </template>
             </div>
@@ -33,39 +33,28 @@
 </template>
 
 <script setup>
-	import { useRouter } from 'vue-router'
     import BackBtn from '@/components/Buttons/Back.vue';
     import Pill from '@/components/Pill.vue'
 	import Footer from '@/components/Footer.vue'
-	
-	const router = useRouter()
 
-	const movePage = (category) => router.push({
-        path: '/moving/' + 'workers/' + category,
+    import { useRouter } from 'vue-router'
+    import { MovingCategories } from "@/consts/categories/moving";
+
+    const router = useRouter()
+
+	const movePage = (categoryRoute, appId) => {
+        const id = (appId === null) ? '' : '/' + appId;
+        router.push({
+            path: '/moving/' + categoryRoute + '/workers' + id,
+        });
+    }
+
+    const props = defineProps({
+        appId : {
+            type: Number,
+            default: null
+        },
     });
-	
-	const categories = [
-        {
-            name: "Микроавтобус",
-            category: 'van'
-        },
-        {
-          name: "Открытый бортовик <br> (длина до 3м)",
-          category: 'flatbed'
-        },
-        {
-          name: "Закрытая будка до 2т <br> (1.9м / 2м / 3м)",
-          category: 'lorry2'
-        },
-        {
-          name: "Закрытая будка от 2 до 3т <br> (2.1м / 2м / 4м)",
-          category: 'lorry3'
-        },
-        {
-          name: "Будка более 4т",
-          category: 'lorry4'
-        },
-	]
 </script>
 
 <style scoped>

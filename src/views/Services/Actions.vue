@@ -63,6 +63,10 @@
     import BackBtn from '@/components/Buttons/Back.vue'
     import Pill from '@/components/Pill.vue'
 
+    import { ServiceTypes } from "@/consts/service_type";
+    import { HandymanCategories } from "@/consts/categories/handyman";
+    import { MovingCategories } from "@/consts/categories/moving";
+
     const props = defineProps({
         service : {
             type: String,
@@ -78,71 +82,13 @@
 <script>
     import {useRouter} from "vue-router";
     import {useAppHistory} from "@/stores/app/history";
+    import {MovingCategories} from "@/consts/categories/moving";
+    import {ServiceTypes} from "@/consts/service_type";
+    import {HandymanCategories} from "@/consts/categories/handyman";
 
     export default {
         data: function() {
             return {
-                SERVICES: {
-                    loader: {
-                        val: 0,
-                        label: 'Услуга грузчиков'
-                    },
-                    handyman: {
-                        val: 1,
-                        label: 'Услуга разнорабочих'
-                    },
-                    moving: {
-                        val: 2,
-                        label: 'Переезд или доставка'
-                    },
-                    trash: {
-                        val: 3,
-                        label: 'Вывоз и вынос мусора'
-                    },
-                },
-
-                HANDYMAN_CATEGORIES: {
-                    digger: {
-                        val: 0,
-                        label: 'Услуга землекопов'
-                    },
-                    plasterer: {
-                        val: 1,
-                        label: 'Услуга штукатурщиков'
-                    },
-                    decorator: {
-                        val: 2,
-                        label: 'Услуга маляров'
-                    },
-                    other: {
-                        val: 3,
-                        label: 'Услуга разнорабочих'
-                    },
-                },
-
-                MOVING_CATEGORIES: {
-                    van: {
-                        val: 0,
-                        label: 'Переезд <br> Микроавтобус'
-                    },
-                    flatbed: {
-                        val: 1,
-                        label: 'Переезд <br> Бортовой грузовик'
-                    },
-                    lorry2: {
-                        val: 2,
-                        label: 'Переезд: будка до 2т <br> (1.9м / 2м / 3м)'
-                    },
-                    lorry3: {
-                        val: 3,
-                        label: 'Переезд: будка от 2 до 3т <br> (2.1м / 2м / 4м)'
-                    },
-                    lorry4: {
-                        val: 4,
-                        label: 'Переезд: будка более 4т'
-                    },
-                },
-
                 router: useRouter(),
                 store: useAppHistory(),
 
@@ -168,20 +114,20 @@
              * @return {number}
              */
             getServiceVal: function (service) {
-                return this.SERVICES[service].val;
+                return ServiceTypes[service].val;
             },
             /**
              * @param {string} service
              * @param {string|null} category
-             * @return {string|null}
+             * @return {number|null}
              */
             getCategoryVal: function (service, category) {
                 if (category === null)
                     return null;
                 if (service === 'handyman') {
-                    return this.HANDYMAN_CATEGORIES[category].val;
+                    return HandymanCategories[category].val;
                 }
-                return this.MOVING_CATEGORIES[category].val;
+                return MovingCategories[category].val;
             },
             /**
              * @param {string} service
@@ -190,12 +136,12 @@
              */
             getLabel: function (service, category) {
                 if (category === null) {
-                    return this.SERVICES[service].label;
+                    return ServiceTypes[service].label;
                 } else {
                     if (service === 'handyman') {
-                        return this.HANDYMAN_CATEGORIES[category].label;
+                        return HandymanCategories[category].name;
                     }
-                    return this.MOVING_CATEGORIES[category].label;
+                    return MovingCategories[category].name;
                 }
             },
             /**
@@ -211,15 +157,12 @@
                         path += '/' + category;
                     }
                 }
-                if (service === 'moving') {
-                    return this.router.push({
-                        name: 'MovingCategories'
-                    });
+
+                if (page === 'form' && service === 'moving') {
+                    path = '/categories/moving';
                 }
 
-                this.router.push({
-                    path: path,
-                });
+                this.router.push({ path: path });
             },
 
             formPage: function (service, category) {
