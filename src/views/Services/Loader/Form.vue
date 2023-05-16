@@ -219,7 +219,7 @@
       <div class="2xl:mt-6 xl:mt-4 mt-2">
         <span class="text-xl">
           <b class="text-red-700">Цена - </b>
-          <span v-if="hasApplicationHourlyJob">
+          <span v-if="applicationHourlyJob">
             {{ applicationPrice }} р./час
           </span>
           <span v-else>
@@ -237,7 +237,7 @@
                 id="pay_method_card"
                 type="radio"
                 name="pay_method"
-                v-bind:value="PAY_METHOD_CARD"
+                v-bind:value="PayMethod.CARD"
                 v-model="application.pay_method"
                 class=" w-4 h-4 border-gray-300
                         focus:ring-2 focus:ring-blue-300
@@ -262,7 +262,7 @@
               id="pay_method_cash"
               type="radio"
               name="pay_method"
-              v-bind:value="PAY_METHOD_CASH"
+              v-bind:value="PayMethod.CASH"
               v-model="application.pay_method"
               class=" w-4 h-4 border-gray-300
                         focus:ring-2 focus:ring-blue-300
@@ -434,38 +434,60 @@
         </form>
 </template>
 
-<script>
-import { useAppHistory } from '@/stores/app/history';
-import { isItHardWork } from "@/services/application";
+<script setup>
+    import { PayMethod } from "@/consts/pay";
+</script>
 
+<script>
 import router from '@/router';
 import _ from 'lodash';
+
+import { useAppHistory } from '@/stores/app/history';
+import { useNewAppStore } from "@/stores/app/new";
+import {copy, isItHardWork} from "@/services/application";
 import {Price} from "@/consts/pay";
 import {ServiceTypes} from "@/consts/service_type";
 
-const store = useAppHistory();
+const historyStore = useAppHistory();
+const newAppStore = useNewAppStore();
 
 export default {
 
     computed: {
+        applicationAddress() {
+            return this.application.address;
+        },
+        applicationDate() {
+            return this.application.date;
+        },
+        applicationTime() {
+            return this.application.time;
+        },
+        applicationWorkerTotal() {
+            return this.application.worker_total;
+        },
+        applicationHourlyJob() {
+            return this.application.hourly_job;
+        },
         applicationWhatToDo() {
           return this.application.what_to_do;
         },
-        applicationDate() {
-          return this.application.date;
-        },
-        applicationWorkerTotal() {
-          return this.application.worker_total;
-        },
-        hasApplicationHourlyJob() {
-          return this.application.hourly_job;
-        },
         applicationPrice() {
-          return this.application.price[this.application.hourly_job];
+          return this.application.price;
         },
         applicationPriceForWorker() {
-          return this.application.price_for_worker[this.application.hourly_job];
+          return this.application.price_for_worker;
         },
+        applicationPayMethod() {
+            return this.application.pay_method;
+        },
+        applicationFloor() {
+            return this.application.floor;
+        },
+        applicationElevator() {
+            return this.application.elevator;
+        },
+
         isClientPhoneAdded() {
           return this.client_has_second_phone;
         },
@@ -485,191 +507,247 @@ export default {
           return this.errors.price;
         },
         priceForWorkerError() {
-      return this.errors.price_for_worker;
-    },
+            return this.errors.price_for_worker;
+        },
     },
 
     watch: {
-    // whenever time_hours changes, this function will run
-    /**
-     * @param {number} newHours
-     */
-    time_hours: _.debounce(function (newHours) {
-      this.errors.time_hours = undefined;
+        /**
+         * @see applicationAddress
+         * @param newAddress
+         */
+        applicationAddress: _.debounce(function (newAddress) {
+            if (this.saved_app_values) {
+                console.log('watch');
+                newAppStore.save(this.application);
+                console.log('this.application: ');
+                console.log(this.application);
+            }
+        }, 500),
 
-      if (newHours < 0 || newHours > 24) {
-        this.error = true;
-        this.errors.time_hours = 'Неверное количество часов';
-      }
-    }, 500),
+        /**
+         * @param {string} newDate The date of the application.
+         * @see applicationDate()
+         */
+        applicationDate: _.debounce(function(newDate) {
+            this.errors.date = undefined;
 
-    time_minutes: _.debounce(function (newMinutes) {
-      this.errors.time_minutes = undefined;
+            const date = newDate.split("-");
+            if (!this.isValidDate(date[0], date[1], date[2])) {
+                this.errors.date = "Неправильная дата!";
+            }
 
-      if (newMinutes < 0 || newMinutes > 60) {
-        this.error = true;
-        this.errors.time_minutes = 'Неверное количество минут';
-      }
-    }, 500),
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
 
-    /**
-     * @param {number} newVal
-     */
-    applicationWhatToDo: _.debounce(function(newVal) {
-      const hardWork = isItHardWork(newVal);
-      console.log(hardWork);
+        /**
+         * @param {number} newHours
+         */
+        time_hours: _.debounce(function (newHours) {
+            this.errors.time_hours = undefined;
 
-        this.application.price = hardWork ?
-            Price.perHour.LOADER.hard :
-            Price.perHour.LOADER.normal;
+            if (newHours < 0 || newHours > 24) {
+                this.error = true;
+                this.errors.time_hours = 'Неверное количество часов';
+            }
 
-        this.application.price_for_worker =
-            this.application.price -
-            Price.perHour.OUR_FOR_LOADERS;
-    }, 500),
+            this.application.time = this.time_hours + ':' + this.time_minutes;
+        }, 500),
 
-    /**
-     * @param {string} newDate The date of the application.
-     * @see applicationDate()
-     */
-    applicationDate: function(newDate) {
-      this.errors.date = undefined;
+        time_minutes: _.debounce(function (newMinutes) {
+            this.errors.time_minutes = undefined;
 
-      const date = newDate.split("-");
-      if (!this.isValidDate(date[0], date[1], date[2])) {
-        this.errors.date = "Неправильная дата!";
-      }
+            if (newMinutes < 0 || newMinutes > 60) {
+                this.error = true;
+                this.errors.time_minutes = 'Неверное количество минут';
+            }
+
+            this.application.time = this.time_hours + ':' + this.time_minutes;
+        }, 500),
+
+        /**
+         * @see applicationTime()
+         * @param newTime
+         */
+        applicationTime: _.debounce(function(newTime) {
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {string} newWorkerTotal
+         * @see applicationWorkerTotal
+         */
+        applicationWorkerTotal: _.debounce(function (newWorkerTotal) {
+            this.errors.worker_total = undefined;
+            console.log(typeof(newWorkerTotal));
+            console.log(newWorkerTotal);
+
+            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
+                this.errors.worker_total = 'Неверное количество работников!';
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         *
+         * @param {number} hourly
+         * @see applicationHourlyJob
+         */
+        applicationHourlyJob: _.debounce(function (hourly) {
+            if (hourly) {
+                const price = isItHardWork(this.applicationWhatToDo()) ?
+                    Price.perHour.LOADER.hard :
+                    Price.perHour.LOADER.normal;
+
+                this.application.price = price;
+                this.application.price_for_worker = price -
+                    Price.perHour.OUR_FOR_LOADERS;
+            } else {
+                const price = isItHardWork(this.applicationWhatToDo()) ?
+                    Price.perDay.LOADER.hard :
+                    Price.perDay.LOADER.normal;
+
+                this.application.price = price;
+                this.application.price_for_worker = price -
+                    8 * Price.perHour.OUR_FOR_LOADERS;
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+        * @param {number} newVal
+        */
+        applicationWhatToDo: _.debounce(function(newVal) {
+            const hardWork = isItHardWork(newVal);
+            console.log(hardWork);
+
+            const perPrice = this.applicationHourlyJob ?
+                Price.perHour :
+                Price.perDay;
+
+            const c = this.applicationHourlyJob ? 1 : 8;
+
+            this.application.price = hardWork ?
+                perPrice.LOADER.hard :
+                perPrice.LOADER.normal;
+
+            this.application.price_for_worker =
+                this.application.price -
+                c * Price.perHour.OUR_FOR_LOADERS;
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {number} newPrice
+         * @see applicationPrice
+         */
+        applicationPrice: _.debounce(function (newPrice) {
+            this.errors.price = undefined;
+
+            if (newPrice <= 0) {
+                this.errors.price = 'Неверная цена!';
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {number} newPriceForWorker
+         * @see applicationPriceForWorker
+         */
+        applicationPriceForWorker: _.debounce(function (newPriceForWorker) {
+            this.errors.price_for_worker = undefined;
+
+            if (newPriceForWorker <= 0) {
+                this.errors.price_for_worker = 'Неверная цена для рабочего!';
+            }
+        }, 500),
+
+        /**
+         *
+         * @param {number} newVal
+         * @see applicationPayMethod()
+         */
+        applicationPayMethod: function (newVal) {
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }
     },
-
-    /**
-     * @param {string} newWorkerTotal
-     * @see applicationWorkerTotal
-     */
-    applicationWorkerTotal: function (newWorkerTotal) {
-      this.errors.worker_total = undefined;
-      console.log(typeof(newWorkerTotal));
-      console.log(newWorkerTotal);
-
-      if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
-        this.errors.worker_total = 'Неверное количество работников!';
-      }
-    },
-
-    /**
-     * @param {number} newPrice
-     * @see applicationPrice
-     */
-    applicationPrice: function (newPrice) {
-      this.errors.price = undefined;
-
-      if (newPrice <= 0) {
-        this.errors.price = 'Неверная цена!';
-      }
-    },
-
-    /**
-     * @param {number} newPriceForWorker
-     * @see applicationPriceForWorker
-     */
-    applicationPriceForWorker: function (newPriceForWorker) {
-      this.errors.price_for_worker = undefined;
-
-      if (newPriceForWorker <= 0) {
-        this.errors.price_for_worker = 'Неверная цена для рабочего!';
-      }
-    },
-  },
 
     data: function () {
-    return {
-        additionClientPhoneKey: 0,
+        return {
+            additionClientPhoneKey: 0,
+            saved_app_values: false,
 
-        PAY_METHOD_CARD: 1,
-        PAY_METHOD_CASH: 2,
-        PAY_METHOD_ACCOUNT: 3,
+            client_has_second_phone: undefined,
 
-        client_has_second_phone: undefined,
-
-        price: {
-            0: this.APP_PRICE_CONST,
-            1: this.APP_PRICE_PER_HOUR_CONST
-        },
-
-        price_for_hard_work: {
-            0: this.HARD_APP_PRICE_MESSAGE_CONST ,
-            1: this.HARD_APP_PRICE_PER_HOUR_CONST
-        },
-
-        price_for_worker: {
-            0: this.APP_PRICE_FOR_WORKER_CONST,
-            1: this.APP_PRICE_PH_FOR_WORKER_CONST
-        },
-
-        price_for_worker_hard: {
-            0: 0 ,
-            1: this.HARD_APP_PRICE_PH_FOR_WORKER
-        },
-
-        application: {
-            id:0,
-            service_type: ServiceTypes.LOADER,
-            what_to_do: '',
-            address: '',
-            date: '',
-            time: '',
-            price: {
-              0: this.APP_PRICE_CONST,
-              1: this.APP_PRICE_PER_HOUR_CONST
+            /**
+             * @type {Application}
+             */
+            application: {
+                id:0,
+                service_type: ServiceTypes.loader.val,
+                what_to_do: '',
+                address: '',
+                date: '',
+                time: '',
+                price: Price.perHour.LOADER.normal,
+                price_for_worker:
+                    Price.perHour.LOADER.normal -
+                    Price.perHour.OUR_FOR_LOADERS,
+                hourly_job: 1,
+                edg: 0,
+                pay_method: 1,
+                client_pay: null,
+                client_phone_number: '',
+                addl_client_phone_number: '',
+                state: 1,
+                income: 0,
+                outcome: 0,
+                profit: 0,
+                worker_count: 2,
+                worker_total: 2,
+                dispatcher_id: 0,
+                taxi: false,
+                floor: 1,
+                elevator: false,
             },
-            price_for_worker: {
-              0: this.APP_PRICE_FOR_WORKER_CONST,
-              1: this.APP_PRICE_PH_FOR_WORKER_CONST
+
+            success: false,
+            time_hours: '',
+            time_minutes: '',
+            action: 'create',
+
+            error: false,
+            errors: {
+                application: undefined,
+                date: undefined,
+                outcome: undefined,
+                worker_total: undefined,
+                price: undefined,
+                price_for_worker: undefined,
+                what_to_do: undefined,
+                time_hours: undefined,
+                time_minutes: undefined
             },
-            hourly_job: 1,
-            edg: 0,
-            pay_method: 1,
-            client_pay: null,
-            client_phone_number: '',
-            addl_client_phone_number: '',
-            state: 1,
-            income: 0,
-            outcome: 0,
-            profit: 0,
-            worker_count: 2,
-            worker_total: 2,
-            work_hours: {0: 1, 1: 2},
-            summ_total: {0: 4800, 1: 750},
-            summ_w_total: {0: 3800, 1: 600},
-            dispatcher_id: 0,
-            taxi: false,
-            floor: 1,
-            elevator: false,
-        },
-        calc: {
-            'summ': true,
-            'pays': false
-        },
-
-        cwaIsOpen: 0,   //parsed text area is open or not
-        success: false,
-        time_hours: '',
-        time_minutes: '',
-        action: 'create',
-
-        error: false,
-        errors: {
-            application: undefined,
-            date: undefined,
-            outcome: undefined,
-            worker_total: undefined,
-            price: undefined,
-            price_for_worker: undefined,
-            what_to_do: undefined,
-            time_hours: undefined,
-            time_minutes: undefined
-        },
-    }
-  },
+        }
+    },
 
     methods: {
         /**
@@ -742,32 +820,11 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data;
-                    store.push(this.application, this.current_day('-'));
+                    historyStore.push(this.application);
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
                 console.log(error);
-                /*var words = error.toString().split(' ');
-                var errorStatus = words[words.length - 1];
-                if (errorStatus == '401') {
-                alert("Вы должны залогиниться!");
-                app.$router.push({name: 'login'});
-                }
-                app.error = true;
-                //console.log(error.response.data);
-                app.errors = error.response.data.errors;
-                console.log(error);
-                if (typeof app.errors.income !== 'undefined') {
-                document.getElementById("income").scrollIntoView({block: "center", behavior: "smooth"});
-                }
-                if (typeof app.errors.outcome !== 'undefined') {
-                document.getElementById("outcome").scrollIntoView({block: "center", behavior: "smooth"});
-                }
-                if (typeof app.errors.what_to_do !== 'undefined') {
-                document.getElementById("what_to_do").scrollIntoView({block: "center", behavior: "smooth"});
-                }
-                console.log(error);
-                });*/
             })
         },
 
@@ -793,75 +850,58 @@ export default {
          *
          * @param {Application} app
          */
-        saveAppValues(app) {
-            this.application.id = app.id;
-            this.application.address = app.address;
-            this.application.date = this.current_day('-');
-            this.application.worker_total = app.worker_total;
-            this.application.hourly_job = app.hourly_job;
-            this.application.what_to_do = app.what_to_do;
-            this.application.pay_method = app.pay_method;
-            this.application.floor = app.floor;
-            this.application.elevator = app.elevator;
-            this.application.taxi = app.taxi;
-            this.application.client_phone_number = app.client_phone_number;
+        assignTime(app) {
+            this.time_hours = app.time.slice(0, app.time.indexOf(':'));
+            this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         }
     },
 
-    beforeCreate() {
-        this.APP_PRICE_PER_HOUR_CONST = 350;
-        this.HARD_APP_PRICE_PER_HOUR_CONST = 400;
-        this.APP_PRICE_CONST = 2700;
-        this.HARD_APP_PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки"
-
-        this.APP_PRICE_PH_FOR_WORKER_CONST = 300;
-        this.HARD_APP_PRICE_PH_FOR_WORKER = 350;
-        this.APP_PRICE_FOR_WORKER_CONST = 2300;
+    props: {
+        appId: Number
     },
 
-    mounted () {
+    created () {
         this.application.date = this.current_day('-');
 
-        const route = router.currentRoute.value;
-        console.log(route);
-        if (route.params.hasOwnProperty('appId')) {
-            const app = store.getApp(route.params.appId);
-            if (app !== null) {
-                this.saveAppValues(app);
+        if (this.appId) {
+            const app = historyStore.getApp(this.appId);
+            if (app) {
+                copy(this.application, app, ['date', 'time']);
+                this.application.date = this.current_day('-');
+
+                console.log('historyStore');
+                console.log(app);
+            }
+        } else if (newAppStore.appExists) {
+            /**
+             *
+             * @type {Application}
+             */
+            const app = newAppStore.app;
+            if (app && app.service_type === this.application.service_type) {
+                copy(this.application, app, ['time']);
+                this.assignTime(app);
+
+                console.log('newAppStore');
+                console.log(app);
             }
         }
     },
+
+    updated() {
+        this.saved_app_values = true;
+    }
 }
 </script>
 
 <style scoped>
-.visually-hidden {
-  position: absolute;
-  clip: rect(0 0 0 0);
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-}
-
-.mytime, .form-group {
-  font-size: 110%
-}
-.form-control{
-  font-size: 120%;
-}
-.worker-count {
-  width: 100px;
-}
-.panel {
-  font-size: 130%;
-}
-body {
-  margin: 0;
-}
-#text {
-  height: 25vh;
-}
-.help-block{
-  color: red;
-}
+    body {
+      margin: 0;
+    }
+    #text {
+      height: 25vh;
+    }
+    .help-block{
+      color: red;
+    }
 </style>

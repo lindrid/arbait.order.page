@@ -73,11 +73,13 @@ const routes = [
 	},
 
 	{
+		name: 'FormMovingWorkers',
 		path: '/form/moving/:category/:workers',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
 		props: true
 	},
 	{
+		name: 'FormMovingWorkersAppId',
 		path: '/form/moving/:category/:workers/:appId',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
 		props: true

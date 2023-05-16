@@ -58,7 +58,7 @@ export const useAppHistory = defineStore('app-history',{
             this.apps.push(createNewApp(app));
         },
         /**
-         * @param {string} appId
+         * @param {number} appId
          * @return {Application|null}
          */
         getApp(appId) {

@@ -33,7 +33,10 @@ export const Price = {
         OUR_FOR_DRIVERS: 100
     },
     perDay: {
-        LOADER: 2800,
+        LOADER: {
+            normal: 2700,
+            hard: 3100
+        },
         HANDYMAN: {
             digger: 3200,
             plasterer: 3400,

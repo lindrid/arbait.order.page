@@ -332,8 +332,20 @@
 export default {
 
     computed: {
+        applicationWorkerTotal() {
+            return this.application.worker_total;
+        },
         applicationWhatToDo() {
             return this.application.what_to_do;
+        },
+        applicationPrice() {
+            return this.application.price;
+        },
+        applicationPriceForWorker() {
+            return this.application.price_for_worker;
+        },
+        applicationPayMethod() {
+            return this.application.pay_method;
         },
         applicationFloor() {
             return this.application.floor;
@@ -347,27 +359,7 @@ export default {
         applicationElevatorTo() {
             return this.application.elevator_to;
         },
-        applicationTools() {
-            return this.application.give_tools;
-        },
-        applicationDate() {
-          return this.application.date;
-        },
-        applicationWorkerTotal() {
-          return this.application.worker_total;
-        },
-        applicationHourlyJob() {
-          return this.application.hourly_job;
-        },
-        applicationPayMethod() {
-            return this.application.pay_method;
-        },
-        applicationPrice() {
-          return this.application.price;
-        },
-        applicationPriceForWorker() {
-          return this.application.price_for_worker;
-        },
+
         isClientPhoneAdded() {
           return this.client_has_second_phone;
         },
@@ -396,18 +388,18 @@ export default {
          * @see applicationFloor
          */
         applicationFloor: _.debounce(function (newFloor) {
+            console.log(newFloor);
+
+            this.setPrice();
+            if (!!this.application.elevator === false) {
+                this.increasePriceForFloor(newFloor);
+            }
+            if (!!this.application.elevator_to === false) {
+                this.increasePriceForFloor(this.application.floor_to);
+            }
+
             if (this.saved_app_values) {
-                console.log(newFloor);
-
-                this.setPrice();
-                if (!!this.application.elevator === false) {
-                    this.increasePriceForFloor(newFloor);
-                }
-                if (!!this.application.elevator_to === false) {
-                    this.increasePriceForFloor(this.application.floor_to);
-                }
-
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
             }
         }, 250),
 
@@ -415,18 +407,18 @@ export default {
          * @see applicationFloorTo
          */
         applicationFloorTo: _.debounce(function (newFloor) {
+            console.log(newFloor);
+
+            this.setPrice();
+            if (!!this.application.elevator_to === false) {
+                this.increasePriceForFloor(newFloor);
+            }
+            if (!!this.application.elevator === false) {
+                this.increasePriceForFloor(this.application.floor);
+            }
+
             if (this.saved_app_values) {
-                console.log(newFloor);
-
-                this.setPrice();
-                if (!!this.application.elevator_to === false) {
-                    this.increasePriceForFloor(newFloor);
-                }
-                if (!!this.application.elevator === false) {
-                    this.increasePriceForFloor(this.application.floor);
-                }
-
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
             }
         }, 250),
 
@@ -434,15 +426,16 @@ export default {
          * @see applicationElevator
          */
         applicationElevator: _.debounce(function (newElevator) {
+            this.setPrice();
+            if (!!newElevator === false) {
+                this.increasePriceForFloor(this.application.floor);
+            }
+            if (!!this.application.elevator_to === false) {
+                this.increasePriceForFloor(this.application.floor_to);
+            }
+
             if (this.saved_app_values) {
-                this.setPrice();
-                if (!!newElevator === false) {
-                    this.increasePriceForFloor(this.application.floor);
-                }
-                if (!!this.application.elevator_to === false) {
-                    this.increasePriceForFloor(this.application.floor_to);
-                }
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
             }
         }, 250),
 
@@ -450,15 +443,16 @@ export default {
          * @see applicationElevatorTo
          */
         applicationElevatorTo: _.debounce(function (newElevator) {
+            this.setPrice();
+            if (!!this.application.elevator === false) {
+                this.increasePriceForFloor(this.application.floor);
+            }
+            if (!!newElevator === false) {
+                this.increasePriceForFloor(this.application.floor_to);
+            }
+
             if (this.saved_app_values) {
-                this.setPrice();
-                if (!!this.application.elevator === false) {
-                    this.increasePriceForFloor(this.application.floor);
-                }
-                if (!!newElevator === false) {
-                    this.increasePriceForFloor(this.application.floor_to);
-                }
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
             }
         }, 250),
 
@@ -468,7 +462,7 @@ export default {
          */
         applicationPayMethod: _.debounce(function (newPayMethod) {
             if (this.saved_app_values) {
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
             }
         }, 500),
         /**
@@ -482,7 +476,7 @@ export default {
                 this.errors.worker_total = 'Неверное количество работников!';
             } else {
                 if (this.saved_app_values) {
-                    newAppStore.saveApp(this.application);
+                    newAppStore.save(this.application);
                 }
             }
         }, 500),
@@ -490,19 +484,19 @@ export default {
          * @param {number} newVal
          */
         applicationWhatToDo: _.debounce(function(newVal) {
+            this.application.hardWork = isItHardWork(newVal);
+            console.log(this.application.hardWork);
+
+            this.application.price = this.application.hardWork ?
+                Price.perHour.LOADER.hard :
+                Price.perHour.LOADER.normal;
+
+            this.application.price_for_worker =
+                this.application.price -
+                Price.perHour.OUR_FOR_LOADERS;
+
             if (this.saved_app_values) {
-                this.application.hardWork = isItHardWork(newVal);
-                console.log(this.application.hardWork);
-
-                this.application.price = this.application.hardWork ?
-                    Price.perHour.LOADER.hard :
-                    Price.perHour.LOADER.normal;
-
-                this.application.price_for_worker =
-                    this.application.price -
-                    Price.perHour.OUR_FOR_LOADERS;
-
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
             }
         }, 500),
     },
@@ -530,7 +524,7 @@ export default {
              */
             application: {
                 id: 0,
-                service_type: ServiceTypes.MOVING,
+                service_type: ServiceTypes.moving.val,
                 category: this.category,
                 what_to_do: '',
                 address: '',
@@ -692,7 +686,7 @@ export default {
                     this.success = true;
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
-                    newAppStore.clearApp();
+                    newAppStore.clear();
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -730,6 +724,15 @@ export default {
             }
             this.application.price_for_worker = this.application.price -
                 Price.perHour.OUR_FOR_LOADERS;
+        },
+
+        /**
+         *
+         * @param {Application} app
+         */
+        saveAppTime(app) {
+            this.time_hours = app.time.slice(0, app.time.indexOf(':'));
+            this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         }
     },
 
@@ -741,14 +744,20 @@ export default {
     },
 
     created () {
-        let app = null;
         if (newAppStore.appExists) {
-            app = newAppStore.app;
-            this.saveAppValues(app);
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = newAppStore.app;
+            if (app && app.service_type === this.application.service_type) {
+                this.saveAppValues(app);
+                this.saveAppTime(app);
+                console.log('application: ');
+                console.log(app);
+            }
         }
 
-        console.log('application: ');
-        console.log(app);
         console.log('category ' + this.category);
     },
 

@@ -367,38 +367,49 @@
 </template>
 
 <script>
-import { useAppHistory } from '@/stores/app/history';
-import { ServiceTypes } from "@/consts/service_type";
-import { HandymanCategories } from "@/consts/categories/handyman";
-
 import router from '@/router';
 import _ from 'lodash';
 
-const store = useAppHistory();
+import { useAppHistory } from '@/stores/app/history';
+import { useNewAppStore } from "@/stores/app/new";
+import { ServiceTypes } from "@/consts/service_type";
+import { HandymanCategories } from "@/consts/categories/handyman";
+import {copy, isItHardWork} from "@/services/application";
+import {Price} from "@/consts/pay";
+
+const historyStore = useAppHistory();
+const newAppStore = useNewAppStore();
 
 export default {
     computed: {
+        applicationAddress() {
+            return this.application.address;
+        },
+        applicationDate() {
+            return this.application.date;
+        },
+        applicationTime() {
+            return this.application.time;
+        },
+        applicationWorkerTotal() {
+            return this.application.worker_total;
+        },
+        applicationHourlyJob() {
+            return this.application.hourly_job;
+        },
         applicationWhatToDo() {
             return this.application.what_to_do;
         },
-        applicationTools() {
-            return this.application.give_tools;
-        },
-        applicationDate() {
-          return this.application.date;
-        },
-        applicationWorkerTotal() {
-          return this.application.worker_total;
-        },
-        applicationHourlyJob() {
-          return this.application.hourly_job;
-        },
         applicationPrice() {
-          return this.application.price;
+            return this.application.price;
         },
         applicationPriceForWorker() {
-          return this.application.price_for_worker;
+            return this.application.price_for_worker;
         },
+        applicationPayMethod() {
+            return this.application.pay_method;
+        },
+
         isClientPhoneAdded() {
           return this.client_has_second_phone;
         },
@@ -423,7 +434,33 @@ export default {
     },
 
     watch: {
-        // whenever time_hours changes, this function will run
+        /**
+         * @see applicationAddress
+         * @param newAddress
+         */
+        applicationAddress: _.debounce(function (newAddress) {
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {string} newDate The date of the application.
+         * @see applicationDate()
+         */
+        applicationDate: _.debounce(function(newDate) {
+            this.errors.date = undefined;
+
+            const date = newDate.split("-");
+            if (!this.isValidDate(date[0], date[1], date[2])) {
+                this.errors.date = "Неправильная дата!";
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
         /**
          * @param {number} newHours
          */
@@ -434,6 +471,8 @@ export default {
                 this.error = true;
                 this.errors.time_hours = 'Неверное количество часов';
             }
+
+            this.application.time = this.time_hours + ':' + this.time_minutes;
         }, 500),
 
         time_minutes: _.debounce(function (newMinutes) {
@@ -443,20 +482,120 @@ export default {
                 this.error = true;
                 this.errors.time_minutes = 'Неверное количество минут';
             }
+
+            this.application.time = this.time_hours + ':' + this.time_minutes;
         }, 500),
 
         /**
-         * @param {string} newDate The date of the application.
-         * @see applicationDate()
+         * @see applicationTime()
+         * @param newTime
          */
-        applicationDate: function(newDate) {
-            this.errors.date = undefined;
-
-            const date = newDate.split("-");
-            if (!this.isValidDate(date[0], date[1], date[2])) {
-                this.errors.date = "Неправильная дата!";
+        applicationTime: _.debounce(function(newTime) {
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
             }
-        },
+        }, 500),
+
+        /**
+         * @param {string} newWorkerTotal
+         * @see applicationWorkerTotal
+         */
+        applicationWorkerTotal: _.debounce(function (newWorkerTotal) {
+            this.errors.worker_total = undefined;
+            console.log(typeof(newWorkerTotal));
+            console.log(newWorkerTotal);
+
+            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
+                this.errors.worker_total = 'Неверное количество работников!';
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         *
+         * @param {number} hourly
+         * @see applicationHourlyJob
+         */
+        applicationHourlyJob: _.debounce(function (hourly) {
+            if (hourly) {
+                const price = isItHardWork(this.applicationWhatToDo()) ?
+                    Price.perHour.LOADER.hard :
+                    Price.perHour.LOADER.normal;
+
+                this.application.price = price;
+                this.application.price_for_worker = price -
+                    Price.perHour.OUR_FOR_LOADERS;
+            } else {
+                const price = isItHardWork(this.applicationWhatToDo()) ?
+                    Price.perDay.LOADER.hard :
+                    Price.perDay.LOADER.normal;
+
+                this.application.price = price;
+                this.application.price_for_worker = price -
+                    8 * Price.perHour.OUR_FOR_LOADERS;
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {number} newVal
+         */
+        applicationWhatToDo: _.debounce(function(newVal) {
+            const hardWork = isItHardWork(newVal);
+            console.log(hardWork);
+
+            const perPrice = this.applicationHourlyJob ?
+                Price.perHour :
+                Price.perDay;
+
+            const c = this.applicationHourlyJob ? 1 : 8;
+
+            this.application.price = hardWork ?
+                perPrice.LOADER.hard :
+                perPrice.LOADER.normal;
+
+            this.application.price_for_worker =
+                this.application.price -
+                c * Price.perHour.OUR_FOR_LOADERS;
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {number} newPrice
+         * @see applicationPrice
+         */
+        applicationPrice: _.debounce(function (newPrice) {
+            this.errors.price = undefined;
+
+            if (newPrice <= 0) {
+                this.errors.price = 'Неверная цена!';
+            }
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
+
+        /**
+         * @param {number} newPriceForWorker
+         * @see applicationPriceForWorker
+         */
+        applicationPriceForWorker: _.debounce(function (newPriceForWorker) {
+            this.errors.price_for_worker = undefined;
+
+            if (newPriceForWorker <= 0) {
+                this.errors.price_for_worker = 'Неверная цена для рабочего!';
+            }
+        }, 500),
 
         /**
          * @param newGiveTools
@@ -468,56 +607,14 @@ export default {
         },
 
         /**
-         * @param {string} newWorkerTotal
-         * @see applicationWorkerTotal
-         */
-        applicationWorkerTotal: function (newWorkerTotal) {
-            this.errors.worker_total = undefined;
-            console.log(typeof(newWorkerTotal));
-            console.log(newWorkerTotal);
-
-            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
-                this.errors.worker_total = 'Неверное количество работников!';
-            }
-        },
-
-        /**
-         * @param {number} newPrice
-         * @see applicationPrice
-         */
-        applicationPrice: function (newPrice) {
-            this.errors.price = undefined;
-
-            if (newPrice <= 0) {
-                this.errors.price = 'Неверная цена!';
-            } else {
-                this.application.price = newPrice;
-            }
-        },
-
-        /**
-         * @param {number} newPriceForWorker
-         * @see applicationPriceForWorker
-         */
-        applicationPriceForWorker: function (newPriceForWorker) {
-            this.errors.price_for_worker = undefined;
-
-            if (newPriceForWorker <= 0) {
-                this.errors.price_for_worker = 'Неверная цена для рабочего!';
-            } else {
-                this.application.price_for_worker = newPriceForWorker;
-            }
-        },
-
-        /**
          *
          * @param {number} newVal
-         * @see applicationHourlyJob
+         * @see applicationPayMethod()
          */
-        applicationHourlyJob: function (newVal) {
-            this.application.price = this.getPrice();
-            this.application.price_for_worker = this.getPriceForWorker();
-
+        applicationPayMethod: function (newVal) {
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
         }
     },
 
@@ -529,6 +626,8 @@ export default {
             PAY_METHOD_CASH: 2,
 
             client_has_second_phone: undefined,
+            saved_app_values: false,
+
             /**
              * @type {Application}
              */
@@ -541,8 +640,12 @@ export default {
                 what_to_do: '',
                 date: '',
                 time: '',
-                price: 0,
-                price_for_worker: 0,
+
+                price: Price.perHour.HANDYMAN[this.category],
+                price_for_worker:
+                    Price.perHour.HANDYMAN[this.category] -
+                    Price.perHour.OUR_FOR_LOADERS,
+
                 driver_price: null,
                 price_for_driver: null,
                 hourly_job: true,
@@ -623,7 +726,7 @@ export default {
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
-                category: this.CATEGORIES[this.category],
+                category: this.application.category,
                 address: this.application.address,
                 date: this.application.date,
                 time: this.application.time,
@@ -645,7 +748,7 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
-                    store.push(this.application);
+                    historyStore.push(this.application);
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -675,49 +778,17 @@ export default {
          *
          * @param {Application} app
          */
-        saveAppValues(app) {
-            this.application.id = app.id;
-            this.application.service_type = app.service_type;
-            this.application.category = app.category;
-            this.application.address = app.address;
-            this.application.date = this.current_day('-');
-            this.application.worker_total = app.worker_total;
-            this.application.hourly_job = app.hourly_job;
-            this.application.what_to_do = app.what_to_do;
-            this.application.pay_method = app.pay_method;
-            this.application.floor = app.floor;
-            this.application.elevator = app.elevator;
-            this.application.taxi = app.taxi;
-            this.application.give_tools = app.give_tools;
-            this.application.client_phone_number = app.client_phone_number;
-            this.application.price_for_worker = this.getPriceForWorker();
-        },
-
-        getPrice() {
-            const app = this.application;
-            const gt = app.give_tools;
-            const tpph = this.TOOLS_PRICE_PER_HOUR;
-            const apph = this.APP_PRICE_PER_HOUR_CONST;
-            const ap = this.APP_PRICE_CONST;
-
-            let multiplier = gt ? 1 : 0;
-            
-            return app.hourly_job?
-                apph[this.category] - multiplier * tpph:
-                ap[this.category] - 8 * multiplier * tpph;
-        },
-
-        getPriceForWorker() {
-            const app = this.application;
-            const opfh = this.OUR_PRICE_FOR_HOUR;
-
-            return app.hourly_job?
-                this.getPrice() - opfh :
-                this.getPrice() - 8 * opfh
-        },
+        assignTime(app) {
+            this.time_hours = app.time.slice(0, app.time.indexOf(':'));
+            this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
+        }
     },
 
-    props: ['appId', 'label', 'category'],
+    props: {
+        appId: Number,
+        label: String,
+        category: String
+    },
     setup(props) {
 
     },
@@ -727,54 +798,33 @@ export default {
         console.log(this.label);
         console.log(this.category);
 
-        const app = store.getApp(this.appId);
-        if (app !== null) {
-            this.saveAppValues(app);
-        }
+        if (this.appId) {
+            const app = historyStore.getApp(this.appId);
+            if (app) {
+                copy(this.application, app, ['date', 'time']);
+                this.application.date = this.current_day('-');
 
-        this.application.date = this.current_day('-');
-        this.application.price = this.getPrice();
-        this.application.price_for_worker = this.getPriceForWorker();
+                console.log('historyStore');
+                console.log(app);
+            }
+        } else if (newAppStore.appExists) {
+            /**
+             *
+             * @type {Application}
+             */
+            const app = newAppStore.app;
+            if (app && app.service_type === this.application.service_type) {
+                copy(this.application, app, ['time']);
+                this.assignTime(app);
+
+                console.log('newAppStore');
+                console.log(app);
+            }
+        }
     },
 
-    beforeCreate() {
-        this.CATEGORIES = {
-            digger: 0,
-            plasterer: 1,
-            decorator: 2,
-            other: 3,
-        };
-
-        this.TOOLS_PRICE_PER_HOUR = 50;
-        this.OUR_PRICE_FOR_HOUR = 75;
-
-        this.PRICE_MESSAGE_CONST = "договорная, с вами свяжутся после оформления заявки";
-
-        this.APP_PRICE_PER_HOUR_CONST = {
-            digger: 425,
-            plasterer: 450,
-            decorator: 425,
-            other: 425
-        };
-        this.APP_PRICE_PH_FOR_WORKER_CONST = {
-            digger: 350,
-            plasterer: 375,
-            decorator: 350,
-            other: 375
-        };
-
-        this.APP_PRICE_CONST = {
-            digger: 3200,
-            plasterer: 3400,
-            decorator: 3200,
-            other: 3200
-        };
-        this.APP_PRICE_FOR_WORKER_CONST = {
-            digger: 2700,
-            plasterer: 2900,
-            decorator: 2700,
-            other: 2700
-        };
+    updated() {
+        this.saved_app_values = true;
     }
 }
 </script>

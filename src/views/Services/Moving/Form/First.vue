@@ -162,7 +162,7 @@
         <div class="2xl:mt-6 xl:mt-4 mt-2">
             <span class="text-xl">
                 <b class="text-red-700">Цена за {{ MovingCategories[category].formLabel }} - </b>
-                <span v-if="hasApplicationHourlyJob">
+                <span v-if="applicationHourlyJob">
                     {{ applicationDriverPrice }}
                     {{ Number.isInteger(applicationDriverPrice) ? 'р/час' : '' }}
                 </span>
@@ -265,7 +265,7 @@
                         rounded-lg text-xl px-3 py-2.5
                         mr-2 mb-2 dark:focus:ring-yellow-900"
             >
-              {{ this.workers === 'yes' ? 'Далее' : 'Оформить' }}
+              {{ workers === 'yes' ? 'Далее' : 'Оформить' }}
             </button>
 
             <a
@@ -285,6 +285,7 @@
 
 <script setup>
     import { MovingCategories } from "@/consts/categories/moving";
+    import { PayMethod } from '@/consts/pay';
 </script>
 
 <script>
@@ -295,6 +296,7 @@ import { ServiceTypes } from "@/consts/service_type";
 
 import _ from 'lodash';
 import {MovingCategories} from "@/consts/categories/moving";
+import {copy} from "@/services/application";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
@@ -308,20 +310,20 @@ export default {
         applicationAddressTo() {
             return this.application.address_to;
         },
-        applicationWhatToDo() {
-            return this.application.what_to_do;
-        },
-        applicationTools() {
-            return this.application.give_tools;
-        },
         applicationDate() {
-          return this.application.date;
+            return this.application.date;
+        },
+        applicationTime() {
+            return this.application.time;
         },
         applicationWorkerTotal() {
-          return this.application.worker_total;
+            return this.application.worker_total;
         },
-        hasApplicationHourlyJob() {
-          return this.application.hourly_job;
+        applicationHourlyJob() {
+            return this.application.hourly_job;
+        },
+        applicationWhatToDo() {
+            return this.application.what_to_do;
         },
         applicationDriverPrice() {
           return this.application.driver_price;
@@ -353,117 +355,101 @@ export default {
     },
 
     watch: {
-        // whenever time_hours changes, this function will run
-        /**
-         * @param {number} newHours
-         */
-        time_hours: _.debounce(function (newHours) {
-            if (this.saved_app_values) {
-                this.errors.time_hours = undefined;
-
-                if (newHours < 0 || newHours > 24) {
-                    this.error = true;
-                    this.errors.time_hours = 'Неверное количество часов';
-                }
-
-                if (!this.appGotFromHistory) {
-                    this.application.time = this.time_hours + ':' + this.time_minutes;
-                    newAppStore.saveApp(this.application);
-                }
-            }
-        }, 500),
-
-        time_minutes: _.debounce(function (newMinutes) {
-            if (this.saved_app_values) {
-                this.errors.time_minutes = undefined;
-
-                if (newMinutes < 0 || newMinutes > 60) {
-                    this.error = true;
-                    this.errors.time_minutes = 'Неверное количество минут';
-                }
-
-                if (!this.appGotFromHistory) {
-                    this.application.time = this.time_hours + ':' + this.time_minutes;
-                    newAppStore.saveApp(this.application);
-                }
-            }
-        }, 500),
-
         /**
          * @see applicationAddress
          * @param newAddress
          */
-        applicationAddress: function (newAddress) {
+        applicationAddress: _.debounce(function (newAddress) {
             if (this.saved_app_values) {
                 if (!this.appGotFromHistory) {
-                    newAppStore.saveApp(this.application);
+                    newAppStore.save(this.application);
                 }
             }
-        },
+        }, 500),
 
         /**
          * @see applicationAddressTo
          * @param newAddressTo
          */
-        applicationAddressTo: function (newAddressTo) {
+        applicationAddressTo: _.debounce(function (newAddressTo) {
             if (this.saved_app_values) {
                 if (!this.appGotFromHistory) {
-                    newAppStore.saveApp(this.application);
+                    newAppStore.save(this.application);
                 }
             }
-        },
+        }, 500),
 
         /**
          * @param {string} newDate The date of the application.
          * @see applicationDate()
          */
-        applicationDate: function(newDate) {
+        applicationDate: _.debounce(function(newDate) {
+            this.errors.date = undefined;
+
+            const date = newDate.split("-");
+            if (!this.isValidDate(date[0], date[1], date[2])) {
+                this.errors.date = "Неправильная дата!";
+            }
+
             if (this.saved_app_values) {
-                this.errors.date = undefined;
-
-                const date = newDate.split("-");
-                if (!this.isValidDate(date[0], date[1], date[2])) {
-                    this.errors.date = "Неправильная дата!";
-                }
-
                 if (!this.appGotFromHistory) {
-                    newAppStore.saveApp(this.application);
+                    newAppStore.save(this.application);
                 }
             }
-        },
+        }, 500),
+
+        /**
+         * @param {number} newHours
+         */
+        time_hours: _.debounce(function (newHours) {
+            this.errors.time_hours = undefined;
+
+            if (newHours < 0 || newHours > 24) {
+                this.error = true;
+                this.errors.time_hours = 'Неверное количество часов';
+            }
+
+            this.application.time = this.time_hours + ':' + this.time_minutes;
+        }, 500),
+
+        time_minutes: _.debounce(function (newMinutes) {
+            this.errors.time_minutes = undefined;
+
+            if (newMinutes < 0 || newMinutes > 60) {
+                this.error = true;
+                this.errors.time_minutes = 'Неверное количество минут';
+            }
+
+            this.application.time = this.time_hours + ':' + this.time_minutes;
+        }, 500),
 
         /**
          * @param {string} newWorkerTotal
          * @see applicationWorkerTotal
          */
-        applicationWorkerTotal: function (newWorkerTotal) {
-            if (this.saved_app_values) {
+        applicationWorkerTotal: _.debounce(function (newWorkerTotal) {
+            this.errors.worker_total = undefined;
+            console.log(typeof (newWorkerTotal));
+            console.log(newWorkerTotal);
 
-                this.errors.worker_total = undefined;
-                console.log(typeof (newWorkerTotal));
-                console.log(newWorkerTotal);
-
-                if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
-                    this.errors.worker_total = 'Неверное количество работников!';
-                }
-
-                if (!this.appGotFromHistory) {
-                    newAppStore.saveApp(this.application);
-                }
+            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
+                this.errors.worker_total = 'Неверное количество работников!';
             }
-        },
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
+        }, 500),
 
         /**
          * @see applicationWhatToDo
          * @param newWhatToDo
          */
-        applicationWhatToDo: function (newWhatToDo) {
+        applicationWhatToDo: _.debounce(function (newWhatToDo) {
             if (this.saved_app_values) {
-                if (!this.appGotFromHistory) {
-                    newAppStore.saveApp(this.application);
-                }
+                newAppStore.save(this.application);
             }
-        }
+        }, 500)
     },
 
 
@@ -582,9 +568,9 @@ export default {
                 return;
             }
 
-                if (this.workers === 'yes') {
+            if (this.workers === 'yes') {
                 console.log(this.application);
-                newAppStore.saveApp(this.application);
+                newAppStore.save(this.application);
                 this.$router.push({
                     name: 'MovingSecondForm',
                     params: {
@@ -655,45 +641,57 @@ export default {
                     this.application[key] = value;
                 }
             }
+        },
+
+        /**
+         *
+         * @param {Application} app
+         */
+        saveAppTime(app) {
+            this.time_hours = app.time.slice(0, app.time.indexOf(':'));
+            this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         }
     },
 
-    props: ['appId', 'category', 'workers'],
+    props: {
+        appId: Number,
+        category: String,
+        workers: String
+    },
     setup(props) {
 
     },
 
     created () {
-        console.log(this.saved_app_values);
         this.application.date = this.current_day('-');
-        /**
-         *
-         * @type {Application|null}
-         */
-        let app = null;
 
         if (this.appId) {
-            app = historyStore.getApp(this.appId);
-            this.appGotFromHistory = true;
-            console.log('app = ');
-            console.log(app);
+            const app = historyStore.getApp(this.appId);
             if (app) {
-                this.saveAppValues(app);
+                copy(this.application, app, ['date', 'time']);
                 this.application.date = this.current_day('-');
+
+                console.log('historyStore');
+                console.log(app);
             }
         } else if (newAppStore.appExists) {
-            app = newAppStore.app;
-            if (app) {
-                this.saveAppValues(app);
-                this.time_hours = app.time.slice(0, app.time.indexOf(':'));
-                this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
+            /**
+             *
+             * @type {Application}
+             */
+            const app = newAppStore.app;
+            if (app && app.service_type === this.application.service_type) {
+                copy(this.application, app, ['time']);
+                this.assignTime(app);
+
+                console.log('newAppStore');
+                console.log(app);
             }
         }
 
         this.application.driver_price = Price.perHour.MOVING[this.category];
         this.application.price_for_driver = this.application.driver_price - Price.perHour.OUR_FOR_DRIVERS;
 
-        console.log('application: ' + app);
         console.log('category' + this.category);
         console.log('workers' + this.workers);
     },

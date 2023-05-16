@@ -70,3 +70,27 @@ export const isItHardWork = function (appWhatToDo) {
 
     return false;
 };
+
+/**
+ * Copy values from appB to appA without values with keys from array 'without'
+ * @param {Application} appA
+ * @param {Application} appB
+ * @param {String[]} without
+ */
+export const copy = function (appA, appB, without = []) {
+    for (const [key, value] of Object.entries(appB)) {
+        if (!without.includes(key)) {
+            appA[key] = value;
+        }
+    }
+}
+
+/**
+ * @param {Application} app
+ * @param {String[]} without
+ */
+export const create = function (app, without = []) {
+    let newApp = {};
+    copy(newApp, app, without);
+    return newApp;
+}

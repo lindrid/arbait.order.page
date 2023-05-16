@@ -107,7 +107,7 @@ const props = defineProps({
                 }
 
                 console.log(path);
-                this.router.push({
+                router.push({
                     path: path + '/' + appId,
                 });
             },
