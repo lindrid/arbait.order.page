@@ -801,8 +801,8 @@ export default {
                 date: this.application.date,
                 time: this.application.time,
                 worker_total: this.application.worker_total,
-                price: this.application.price[this.application.hourly_job],
-                price_for_worker: this.application.price_for_worker[this.application.hourly_job],
+                price: this.application.price,
+                price_for_worker: this.application.price_for_worker,
                 hourly_job: this.application.hourly_job,
                 what_to_do: this.application.what_to_do,
                 edg: this.application.edg,
@@ -819,7 +819,7 @@ export default {
                 console.log(response);
                 if (response.status === 200) {
                     this.success = true;
-                    this.application.id = response.data;
+                    this.application.id = response.data.id;
                     historyStore.push(this.application);
                     router.push({name: 'Finish'});
                 }

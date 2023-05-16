@@ -409,6 +409,9 @@ export default {
         applicationPayMethod() {
             return this.application.pay_method;
         },
+        applicationTools() {
+            return this.application.give_tools;
+        },
 
         isClientPhoneAdded() {
           return this.client_has_second_phone;
@@ -519,51 +522,18 @@ export default {
          * @param {number} hourly
          * @see applicationHourlyJob
          */
-        applicationHourlyJob: _.debounce(function (hourly) {
-            if (hourly) {
-                const price = isItHardWork(this.applicationWhatToDo()) ?
-                    Price.perHour.LOADER.hard :
-                    Price.perHour.LOADER.normal;
-
-                this.application.price = price;
-                this.application.price_for_worker = price -
-                    Price.perHour.OUR_FOR_LOADERS;
-            } else {
-                const price = isItHardWork(this.applicationWhatToDo()) ?
-                    Price.perDay.LOADER.hard :
-                    Price.perDay.LOADER.normal;
-
-                this.application.price = price;
-                this.application.price_for_worker = price -
-                    8 * Price.perHour.OUR_FOR_LOADERS;
-            }
+        applicationHourlyJob: function(hourly) {
+            this.setPrice(hourly, this.application.give_tools);
 
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        },
 
         /**
          * @param {number} newVal
          */
         applicationWhatToDo: _.debounce(function(newVal) {
-            const hardWork = isItHardWork(newVal);
-            console.log(hardWork);
-
-            const perPrice = this.applicationHourlyJob ?
-                Price.perHour :
-                Price.perDay;
-
-            const c = this.applicationHourlyJob ? 1 : 8;
-
-            this.application.price = hardWork ?
-                perPrice.LOADER.hard :
-                perPrice.LOADER.normal;
-
-            this.application.price_for_worker =
-                this.application.price -
-                c * Price.perHour.OUR_FOR_LOADERS;
-
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
@@ -601,9 +571,12 @@ export default {
          * @param newGiveTools
          * @see applicationTools()
          */
-        applicationTools (newGiveTools) {
-            this.application.price = this.getPrice();
-            this.application.price_for_worker = this.getPriceForWorker();
+        applicationTools: function (newGiveTools) {
+            this.setPrice(this.application.hourly_job, newGiveTools);
+
+            if (this.saved_app_values) {
+                newAppStore.save(this.application);
+            }
         },
 
         /**
@@ -781,6 +754,20 @@ export default {
         assignTime(app) {
             this.time_hours = app.time.slice(0, app.time.indexOf(':'));
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
+        },
+
+        setPrice(hourly, give_tools) {
+            const perPrice = hourly ?
+                Price.perHour :
+                Price.perDay;
+
+            const c = hourly ? 1 : 8;
+            const toolsPrice = give_tools ? c * Price.perHour.TOOLS : 0;
+
+            this.application.price = perPrice.HANDYMAN[this.category] - toolsPrice;
+            this.application.price_for_worker =
+                this.application.price -
+                c * Price.perHour.OUR_FOR_HANDYMEN;
         }
     },
 
@@ -798,11 +785,12 @@ export default {
         console.log(this.label);
         console.log(this.category);
 
+        this.application.date = this.current_day('-');
+
         if (this.appId) {
             const app = historyStore.getApp(this.appId);
             if (app) {
                 copy(this.application, app, ['date', 'time']);
-                this.application.date = this.current_day('-');
 
                 console.log('historyStore');
                 console.log(app);

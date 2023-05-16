@@ -25,11 +25,13 @@ export const useNewAppStore = defineStore('app-new',{
          * @param {Application} app
          */
         save(app) {
-            if (!this.app) {
-                this.app = create(app);
-            } else {
-                this.app = {};
-                copy(this.app, app);
+            if (app.id === 0) {
+                if (!this.app) {
+                    this.app = create(app);
+                } else {
+                    this.app = {};
+                    copy(this.app, app);
+                }
             }
         },
         /**
