@@ -13,7 +13,7 @@
 
     <form class="mt-6" @submit.prevent="saveForm()">
         <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Начало маршрута</b>
+        <b class="text-xl">Адрес</b>
         <input
             type="text"
             id="address"
@@ -34,30 +34,6 @@
                     dark:focus:border-blue-500"
             required
         >
-        </div>
-
-        <div class="2xl:mt-6 xl:mt-4 mt-2">
-          <b class="text-xl">Конец маршрута</b>
-          <input
-              type="text"
-              id="address_to"
-              ref="addr_to"
-              v-model="application.address_to"
-              class=" bg-gray-50 border
-                    border-gray-300
-                    text-gray-900
-                    text-xl rounded-lg
-                    focus:ring-blue-500
-                    focus:border-blue-500
-                    block w-full p-2.5
-                    dark:bg-gray-300
-                    dark:border-gray-600
-                    dark:placeholder-gray-400
-                    dark:text-black
-                    dark:focus:ring-blue-500
-                    dark:focus:border-blue-500"
-              required
-          >
         </div>
 
         <div class="2xl:mt-6 xl:mt-4 mt-2">
@@ -159,13 +135,15 @@
             </textarea>
         </div>
 
-        <div class="2xl:mt-6 xl:mt-4 mt-2">
+        <div
+            v-if="workers !== 'yes'"
+            class="2xl:mt-6 xl:mt-4 mt-2"
+        >
             <span class="text-xl">
-                <b class="text-red-700">Цена за {{ MovingCategories[category].formLabel }} - </b>
-                <span v-if="applicationHourlyJob">
-                    {{ applicationDriverPrice }}
-                    {{ Number.isInteger(applicationDriverPrice) ? 'р/час' : '' }}
-                </span>
+                <b class="text-red-700">
+                    Цена за вывоз {{ TrashCategories[category].formLabel }} -
+                </b>
+                {{ applicationDriverPrice }} р.
             </span>
         </div>
 
@@ -265,7 +243,7 @@
                         rounded-lg text-xl px-3 py-2.5
                         mr-2 mb-2 dark:focus:ring-yellow-900"
             >
-              {{ workers === 'yes' ? 'Далее' : 'Оформить' }}
+                {{ workers === 'yes' ? 'Далее' : 'Оформить' }}
             </button>
 
             <a
@@ -277,14 +255,14 @@
                       dark:bg-green-600 dark:hover:bg-green-700
                       dark:focus:ring-green-800"
             >
-              Назад
+                Назад
             </a>
           </div>
     </form>
 </template>
 
 <script setup>
-    import { MovingCategories } from "@/consts/categories/moving";
+    import { TrashCategories} from "@/consts/categories/trash";
     import { PayMethod } from '@/consts/pay';
 </script>
 
@@ -293,9 +271,9 @@ import { useAppHistory } from '@/stores/app/history';
 import { useNewAppStore } from '@/stores/app/new';
 import { PayMethod, Message, Price } from '@/consts/pay';
 import { ServiceTypes } from "@/consts/service_type";
+import { TrashCategories } from "@/consts/categories/trash";
 
 import _ from 'lodash';
-import {MovingCategories} from "@/consts/categories/moving";
 import {copy} from "@/services/application";
 
 const historyStore = useAppHistory();
@@ -306,9 +284,6 @@ export default {
     computed: {
         applicationAddress() {
             return this.application.address;
-        },
-        applicationAddressTo() {
-            return this.application.address_to;
         },
         applicationDate() {
             return this.application.date;
@@ -368,18 +343,6 @@ export default {
         }, 500),
 
         /**
-         * @see applicationAddressTo
-         * @param newAddressTo
-         */
-        applicationAddressTo: _.debounce(function (newAddressTo) {
-            if (this.saved_app_values) {
-                if (!this.appGotFromHistory) {
-                    newAppStore.save(this.application);
-                }
-            }
-        }, 500),
-
-        /**
          * @param {string} newDate The date of the application.
          * @see applicationDate()
          */
@@ -396,7 +359,7 @@ export default {
                     newAppStore.save(this.application);
                 }
             }
-        }, 500),
+        }, 200),
 
         /**
          * @param {number} newHours
@@ -410,7 +373,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 200),
 
         time_minutes: _.debounce(function (newMinutes) {
             this.errors.time_minutes = undefined;
@@ -421,25 +384,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
-
-        /**
-         * @param {string} newWorkerTotal
-         * @see applicationWorkerTotal
-         */
-        applicationWorkerTotal: _.debounce(function (newWorkerTotal) {
-            this.errors.worker_total = undefined;
-            console.log(typeof (newWorkerTotal));
-            console.log(newWorkerTotal);
-
-            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
-                this.errors.worker_total = 'Неверное количество работников!';
-            }
-
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
-        }, 500),
+        }, 200),
 
         /**
          * @see applicationWhatToDo
@@ -475,17 +420,17 @@ export default {
                 date: '',
                 time: '',
 
-                price: Price.perHour.LOADER.normal,
+                price: Price.perHour.LOADER.hard,
                 price_for_worker:
-                    Price.perHour.LOADER.normal -
+                    Price.perHour.LOADER.hard -
                     Price.perHour.OUR_FOR_LOADERS,
 
-                driver_price: Price.perHour.MOVING[this.category],
+                driver_price: Price.TRASH[this.category][this.truck],
                 price_for_driver:
-                    Price.perHour.MOVING[this.category] -
-                    Price.perHour.OUR_FOR_DRIVERS,
+                    Price.TRASH[this.category][this.truck] -
+                    Price.TRASH.our,
 
-                hourly_job: 1,
+                hourly_job: false,
                 edg: 0,
                 pay_method: 1,
                 client_pay: null,
@@ -571,16 +516,14 @@ export default {
             if (this.workers === 'yes') {
                 console.log(this.application);
                 newAppStore.save(this.application);
+
                 this.$router.push({
-                    name: 'MovingSecondForm',
-                    params: {
-                        category: this.category
-                    }
+                    path: '/form/trash/second'
                 });
             } else {
                 this.$axios.post('/application/store_from_site', {
                     service_type: this.application.service_type,
-                    category: MovingCategories[this.category].val,
+                    category: TrashCategories[this.category].val,
                     address: this.application.address,
                     address_to: this.application.address_to,
                     date: this.application.date,
@@ -665,6 +608,7 @@ export default {
     props: {
         appId: Number,
         category: String,
+        truck: String,
         workers: String
     },
     setup(props) {
@@ -698,11 +642,10 @@ export default {
             }
         }
 
-        this.application.driver_price = Price.perHour.MOVING[this.category];
-        this.application.price_for_driver = this.application.driver_price - Price.perHour.OUR_FOR_DRIVERS;
-
         console.log('category = ' + this.category);
         console.log('workers = ' + this.workers);
+        console.log('price =' + Price.TRASH[this.category][this.truck]);
+        console.log('application.driver_price =' + this.application.driver_price);
     },
 
     updated() {

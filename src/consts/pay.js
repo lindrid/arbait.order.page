@@ -43,5 +43,20 @@ export const Price = {
             decorator: 3200,
             other: 3200
         },
+    },
+    TRASH: {
+        construct: {
+            truck3: 3000,
+            truck5: 5000
+        },
+        household: {
+            truck3: 2000,
+            truck5: 4000
+        },
+        collect: {
+            truck3: 2500,
+            truck5: 4500
+        },
+        our: 1000
     }
 }

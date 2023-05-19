@@ -158,8 +158,8 @@
                     }
                 }
 
-                if (page === 'form' && service === 'moving') {
-                    path = '/categories/moving';
+                if (page === 'form' && (service === 'moving' || service === 'trash')) {
+                    path = '/categories/' + service;
                 }
 
                 this.router.push({ path: path });

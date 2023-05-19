@@ -62,7 +62,7 @@
         </div>
 
         <div class="2xl:mt-6 xl:mt-8 mt-6">
-            <b class="text-xl block">Начало: этаж</b>
+            <b class="text-xl block">Этаж</b>
             <input
                 id="floor"
                 type="text"
@@ -107,57 +107,7 @@
                         text-gray-900
                         dark:text-black"
             >
-                Есть лифт (начало)
-            </label>
-        </div>
-
-        <div class="2xl:mt-6 xl:mt-6 mt-3">
-            <b class="text-xl block">Конец: этаж</b>
-            <input
-                id="floor_to"
-                type="text"
-                ref="th"
-                v-model="application.floor_to"
-                @focus="$event.target.select()"
-                class=" bg-gray-50 border
-                        border-gray-300
-                        text-gray-900
-                        text-xl rounded-lg
-                        focus:ring-blue-500
-                        focus:border-blue-500
-                        w-1/6 p-2.5
-                        dark:bg-gray-300
-                        dark:border-gray-600
-                        dark:placeholder-gray-400
-                        dark:text-black
-                        dark:focus:ring-blue-500
-                        dark:focus:border-blue-500"
-                required
-            >
-        </div>
-
-        <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
-            <div class="flex items-center h-5">
-                <input
-                    id="elevator_to"
-                    type="checkbox"
-                    v-model="application.elevator_to"
-                    class=" w-4 h-4 border border-gray-300
-                            rounded bg-gray-50 focus:ring-3
-                            focus:ring-blue-300
-                            dark:bg-gray-300
-                            dark:border-gray-600
-                            dark:focus:ring-blue-600
-                            dark:ring-offset-gray-800
-                            dark:focus:ring-offset-gray-800"
-                >
-            </div>
-            <label for="elevator_to"
-                   class=" ml-2 text-xl font-medium
-                        text-gray-900
-                        dark:text-black"
-            >
-                Есть лифт (конец)
+                Есть лифт
             </label>
         </div>
 
@@ -325,6 +275,7 @@
     import router from '@/router';
     import _ from 'lodash';
     import { MovingCategories } from "@/consts/categories/moving";
+    import {TrashCategories} from "@/consts/categories/trash";
 
     const historyStore = useAppHistory();
     const newAppStore = useNewAppStore();
@@ -353,14 +304,8 @@ export default {
         applicationFloor() {
             return this.application.floor;
         },
-        applicationFloorTo() {
-            return this.application.floor_to;
-        },
         applicationElevator() {
             return this.application.elevator;
-        },
-        applicationElevatorTo() {
-            return this.application.elevator_to;
         },
 
         isClientPhoneAdded() {
@@ -662,7 +607,7 @@ export default {
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
-                category: MovingCategories[this.category].val,
+                category: TrashCategories[this.application.category].val,
                 address: this.application.address,
                 address_to: this.application.address_to,
                 date: this.application.date,
