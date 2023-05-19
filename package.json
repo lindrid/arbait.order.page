@@ -1,7 +1,7 @@
 {
-  "name": "vue-tailwind-template",
+  "name": "Arbait",
   "version": "1.0.0",
-  "description": "A simple starter template for Vue JS 3 and Tailwindcss",
+  "description": "Служба заказа рабочих и грузовых машин",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

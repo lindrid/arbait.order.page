@@ -1,5 +1,5 @@
-<h3 align="center">Vue Tailwind</h3>
-<p align="center">A simple starter template for Vue JS + Tailwind</p>
+<h3 align="center">Арбайт</h3>
+<p align="center">Служба заказа рабочих и грузовых машин</p>
 
 <img src="./src/assets/banner.png" width="100%" alt="">
 
