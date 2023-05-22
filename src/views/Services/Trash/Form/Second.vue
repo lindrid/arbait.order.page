@@ -472,7 +472,7 @@ export default {
              */
             application: {
                 id: 0,
-                service_type: ServiceTypes.moving.val,
+                service_type: ServiceTypes.trash.val,
                 category: this.category,
                 what_to_do: '',
                 address: '',
@@ -500,6 +500,9 @@ export default {
                 worker_total: 2,
                 dispatcher_id: 0,
                 hardWork: false,
+                insulation: false,
+                glass_wool: false,
+                tires: false
             },
 
             error: false,
@@ -588,8 +591,10 @@ export default {
 
             const date = this.application.date.split("-");
             if (!this.isValidDate(date[0], date[1], date[2])) {
-                document.getElementById("date")
-                    .scrollIntoView({block: "center", behavior: "smooth"});
+//                document.getElementById("date")
+  //                  .scrollIntoView({block: "center", behavior: "smooth"});
+                console.log('invalid data');
+                console.log(date);
                 return;
             }
 
@@ -613,8 +618,12 @@ export default {
                 date: this.application.date,
                 time: this.application.time,
                 worker_total: this.application.worker_total,
+
                 price: this.application.price,
                 price_for_worker: this.application.price_for_worker,
+                driver_price: this.application.driver_price,
+                price_for_driver: this.application.price_for_driver,
+
                 hourly_job: this.application.hourly_job,
                 what_to_do: this.application.what_to_do,
                 give_tools: this.application.give_tools,
@@ -626,6 +635,11 @@ export default {
                 floor_to: this.application.floor_to,
                 elevator: this.application.elevator,
                 elevator_to: this.application.elevator_to,
+
+                insulation: this.application.insulation,
+                glass_wool: this.application.glass_wool,
+                tires: this.application.tires,
+
                 android_app: 1,
                 taxi_was_payed: 0,
             }).then(response => {
@@ -633,7 +647,6 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
-                    historyStore.push(this.application);
                     newAppStore.clear();
                     router.push({name: 'Finish'});
                 }
@@ -706,7 +719,8 @@ export default {
             }
         }
 
-        console.log('category ' + this.category);
+        console.log('this.application');
+        console.log(this.application);
     },
 
     updated() {

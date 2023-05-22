@@ -136,14 +136,121 @@
         </div>
 
         <div
-            v-if="workers !== 'yes'"
+            v-if="category === 'construct'"
+            class="flex items-start 2xl:mt-7 xl:mt-5 mt-3"
+        >
+            <div class="flex items-center h-5">
+                <input
+                    id="insulation"
+                    type="checkbox"
+                    v-model="application.insulation"
+                    class=" w-4 h-4 border border-gray-300
+                            rounded bg-gray-50 focus:ring-3
+                            focus:ring-blue-300
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:focus:ring-blue-600
+                            dark:ring-offset-gray-800
+                            dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="insulation"
+                   class=" ml-2 text-xl font-medium
+                        text-gray-900
+                        dark:text-black"
+            >
+                Есть утеплитель
+            </label>
+        </div>
+
+        <div
+            v-if="category === 'construct'"
+            class="flex items-start 2xl:mt-7 xl:mt-5 mt-3"
+        >
+            <div class="flex items-center h-5">
+                <input
+                    id="glass_wool"
+                    type="checkbox"
+                    v-model="application.glass_wool"
+                    class=" w-4 h-4 border border-gray-300
+                            rounded bg-gray-50 focus:ring-3
+                            focus:ring-blue-300
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:focus:ring-blue-600
+                            dark:ring-offset-gray-800
+                            dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="glass_wool"
+                   class=" ml-2 text-xl font-medium
+                        text-gray-900
+                        dark:text-black"
+            >
+                Есть вата
+            </label>
+        </div>
+
+        <div
+            v-if="category === 'collect'"
+            class="flex items-start 2xl:mt-7 xl:mt-5 mt-3"
+        >
+            <div class="flex items-center h-5">
+                <input
+                    id="tires"
+                    type="checkbox"
+                    v-model="application.tires"
+                    class=" w-4 h-4 border border-gray-300
+                            rounded bg-gray-50 focus:ring-3
+                            focus:ring-blue-300
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:focus:ring-blue-600
+                            dark:ring-offset-gray-800
+                            dark:focus:ring-offset-gray-800"
+                >
+            </div>
+            <label for="tires"
+                   class=" ml-2 text-xl font-medium
+                        text-gray-900
+                        dark:text-black"
+            >
+                Есть покрышки
+            </label>
+        </div>
+
+        <div
             class="2xl:mt-6 xl:mt-4 mt-2"
         >
             <span class="text-xl">
                 <b class="text-red-700">
-                    Цена за вывоз {{ TrashCategories[category].formLabel }} -
+                    Цена за вывоз
                 </b>
-                {{ applicationDriverPrice }} р.
+                {{ TrashCategories[category].formLabel }}
+
+                <b class="text-red-700">
+                    {{ TrashTrucks[truck].formLabel }}
+                </b>
+
+                составляет
+
+                <b class="text-red-700">
+                    приблизительно
+                    {{ applicationDriverPrice }} р.
+                </b>
+            </span>
+
+            <br>
+
+            <span class="text-xl">
+                Приблизительная цена указана для полной машины.
+            </span>
+
+            <br>
+
+            <span class="text-xl">
+                Будет меньше - будет дешевле,
+                больше - дороже.
             </span>
         </div>
 
@@ -263,6 +370,7 @@
 
 <script setup>
     import { TrashCategories} from "@/consts/categories/trash";
+    import { TrashTrucks } from "@/consts/categories/trash";
     import { PayMethod } from '@/consts/pay';
 </script>
 
@@ -309,6 +417,16 @@ export default {
         isClientPhoneAdded() {
           return this.client_has_second_phone;
         },
+        applicationInsulation() {
+            return this.application.insulation;
+        },
+        applicationGlassWool() {
+            return this.application.glass_wool;
+        },
+        applicationTires() {
+            return this.application.tires;
+        },
+
         dateError() {
           return this.errors.date;
         },
@@ -340,7 +458,7 @@ export default {
                     newAppStore.save(this.application);
                 }
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newDate The date of the application.
@@ -359,7 +477,7 @@ export default {
                     newAppStore.save(this.application);
                 }
             }
-        }, 200),
+        }, 250),
 
         /**
          * @param {number} newHours
@@ -373,7 +491,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 200),
+        }, 50),
 
         time_minutes: _.debounce(function (newMinutes) {
             this.errors.time_minutes = undefined;
@@ -384,7 +502,61 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 200),
+        }, 50),
+
+        /**
+         * @see applicationInsulation
+         * @param newInsulation
+         */
+        applicationInsulation: _.debounce(function (newInsulation) {
+            if (newInsulation) {
+                this.application.driver_price += Price.TRASH.insulation;
+            } else {
+                this.application.driver_price -= Price.TRASH.insulation;
+            }
+
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.save(this.application);
+                }
+            }
+        }, 50),
+
+        /**
+         * @see applicationGlassWool
+         * @param newGlassWool
+         */
+        applicationGlassWool: _.debounce(function (newGlassWool) {
+            if (newGlassWool) {
+                this.application.driver_price += Price.TRASH.glass_wool;
+            } else {
+                this.application.driver_price -= Price.TRASH.glass_wool;
+            }
+
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.save(this.application);
+                }
+            }
+        }, 50),
+
+        /**
+         * @see applicationTires
+         * @param newTires
+         */
+        applicationTires: _.debounce(function (newTires) {
+            if (newTires) {
+                this.application.driver_price += Price.TRASH.tires;
+            } else {
+                this.application.driver_price -= Price.TRASH.tires;
+            }
+
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.save(this.application);
+                }
+            }
+        }, 50),
 
         /**
          * @see applicationWhatToDo
@@ -394,7 +566,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500)
+        }, 250)
     },
 
 
@@ -412,7 +584,7 @@ export default {
              */
             application: {
                 id: 0,
-                service_type: ServiceTypes.moving.val,
+                service_type: ServiceTypes.trash.val,
                 category: this.category,
                 what_to_do: '',
                 address: '',
@@ -446,6 +618,9 @@ export default {
                 worker_count: 2,
                 worker_total: 2,
                 dispatcher_id: 0,
+                insulation: false,
+                glass_wool: false,
+                tires: false
             },
             calc: {
                 'summ': true,

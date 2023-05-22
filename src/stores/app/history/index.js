@@ -1,34 +1,6 @@
 import { defineStore } from 'pinia'
-
-/**
- * @param {Application} app
- */
-const createNewApp = function (app) {
-    return {
-        id: app.id,
-        service_type: app.service_type,
-        category: app.category,
-        address: app.address,
-        address_to: app.address_to,
-        date: app.date,
-        time: app.time,
-        hourly_job: app.hourly_job,
-        what_to_do: app.what_to_do,
-        price: app.price,
-        price_for_worker: app.price_for_worker,
-        driver_price: app.driver_price,
-        price_for_driver: app.price_for_driver,
-        pay_method: app.pay_method,
-        worker_total: app.worker_total,
-        floor: app.floor,
-        floor_to: app.floor_to,
-        elevator: app.elevator,
-        elevator_to: app.elevator_to,
-        taxi: app.taxi,
-        give_tools: app.give_tools,
-        client_phone_number: app.client_phone_number,
-    };
-}
+import { create } from "@/services/application";
+import {numEquals} from "@/services/misc";
 
 export const useAppHistory = defineStore('app-history',{
     /**
@@ -55,7 +27,7 @@ export const useAppHistory = defineStore('app-history',{
          * @param {Application} app
          */
         push (app) {
-            this.apps.push(createNewApp(app));
+            this.apps.push(create(app));
         },
         /**
          * @param {number} appId
@@ -76,15 +48,17 @@ export const useAppHistory = defineStore('app-history',{
          * @return {number}
          */
         count(service_type, category) {
-            const serviceApps = this.apps.filter(app => app.service_type === service_type);
-            console.log(serviceApps);
+            const serviceApps = this.apps.filter(
+                app => numEquals(app.service_type, service_type)
+            );
             let apps = serviceApps;
-            console.log(service_type);
-            console.log(category);
-            if (category !== null)  {
-                apps = serviceApps.filter(app => Number(app.category) === Number(category))
+
+            if (category !== null) {
+                apps = serviceApps.filter(
+                    app => numEquals(app.category, category)
+                );
             }
-            console.log(apps);
+
             return apps.length;
         },
         /**
@@ -97,11 +71,15 @@ export const useAppHistory = defineStore('app-history',{
              *
              * @type {Application[]}
              */
-            const serviceApps = this.apps.filter(app => Number(app.service_type) === Number(service_type));
+            const serviceApps = this.apps.filter(
+                app => numEquals(app.service_type, service_type)
+            );
             let apps = serviceApps;
-            console.log(apps);
+
             if (category !== null)  {
-                apps = serviceApps.filter(app => Number(app.category) === Number(category))
+                apps = serviceApps.filter(
+                    app => numEquals(app.category, category)
+                );
             }
 
             return apps.sort((a, b) => {
@@ -112,5 +90,6 @@ export const useAppHistory = defineStore('app-history',{
             });
         }
     },
+
     persist: true,
 })

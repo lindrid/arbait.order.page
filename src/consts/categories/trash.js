@@ -23,15 +23,21 @@ export const TrashCategories = {
     },
 }
 
+/**
+ *
+ * @type {TTrashTruck[]}
+ */
 export const TrashTrucks = {
     truck3: {
         val: 0,
         name: "Самосвал до 3т<br>до 6 кубов",
         route: 'truck3',
+        formLabel: 'самосвалом 3т и 6 кубов'
     },
     truck5: {
         val: 1,
         name: "Самосвал до 5т<br>до 10 кубов",
         route: 'truck5',
+        formLabel: 'самосвалом 5т и 10 кубов'
     },
 }

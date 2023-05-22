@@ -57,6 +57,10 @@ export const Price = {
             truck3: 2500,
             truck5: 4500
         },
-        our: 1000
+
+        our: 1000,
+        insulation: 1000,
+        glass_wool: 1500,
+        tires: 1000,
     }
 }

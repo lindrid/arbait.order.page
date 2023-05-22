@@ -29,7 +29,6 @@ export const useNewAppStore = defineStore('app-new',{
                 if (!this.app) {
                     this.app = create(app);
                 } else {
-                    this.app = {};
                     copy(this.app, app);
                 }
             }
