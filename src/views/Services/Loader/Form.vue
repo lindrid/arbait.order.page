@@ -1,25 +1,26 @@
 <template>
-  <a
-      @click="$router.go(-1)"
-      class=" text-black bg-green-700 hover:bg-green-800
+    <section class="section">
+        <Header/>
+        <a
+            @click="$router.go(-1)"
+            class=" text-black bg-green-700 hover:bg-green-800
                       focus:outline-none focus:ring-4
                       focus:ring-green-300 font-medium rounded-lg
                       text-xl px-3 py-2.5 text-center
                       dark:bg-green-600 dark:hover:bg-green-700
                       dark:focus:ring-green-800"
-  >
-    Назад
-  </a>
-
-  <form class="mt-6" @submit.prevent="saveForm()">
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Адрес</b>
-        <input
-            type="text"
-            id="address"
-            ref="addr"
-            v-model="application.address"
-            class=" bg-gray-50 border
+        >
+            Назад
+        </a>
+        <form class="mt-6" @submit.prevent="saveForm()">
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl">Адрес</b>
+                <input
+                    type="text"
+                    id="address"
+                    ref="addr"
+                    v-model="application.address"
+                    class=" bg-gray-50 border
                     border-gray-300
                     text-gray-900
                     text-xl rounded-lg
@@ -32,17 +33,17 @@
                     dark:text-black
                     dark:focus:ring-blue-500
                     dark:focus:border-blue-500"
-            required
-        >
-      </div>
+                    required
+                >
+            </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl">Дата</b>
-        <input
-            type="date"
-            id="date"
-            v-model="application.date"
-            class=" bg-gray-50 border
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl">Дата</b>
+                <input
+                    type="date"
+                    id="date"
+                    v-model="application.date"
+                    class=" bg-gray-50 border
                     border-gray-300
                     text-gray-900
                     rounded-lg
@@ -56,19 +57,19 @@
                     dark:focus:ring-blue-500
                     dark:focus:border-blue-500
                     text-xl"
-            required
-        >
-      </div>
-      <span class="help-block" v-if="dateError">{{ dateError }}</span>
+                    required
+                >
+            </div>
+            <span class="help-block" v-if="dateError">{{ dateError }}</span>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Время</b>
-        <input id="time_hours"
-               type="text"
-               ref="th"
-               v-model="time_hours"
-               @focus="$event.target.select()"
-               class="
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl block">Время</b>
+                <input id="time_hours"
+                       type="text"
+                       ref="th"
+                       v-model="time_hours"
+                       @focus="$event.target.select()"
+                       class="
                   bg-gray-50 border
                   border-gray-300
                   text-gray-900
@@ -82,17 +83,17 @@
                   dark:text-black
                   dark:focus:ring-blue-500
                   dark:focus:border-blue-500"
-               required
-        >
+                       required
+                >
 
-        <b> : </b>
+                <b> : </b>
 
-        <input id="time_minutes"
-               ref="tm"
-               type="text"
-               v-model="time_minutes"
-               @focus="$event.target.select()"
-               class="
+                <input id="time_minutes"
+                       ref="tm"
+                       type="text"
+                       v-model="time_minutes"
+                       @focus="$event.target.select()"
+                       class="
                   bg-gray-50 border
                   border-gray-300
                   text-gray-900
@@ -106,23 +107,23 @@
                   dark:text-black
                   dark:focus:ring-blue-500
                   dark:focus:border-blue-500"
-               required
-        >
+                       required
+                >
 
-        <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
-        <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
-      </div>
+                <span class="help-block" v-if="timeHoursError">{{ timeHoursError }}</span>
+                <span class="help-block" v-if="timeMinutesError">{{ timeMinutesError }}</span>
+            </div>
 
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Грузчиков</b>
-        <input id="time_hours"
-          type="text"
-          ref="th"
-          v-model="application.worker_total"
-          @focus="$event.target.select()"
-          placeholder="Сколько человек"
-          class="
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl block">Грузчиков</b>
+                <input id="time_hours"
+                       type="text"
+                       ref="th"
+                       v-model="application.worker_total"
+                       @focus="$event.target.select()"
+                       placeholder="Сколько человек"
+                       class="
               bg-gray-50 border
               border-gray-300
               text-right
@@ -137,73 +138,73 @@
               dark:text-black
               dark:focus:ring-blue-500
               dark:focus:border-blue-500"
-          required
-        > <span class="text-xl">чел</span>
-        <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
-      </div>
+                       required
+                > <span class="text-xl">чел</span>
+                <span class="help-block" v-if="workerTotalError">{{ workerTotalError }}</span>
+            </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Оплата</b>
-        <fieldset class="ml-4">
-          <div class="flex items-center ">
-            <input
-                id="hour_format"
-                type="radio"
-                name="pay_format"
-                v-bind:value="1"
-                v-model="application.hourly_job"
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl block">Оплата</b>
+                <fieldset class="ml-4">
+                    <div class="flex items-center ">
+                        <input
+                            id="hour_format"
+                            type="radio"
+                            name="pay_format"
+                            v-bind:value="1"
+                            v-model="application.hourly_job"
 
-                class="
+                            class="
                       w-4 h-4 border-gray-300
                       focus:ring-2 focus:ring-blue-300
                       dark:focus:ring-blue-600
                       dark:focus:bg-blue-600
                       dark:bg-gray-300
                       dark:border-gray-600"
-                checked
-            >
-            <label for="hour_format"
-                   class="block ml-2 text-xl
+                            checked
+                        >
+                        <label for="hour_format"
+                               class="block ml-2 text-xl
                           font-medium text-black
                           dark:text-black"
-            >
-              По часам
-            </label>
-          </div>
+                        >
+                            По часам
+                        </label>
+                    </div>
 
-          <div class="flex items-center">
-            <input
-                id="piece_rate_format"
-                type="radio"
-                name="pay_format"
-                v-bind:value="0"
-                v-model="application.hourly_job"
-                class=" w-4 h-4 border-gray-300
+                    <div class="flex items-center">
+                        <input
+                            id="piece_rate_format"
+                            type="radio"
+                            name="pay_format"
+                            v-bind:value="0"
+                            v-model="application.hourly_job"
+                            class=" w-4 h-4 border-gray-300
                     focus:ring-2 focus:ring-blue-300
                     dark:focus:ring-blue-600
                     dark:focus:bg-blue-600
                     dark:bg-gray-300
                     dark:border-gray-600"
-            >
-            <label for="piece_rate_format"
-                   class="block ml-2 text-xl
+                        >
+                        <label for="piece_rate_format"
+                               class="block ml-2 text-xl
                           font-medium text-black
                           dark:text-black"
-            >
-              Фиксированная (за 8 часов)
-            </label>
-          </div>
-        </fieldset>
-      </div>
+                        >
+                            Фиксированная (за 8 часов)
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
 
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Что делать?</b>
-        <textarea
-          id="text"
-          v-model="application.what_to_do"
-          rows="4"
-          class=" block p-2.5 w-full text-xl
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl block">Что делать?</b>
+                <textarea
+                    id="text"
+                    v-model="application.what_to_do"
+                    rows="4"
+                    class=" block p-2.5 w-full text-xl
                   text-black-900 bg-gray-50
                   rounded-lg border border-gray-300
                   focus:ring-blue-500 focus:border-blue-500
@@ -211,12 +212,12 @@
                   dark:placeholder-gray-400
                   dark:text-black dark:focus:ring-blue-500
                   dark:focus:border-blue-500"
-          required
-        >
+                    required
+                >
         </textarea>
-      </div>
+            </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
         <span class="text-xl">
           <b class="text-red-700">Цена - </b>
           <span v-if="applicationHourlyJob">
@@ -227,69 +228,69 @@
             {{ Number.isInteger(applicationPrice) ? 'р.' : '' }}
           </span>
         </span>
-      </div>
+            </div>
 
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
-        <b class="text-xl block">Способ оплаты</b>
-        <fieldset class="ml-4">
-          <div class="flex items-center ">
-            <input
-                id="pay_method_card"
-                type="radio"
-                name="pay_method"
-                v-bind:value="PayMethod.CARD"
-                v-model="application.pay_method"
-                class=" w-4 h-4 border-gray-300
+            <div class="2xl:mt-8 xl:mt-6 mt-4">
+                <b class="text-xl block">Способ оплаты</b>
+                <fieldset class="ml-4">
+                    <div class="flex items-center ">
+                        <input
+                            id="pay_method_card"
+                            type="radio"
+                            name="pay_method"
+                            v-bind:value="PayMethod.CARD"
+                            v-model="application.pay_method"
+                            class=" w-4 h-4 border-gray-300
                         focus:ring-2 focus:ring-blue-300
                         dark:focus:ring-blue-600
                         dark:focus:bg-blue-600
                         dark:bg-gray-300
                         dark:border-gray-600"
-                checked
-            >
-            <label
-              for="pay_method_card"
-              class="block ml-2 text-xl
+                            checked
+                        >
+                        <label
+                            for="pay_method_card"
+                            class="block ml-2 text-xl
                     font-medium text-black
                     dark:text-black"
-            >
-              На карту
-            </label>
-          </div>
+                        >
+                            На карту
+                        </label>
+                    </div>
 
-          <div class="flex items-center">
-            <input
-              id="pay_method_cash"
-              type="radio"
-              name="pay_method"
-              v-bind:value="PayMethod.CASH"
-              v-model="application.pay_method"
-              class=" w-4 h-4 border-gray-300
+                    <div class="flex items-center">
+                        <input
+                            id="pay_method_cash"
+                            type="radio"
+                            name="pay_method"
+                            v-bind:value="PayMethod.CASH"
+                            v-model="application.pay_method"
+                            class=" w-4 h-4 border-gray-300
                         focus:ring-2 focus:ring-blue-300
                         dark:focus:ring-blue-600
                         dark:focus:bg-blue-600
                         dark:bg-gray-300
                         dark:border-gray-600"
-            >
-            <label for="pay_method_cash"
-              class=" block ml-2 text-xl
+                        >
+                        <label for="pay_method_cash"
+                               class=" block ml-2 text-xl
                       font-medium text-black
                       dark:text-black"
-            >
-              Наличкой
-            </label>
-          </div>
-        </fieldset>
-      </div>
+                        >
+                            Наличкой
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <b class="text-xl block">Этаж</b>
-        <input id="floor"
-               type="text"
-               ref="th"
-               v-model="application.floor"
-               @focus="$event.target.select()"
-               class="
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <b class="text-xl block">Этаж</b>
+                <input id="floor"
+                       type="text"
+                       ref="th"
+                       v-model="application.floor"
+                       @focus="$event.target.select()"
+                       class="
                 bg-gray-50 border
                 border-gray-300
                 text-gray-900
@@ -303,17 +304,17 @@
                 dark:text-black
                 dark:focus:ring-blue-500
                 dark:focus:border-blue-500"
-               required
-        >
-      </div>
+                       required
+                >
+            </div>
 
-      <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
-        <div class="flex items-center h-5">
-          <input
-              id="elevator"
-              type="checkbox"
-              v-model="application.elevator"
-              class=" w-4 h-4 border border-gray-300
+            <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+                <div class="flex items-center h-5">
+                    <input
+                        id="elevator"
+                        type="checkbox"
+                        v-model="application.elevator"
+                        class=" w-4 h-4 border border-gray-300
                                   rounded bg-gray-50 focus:ring-3
                                   focus:ring-blue-300
                                   dark:bg-gray-300
@@ -321,24 +322,24 @@
                                   dark:focus:ring-blue-600
                                   dark:ring-offset-gray-800
                                   dark:focus:ring-offset-gray-800"
-          >
-        </div>
-        <label for="elevator"
-               class="ml-2 text-xl font-medium
+                    >
+                </div>
+                <label for="elevator"
+                       class="ml-2 text-xl font-medium
                                   text-gray-900
                                   dark:text-black"
-        >
-          Есть лифт
-        </label>
-      </div>
+                >
+                    Есть лифт
+                </label>
+            </div>
 
-      <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
-        <div class="flex items-center h-5">
-          <input
-              id="taxi"
-              type="checkbox"
-              v-model="application.taxi"
-              class=" w-4 h-4 border border-gray-300
+            <div class="flex items-start 2xl:mt-7 xl:mt-5 mt-3">
+                <div class="flex items-center h-5">
+                    <input
+                        id="taxi"
+                        type="checkbox"
+                        v-model="application.taxi"
+                        class=" w-4 h-4 border border-gray-300
                       rounded bg-gray-50 focus:ring-3
                       focus:ring-blue-300
                       dark:bg-gray-300
@@ -346,24 +347,24 @@
                       dark:focus:ring-blue-600
                       dark:ring-offset-gray-800
                       dark:focus:ring-offset-gray-800"
-          >
-        </div>
-        <label for="taxi"
-               class="ml-2 text-xl font-medium
+                    >
+                </div>
+                <label for="taxi"
+                       class="ml-2 text-xl font-medium
                       text-gray-900
                       dark:text-black"
-        >
-          Такси для грузчиков
-        </label>
-      </div>
+                >
+                    Такси для грузчиков
+                </label>
+            </div>
 
-      <div class="2xl:mt-6 xl:mt-4 mt-2">
-        <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
-        <input
-          id = "client_phone_number"
-          type="tel"
-          v-model="application.client_phone_number"
-          class="
+            <div class="2xl:mt-6 xl:mt-4 mt-2">
+                <label for="client_phone_number" class="text-xl block"><b>Ваш телефон для связи</b></label>
+                <input
+                    id = "client_phone_number"
+                    type="tel"
+                    v-model="application.client_phone_number"
+                    class="
               bg-gray-50 border
               border-gray-300
               text-gray-900
@@ -377,65 +378,67 @@
               dark:text-black
               dark:focus:ring-blue-500
               dark:focus:border-blue-500"
-          required
-        >
+                    required
+                >
 
-        <button
-          class="btn btn-default"
-          @click="addClientPhone()"
-          :disabled="isClientPhoneAdded"
-        >
-          <i class="glyphicon glyphicon-plus"></i>
-        </button>
+                <button
+                    class="btn btn-default"
+                    @click="addClientPhone()"
+                    :disabled="isClientPhoneAdded"
+                >
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
 
-        <button
-          class="btn btn-default"
-          @click="removeClientPhone()"
-          :disabled="!isClientPhoneAdded"
-        >
-          <i class="glyphicon glyphicon-minus"></i>
-        </button>
+                <button
+                    class="btn btn-default"
+                    @click="removeClientPhone()"
+                    :disabled="!isClientPhoneAdded"
+                >
+                    <i class="glyphicon glyphicon-minus"></i>
+                </button>
 
-        <input v-if="client_has_second_phone"
-               id = "addl_client_phone_number"
-               type="tel"
-               v-model="application.addl_client_phone_number"
-        >
+                <input v-if="client_has_second_phone"
+                       id = "addl_client_phone_number"
+                       type="tel"
+                       v-model="application.addl_client_phone_number"
+                >
 
-        <span class="help-block" id="client_phone_number_help_block"
-              v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
+                <span class="help-block" id="client_phone_number_help_block"
+                      v-if="error && errors.client_phone_number">{{ errors.client_phone_number }}
                     </span>
-      </div>
+            </div>
 
-      <div class="2xl:mt-8 xl:mt-6 mt-4">
-            <button
-                type="submit"
-                class="focus:outline-none text-black bg-yellow-400
+            <div class="2xl:mt-8 xl:mt-6 mt-4">
+                <button
+                    type="submit"
+                    class="focus:outline-none text-black bg-yellow-400
                         hover:bg-yellow-500 focus:ring-4
                         focus:ring-yellow-300 font-medium
                         rounded-lg text-xl px-3 py-2.5
                         mr-2 mb-2 dark:focus:ring-yellow-900"
-            >
-              Оформить
-            </button>
+                >
+                    Оформить
+                </button>
 
-            <a
-              @click="$router.go(-1)"
-              class=" text-black bg-green-700 hover:bg-green-800
+                <a
+                    @click="$router.go(-1)"
+                    class=" text-black bg-green-700 hover:bg-green-800
                       focus:outline-none focus:ring-4
                       focus:ring-green-300 font-medium rounded-lg
                       text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
                       dark:bg-green-600 dark:hover:bg-green-700
                       dark:focus:ring-green-800"
-            >
-              Назад
-            </a>
-          </div>
+                >
+                    Назад
+                </a>
+            </div>
         </form>
+    </section>
 </template>
 
 <script setup>
     import { PayMethod } from "@/consts/pay";
+    import Header from "@/components/Header.vue";
 </script>
 
 <script>
@@ -895,9 +898,6 @@ export default {
 </script>
 
 <style scoped>
-    body {
-      margin: 0;
-    }
     #text {
       height: 25vh;
     }

@@ -1,5 +1,6 @@
 <script setup>
     import HandymanForm from '@/components/Forms/Handyman.vue';
+    import Header from "@/components/Header.vue";
 
     const props = defineProps({
         appId: {
@@ -22,7 +23,8 @@
 
 <template>
 	<main>
-		<section class="py-8 px-5">
+		<section class="section">
+            <Header/>
             <HandymanForm
                 :app-id="appId"
                 :category="category"

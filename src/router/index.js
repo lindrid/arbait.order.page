@@ -193,9 +193,18 @@ const routes = [
 		component: () => import('@/views/About.vue')
 	},
 	{
-		name: 'Blank',
 		path: '/blank',
 		component: () => import('@/views/Blank.vue')
+	},
+	{
+		path: '/blank/:category',
+		component: () => import('@/views/Blank.vue'),
+		props: true
+	},
+	{
+		path: '/blank/:category/:category2',
+		component: () => import('@/views/Blank.vue'),
+		props: true
 	},
 ]
 

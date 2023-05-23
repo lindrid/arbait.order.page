@@ -1,6 +1,8 @@
 <template>
 	<main>
 		<section class="section">
+            <Header/>
+
 			<strong class="text-3xl ml-5">
                 <div class="flex items-center justify-center">
                     Переезд или доставка
@@ -39,6 +41,7 @@
 
     import { useRouter } from 'vue-router'
     import { MovingCategories } from "@/consts/categories/moving";
+    import Header from "@/components/Header.vue";
 
     const router = useRouter()
 

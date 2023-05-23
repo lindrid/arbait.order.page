@@ -6,7 +6,10 @@
 					{{ route.name }}
 				</a>
 			</template>
+
 		</div>
+
+
 	</footer>
 </template>
 

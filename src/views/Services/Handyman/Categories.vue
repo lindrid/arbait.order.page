@@ -1,6 +1,8 @@
 <template>
 	<main>
 		<section class="section">
+            <Header/>
+
 			<strong class="text-3xl ml-5">
                 <span class="flex items-center justify-center mb-5">
                     Разнорабочие
@@ -32,6 +34,7 @@
     import BackBtn from '@/components/Buttons/Back.vue';
     import Pill from '@/components/Pill.vue'
 	import Footer from '@/components/Footer.vue'
+    import Header from "@/components/Header.vue";
 	
 	const router = useRouter()
 

@@ -1,44 +1,48 @@
 <template>
-    <div class="text-black-500 font-bold py-6 text-center">
-        <span class="text-2xl">
-          {{ title }}
+    <section class="section">
+        <Header/>
+
+        <div class="text-black-500 font-bold py-6 text-center">
+            <span class="text-2xl">
+              {{ title }}
+            </span>
+        </div>
+
+        <BackBtn class="mx-5" />
+
+        <span
+            v-for="app in store.applications(
+                ServiceTypes[service].val,
+                getCategoryVal(service, category)
+            )"
+        >
+            <div v-if="app.address_to"
+                class=" mt-5 text-black-500 text-lg hover:text-yellow-500
+                        duration-300 text-center "
+                @click="categoriesPage(app, service)"
+            >
+                {{
+                    app.date + '&nbsp '
+                    + app.time + ', '
+                    + app.address + ' -> '
+                    + app.address_to + ', '
+                    + app.worker_total
+                }} чел
+            </div>
+            <div v-else
+                class=" mt-5 text-black-500 text-lg hover:text-yellow-500
+                        duration-300 text-center "
+                @click="formPage(app, service, category)"
+            >
+                {{
+                    app.date + '&nbsp '
+                    + app.time + ', '
+                    + app.address + ', '
+                    + app.worker_total
+                }} чел
+            </div>
         </span>
-    </div>
-
-    <BackBtn class="mx-5" />
-
-    <span
-        v-for="app in store.applications(
-            ServiceTypes[service].val,
-            getCategoryVal(service, category)
-        )"
-    >
-        <div v-if="app.address_to"
-            class=" mt-5 text-black-500 text-lg hover:text-yellow-500
-                    duration-300 text-center "
-            @click="categoriesPage(app, service)"
-        >
-            {{
-                app.date + '&nbsp '
-                + app.time + ', '
-                + app.address + ' -> '
-                + app.address_to + ', '
-                + app.worker_total
-            }} чел
-        </div>
-        <div v-else
-            class=" mt-5 text-black-500 text-lg hover:text-yellow-500
-                    duration-300 text-center "
-            @click="formPage(app, service, category)"
-        >
-            {{
-                app.date + '&nbsp '
-                + app.time + ', '
-                + app.address + ', '
-                + app.worker_total
-            }} чел
-        </div>
-    </span>
+    </section>
 </template>
 
 <script setup>
@@ -47,6 +51,7 @@ import BackBtn from '@/components/Buttons/Back.vue'
 import { ServiceTypes } from "@/consts/service_type";
 import { MovingCategories } from "@/consts/categories/moving";
 import { HandymanCategories } from "@/consts/categories/handyman";
+import Header from "@/components/Header.vue";
 
 const title = 'История заявок';
 

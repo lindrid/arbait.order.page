@@ -1,17 +1,20 @@
 <template>
 	<main>
-        <div class="text-black-500 font-bold py-6 text-center">
-          <strong
-              class="text-3xl"
-              v-html="getLabel(service, category)"
-          >
-          </strong>
-          <br>
-          <strong class="text-2xl text-yellow-600"> Оформить заявку </strong>
-        </div>
+        <section class="section">
+            <Header/>
 
-        <section class="px-4">
+            <div class="text-black-500 font-bold py-6 text-center">
+                <strong
+                    class="text-3xl"
+                    v-html="getLabel(service, category)"
+                >
+                </strong>
+                <br>
+                <strong class="text-2xl text-yellow-600"> Оформить заявку </strong>
+            </div>
+
             <BackBtn class="mx-5" />
+
             <span>
                 <div class="
                   flex flex-wrap mt-16 flex items-center justify-center
@@ -56,6 +59,8 @@
                 </div>
             </span>
         </section>
+
+        <Footer/>
 	</main>
 </template>
 
@@ -66,6 +71,8 @@
     import { ServiceTypes } from "@/consts/service_type";
     import { HandymanCategories } from "@/consts/categories/handyman";
     import { MovingCategories } from "@/consts/categories/moving";
+    import Header from "@/components/Header.vue";
+    import Footer from "@/components/Footer.vue";
 
     const props = defineProps({
         service : {
@@ -102,7 +109,7 @@
                     },
                     {
                         name: "Расчитать цену за услугу",
-                        route: 'calc'
+                        route: 'blank'
                     },
                 ],
             }

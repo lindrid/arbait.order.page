@@ -1,6 +1,8 @@
 <template>
     <main>
         <section class="section">
+            <Header/>
+
             <strong class="text-3xl ml-5">
                 <div class="flex items-center justify-center">
                     Вывоз мусора
@@ -39,6 +41,7 @@
 	import Footer from '@/components/Footer.vue'
 
     import { TrashTrucks } from "@/consts/categories/trash";
+    import Header from "@/components/Header.vue";
 
     const router = useRouter()
 

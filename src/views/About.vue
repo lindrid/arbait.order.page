@@ -36,28 +36,5 @@
 	import Footer from '@/components/Footer.vue'
 	import BackBtn from '@/components/Buttons/Back.vue'
 
-	const about = {
-		name: 'Abdillah',
-		subs: [
-			'Fullstack Web Developer',
-			'Javascript Enthusiast'
-		]
-	}
-	
-	const sosmed = [
-		{
-			icon: 'fab fa-github text-gray-800',
-			href: 'https://github.com/or-abdillh'
-		},
-		{
-			icon: 'fab fa-instagram text-pink-600',
-			href: 'https://instagram.com/or.abdillh'
-		},
-		{
-			icon: 'fab fa-facebook text-blue-700',
-			href: 'https://facebook.com/abdillahcfc'
-		}
-	];
-
     const title = 'О нас';
 </script>

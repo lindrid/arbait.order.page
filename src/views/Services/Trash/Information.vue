@@ -1,24 +1,14 @@
-<script setup>
-	import BackBtn from '@/components/Buttons/Back.vue'
-
-    const title = 'Информация';
-
-    const props = defineProps({
-        category: {
-            type: String,
-            default: null
-        }
-    });
-</script>
-
 <template>
-    <div class="text-black-500 font-bold py-6 text-center">
-        <span class="text-2xl"> {{ title }} </span>
-        <br>
-        <span class="text-xl text-yellow-500"> Грузовые автомобили и грузчики</span>
-    </div>
 	<main>
-		<section class="px-5">
+		<section class="section">
+            <Header/>
+
+            <div class="text-black-500 font-bold py-6 text-center">
+                <span class="text-2xl"> {{ title }} </span>
+                <br>
+                <span class="text-xl text-yellow-500"> Грузовые машины и грузчики</span>
+            </div>
+
 			<BackBtn />
 
             <div class="
@@ -26,7 +16,7 @@
                 3xl:px-[100px] 2xl:px-[75px] px-[25px]"
             >
                 <span class="text-black-500 font-bold py-2 text-center text-xl">
-                    Срок подачи грузового автомобиля
+                    Срок подачи грузовой машины
                 </span>
                     <ol class="list-decimal">
                         <li class="mt-2"> &nbsp;
@@ -168,3 +158,17 @@
 		</section>
 	</main>
 </template>
+
+<script setup>
+import BackBtn from '@/components/Buttons/Back.vue'
+import Header from "@/components/Header.vue";
+
+const title = 'Информация';
+
+const props = defineProps({
+    category: {
+        type: String,
+        default: null
+    }
+});
+</script>
