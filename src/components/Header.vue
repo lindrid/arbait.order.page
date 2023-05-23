@@ -1,12 +1,16 @@
 <template>
     <span class="flex items-end justify-end me-8">
-        <span class="text-green-500 flex items-end justify-end me-2 mb-3">
+        <span
+            class="text-green-500 flex items-end justify-end me-2 mb-3"
+            @click="openPhoneNumber"
+        >
             Позвонить <br>
         </span>
         <button
             type="button"
             data-te-ripple-init
             data-te-ripple-color="light"
+            @click="openPhoneNumber"
             class="cursor-pointer
             inline-block rounded-full bg-primary p-2
             uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca]
@@ -58,6 +62,14 @@
         </button>
     </span>
 </template>
+
+<script setup>
+    const number = '+79240004030';
+
+    const openPhoneNumber = function() {
+        window.open('tel:' + number);
+    }
+</script>
 
 <script>
 export default {
