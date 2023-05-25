@@ -450,9 +450,11 @@ import { useNewAppStore } from "@/stores/app/new";
 import {copy, isItHardWork} from "@/services/application";
 import {Price} from "@/consts/pay";
 import {ServiceTypes} from "@/consts/service_type";
+import {usePhoneStore} from "@/stores/app/phone";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
+const phoneStore = usePhoneStore();
 
 export default {
 
@@ -796,8 +798,6 @@ export default {
             const addl_client_phone_number = this.client_has_second_phone ?
                 this.application.addl_client_phone_number : null;
 
-            const app = this;
-
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
                 address: this.application.address,
@@ -824,6 +824,7 @@ export default {
                     this.success = true;
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
+                    phoneStore.save(this.application.client_phone_number);
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -888,6 +889,10 @@ export default {
                 console.log('newAppStore');
                 console.log(app);
             }
+        }
+
+        if (phoneStore.phoneExists) {
+            this.application.client_phone_number = phoneStore.phone;
         }
     },
 

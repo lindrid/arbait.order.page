@@ -1,6 +1,15 @@
 import { defineStore } from 'pinia'
 import { create } from "@/services/application";
-import {numEquals} from "@/services/misc";
+import { numEquals } from "@/services/misc";
+import { usePhoneStore } from "@/stores/app/phone";
+
+/**
+ * @param {string} phone
+ */
+const savePhone = function (phone) {
+    const phoneStore = usePhoneStore();
+    phoneStore.save(phone);
+}
 
 export const useAppHistory = defineStore('app-history',{
     /**
@@ -28,6 +37,7 @@ export const useAppHistory = defineStore('app-history',{
          */
         push (app) {
             this.apps.push(create(app));
+            savePhone(app.client_phone_number);
         },
         /**
          * @param {number} appId

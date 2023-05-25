@@ -376,9 +376,11 @@ import { ServiceTypes } from "@/consts/service_type";
 import { HandymanCategories } from "@/consts/categories/handyman";
 import {copy, isItHardWork} from "@/services/application";
 import {Price} from "@/consts/pay";
+import {usePhoneStore} from "@/stores/app/phone";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
+const phoneStore = usePhoneStore();
 
 export default {
     computed: {
@@ -722,6 +724,7 @@ export default {
                     this.success = true;
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
+                    phoneStore.save(this.application.client_phone_number);
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -808,6 +811,10 @@ export default {
                 console.log('newAppStore');
                 console.log(app);
             }
+        }
+
+        if (phoneStore.phoneExists) {
+            this.application.client_phone_number = phoneStore.phone;
         }
     },
 

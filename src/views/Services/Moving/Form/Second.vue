@@ -328,9 +328,11 @@
     import router from '@/router';
     import _ from 'lodash';
     import { MovingCategories } from "@/consts/categories/moving";
+    import {usePhoneStore} from "@/stores/app/phone";
 
     const historyStore = useAppHistory();
     const newAppStore = useNewAppStore();
+    const phoneStore = usePhoneStore();
 
 export default {
 
@@ -693,6 +695,7 @@ export default {
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
                     newAppStore.clear();
+                    phoneStore.save(this.application.client_phone_number);
                     router.push({name: 'Finish'});
                 }
             }).catch(function (error) {
@@ -762,6 +765,10 @@ export default {
                 console.log('application: ');
                 console.log(app);
             }
+        }
+
+        if (phoneStore.phoneExists) {
+            this.application.client_phone_number = phoneStore.phone;
         }
 
         console.log('category ' + this.category);
