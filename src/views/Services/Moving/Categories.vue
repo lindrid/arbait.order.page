@@ -28,9 +28,8 @@
                     />
                 </template>
             </div>
-		</section>
-
-		<Footer />
+            <Footer class="mt-10"/>
+        </section>
 	</main>
 </template>
 

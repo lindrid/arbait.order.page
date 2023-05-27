@@ -20,13 +20,17 @@
                   flex flex-wrap mt-16 flex items-center justify-center
                   3xl:px-[300px] 2xl:px-[150px] px-[50px]"
                 >
-
                     <Pill
                         class="textXl mb-5 text-center"
                         @click="formPage(service, category)"
                         :label='labelNewApp'
                     />
+                </div>
 
+                <div class="
+                  flex flex-wrap flex items-center justify-center
+                  3xl:px-[300px] 2xl:px-[150px] px-[50px]"
+                >
                     <Pill
                         v-if="
                             store.count(
@@ -38,29 +42,34 @@
                         @click="historyPage(service, category)"
                         :label="labelRepeatApp"
                     />
+                </div>
+
 
                     <template v-for="(item, x) in actions" :key="x">
-                        <div
-                            class="
-                                mt-5 text-black-500 text-lg hover:text-yellow-500
-                                duration-300 text-center
-                            "
+                        <div class="
+                            flex flex-wrap flex items-center justify-center
+                            3xl:px-[300px] 2xl:px-[150px] px-[50px]"
                         >
-                            <i class="fa fa-chevron-right">
-                            </i>
                             <span
-                                class="text-2xl mx-2"
-                                @click="page(item.route, service, category)"
+                                class="
+                                    mt-5 text-black-500 text-lg hover:text-yellow-500
+                                    duration-300 text-center
+                                "
                             >
-                                {{ item.name }}
+                                <i class="fa fa-chevron-right">
+                                </i>
+                                <span
+                                    class="text-2xl mx-2"
+                                    @click="page(item.route, service, category)"
+                                >
+                                    {{ item.name }}
+                                </span>
                             </span>
                         </div>
                     </template>
-                </div>
             </span>
+            <Footer class="mt-10"/>
         </section>
-
-        <Footer/>
 	</main>
 </template>
 

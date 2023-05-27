@@ -42,6 +42,7 @@
                 }} чел
             </div>
         </span>
+        <Footer class="mt-10"/>
     </section>
 </template>
 

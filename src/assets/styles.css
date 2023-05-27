@@ -1,3 +1,12 @@
 .section {
-    @apply w-full bg-gray-50 py-8 px-5 rounded mb-8;
+    @apply
+        w-[400px]
+        max-sm:w-[300px]
+
+        max-sm:ml-2
+        sm:ml-5
+        md:ml-7
+        lg:ml-7
+        xl:ml-9
+    bg-gray-50 py-8 px-5 rounded mb-8;
 }

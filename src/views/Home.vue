@@ -3,29 +3,37 @@
 		<section class="section">
            <Header/>
 
-			<strong class="text-3xl ml-5">
+			<strong class="text-3xl  ml-5">
 				<span class="text-yellow-600 flex items-center justify-center">
 					Арбайт.грузчики
 				</span>
                 <span class="flex items-center justify-center">
-                  и грузоперевозки
+                    грузоперевозки
                 </span>
 			</strong>
-      <span>
-        <div class="flex flex-wrap gap-6 mt-10 flex items-center justify-center 2xl:px-[300px] px-[50px]">
-          <template v-for="(item, x) in services" :key="x">
-            <Pill
-                class="textXl text-center"
-                @click="movePage(item.service)"
-                :label="item.name"
-            />
-          </template>
-        </div>
-      </span>
-		</section>
+
+            <div class="mt-12">
+                <template v-for="(item, x) in services" :key="x">
+                    <div
+                        class="flex flex-wrap gap-6 flex items-center
+                        justify-center
+                        sm:px-[30px]
+                        md:px-[50px]
+                        mt-4
+                    ">
+                        <Pill
+                            class="textXl text-center"
+                            @click="movePage(item.service)"
+                            :label="item.name"
+                        />
+                    </div>
+                </template>
+            </div>
+
+            <Footer class="mt-10"/>
+        </section>
 
 	</main>
-    <Footer />
 
 </template>
 
@@ -71,10 +79,6 @@
 </script>
 
 <style scoped>
-	.section {
-		@apply w-full bg-gray-50 py-8 px-5 rounded mb-8;
-	}
-
 	.textXl {
         font-size: 1.25rem; /* 20px */
         line-height: 1.75rem; /* 28px */

@@ -11,21 +11,23 @@
 
                 <BackBtn />
 
-            <div class="
-                flex flex-wrap gap-6 mt-10 flex
-                items-center justify-center 2xl:px-[300px] px-[50px]
-            ">
+            <div class="mt-10">
                 <template v-for="(item, x) in categories" :key="x">
-                    <Pill
-                        class="textXl text-center"
-                        @click="movePage(item.category)"
-                        :label="item.name"
-                    />
+                    <div class="
+                        flex flex-wrap gap-6  mt-4
+                        items-center justify-center
+                        px-[30px]
+                    ">
+                        <Pill
+                            class="textXl text-center"
+                            @click="movePage(item.category)"
+                            :label="item.name"
+                        />
+                    </div>
                 </template>
             </div>
-		</section>
-
-		<Footer />
+            <Footer class="mt-10"/>
+        </section>
 	</main>
 </template>
 
@@ -63,10 +65,6 @@
 </script>
 
 <style scoped>
-	.section {
-		@apply w-full bg-gray-50 py-8 px-5 rounded mb-2;
-	}
-
 	.textXl {
     font-size: 1.25rem; /* 20px */
     line-height: 1.75rem; /* 28px */
