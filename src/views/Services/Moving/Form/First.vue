@@ -37,6 +37,43 @@
                 >
             </div>
 
+            <div v-for="(item, i) in application.waypoints">
+                <div class="2xl:mt-6 xl:mt-4 mt-2">
+                    <b class="text-xl">Промежуточная точка {{ i+1 }}</b>
+                    <input
+                        type="text"
+                        id="address_to"
+                        ref="addr_to"
+                        v-model="application.waypoints[i]"
+                        class=" bg-gray-50 border
+                            border-gray-300
+                            text-gray-900
+                            text-xl rounded-lg
+                            focus:ring-blue-500
+                            focus:border-blue-500
+                            block w-full p-2.5
+                            dark:bg-gray-300
+                            dark:border-gray-600
+                            dark:placeholder-gray-400
+                            dark:text-black
+                            dark:focus:ring-blue-500
+                            dark:focus:border-blue-500"
+                        required
+                    >
+                </div>
+            </div>
+
+            <button
+                @click="addWaypoint()"
+                class="focus:outline-none text-black mt-2 bg-yellow-400
+                        hover:bg-yellow-500 focus:ring-4
+                        focus:ring-yellow-300 font-medium
+                        rounded-lg text-xl px-3 py-2.5
+                        mr-2 mb-2 dark:focus:ring-yellow-900"
+            >
+                Добавить точку
+            </button>
+
             <div class="2xl:mt-6 xl:mt-4 mt-2">
                 <b class="text-xl">Конец маршрута</b>
                 <input
@@ -310,6 +347,14 @@ export default {
         applicationAddress() {
             return this.application.address;
         },
+        applicationWaypoints() {
+            const count = this.application.waypoints.length;
+            let lengths = 0;
+            for (let i = 0; i < count; i++) {
+                lengths += this.application.waypoints[i];
+            }
+            return {count: count, lengths: lengths};
+        },
         applicationAddressTo() {
             return this.application.address_to;
         },
@@ -363,6 +408,19 @@ export default {
          * @param newAddress
          */
         applicationAddress: _.debounce(function (newAddress) {
+            if (this.saved_app_values) {
+                if (!this.appGotFromHistory) {
+                    newAppStore.save(this.application);
+                }
+            }
+        }, 500),
+
+        /**
+         * @see applicationWaypoints
+         * @param newWaypoints
+         */
+        applicationWaypoints: _.debounce(function (newWaypoints) {
+            console.log(newWaypoints);
             if (this.saved_app_values) {
                 if (!this.appGotFromHistory) {
                     newAppStore.save(this.application);
@@ -504,6 +562,11 @@ export default {
                 worker_count: 2,
                 worker_total: 2,
                 dispatcher_id: 0,
+
+                /**
+                 * @type string[]
+                 */
+                waypoints: [],
             },
             calc: {
                 'summ': true,
@@ -514,6 +577,8 @@ export default {
             time_hours: '',
             time_minutes: '',
             action: 'create',
+
+
 
             error: false,
             errors: {
@@ -547,6 +612,10 @@ export default {
             if(dd<10) dd='0'+dd;
             if(mm<10) mm='0'+mm;
             return (yyyy+sp+mm+sp+dd);
+        },
+
+        addWaypoint() {
+            this.application.waypoints.push("");
         },
 
         saveForm() {
