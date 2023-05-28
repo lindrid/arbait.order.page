@@ -669,6 +669,7 @@ export default {
                 service_type: this.application.service_type,
                 category: MovingCategories[this.category].val,
                 address: this.application.address,
+                waypoints: JSON.stringify(this.application.waypoints),
                 address_to: this.application.address_to,
                 date: this.application.date,
                 time: this.application.time,

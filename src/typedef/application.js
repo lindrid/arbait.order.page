@@ -5,6 +5,7 @@
  * @property {number} service_type - тип услуги (грузчки, разнорабочие, переезды, мусор)
  * @property {number} category - категория услуги (например, маляры, штукатурщики и тп)
  * @property {string} address - Адрес заявки. Начальный адрес для переезда.
+ * @property {string[]} waypoints - Промежуточные точки
  * @property {string|null} address_to - Конечный адрес для переезда.
  * @property {string} what_to_do - Что делать?
  * @property {string} date - Дата заявки

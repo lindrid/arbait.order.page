@@ -531,8 +531,11 @@ export default {
                 service_type: ServiceTypes.moving.val,
                 category: this.category,
                 what_to_do: '',
+
                 address: '',
+                waypoints: [],
                 address_to: '',
+
                 date: '',
                 time: '',
 
@@ -562,11 +565,6 @@ export default {
                 worker_count: 2,
                 worker_total: 2,
                 dispatcher_id: 0,
-
-                /**
-                 * @type string[]
-                 */
-                waypoints: [],
             },
             calc: {
                 'summ': true,
@@ -654,6 +652,7 @@ export default {
                     service_type: this.application.service_type,
                     category: MovingCategories[this.category].val,
                     address: this.application.address,
+                    waypoints: JSON.stringify(this.application.waypoints),
                     address_to: this.application.address_to,
                     date: this.application.date,
                     time: this.application.time,
