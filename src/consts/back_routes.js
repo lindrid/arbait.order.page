@@ -43,5 +43,13 @@ export const BackRoutes = {
     info: {
         moving: '/moving/actions',
         trash: '/trash/actions'
+    },
+
+    trash: {
+        trucks: {
+            construct: '/trash/construct/trucks',
+            household: '/trash/household/trucks',
+            collect: '/trash/collect/trucks',
+        }
     }
 };

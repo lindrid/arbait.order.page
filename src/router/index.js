@@ -123,7 +123,10 @@ const routes = [
 	{
 		path: '/categories/moving/:appId',
 		component: () => import('@/views/Services/Moving/Categories.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.categories.moving
+		}
 	},
 	{
 		path: '/moving/:category/workers',
@@ -177,53 +180,48 @@ const routes = [
 	{
 		name: 'TrashCategories',
 		path: '/categories/trash',
-		component: () => import('@/views/Services/Trash/Categories.vue')
-	},
-	{
-		path: '/categories/trash/:appId',
 		component: () => import('@/views/Services/Trash/Categories.vue'),
-		props: true
+		meta: {
+			backFn: BackRouteFunctions.trash.categories
+		}
 	},
 	{
 		path: '/trash/:category/trucks',
 		component: () => import('@/views/Services/Trash/Trucks.vue'),
-		props: true
-	},
-	{
-		path: '/trash/:category/trucks/:appId',
-		component: () => import('@/views/Services/Trash/Trucks.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.trash.trucks
+		}
 	},
 	{
 		path: '/trash/:category/:truck',
 		component: () => import('@/views/Services/Trash/Workers.vue'),
-		props: true
-	},
-	{
-		path: '/trash/:category/:truck/:appId',
-		component: () => import('@/views/Services/Trash/Workers.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.trash.workers
+		}
 	},
 	{
 		path: '/form/trash/:category/:truck/:workers',
 		component: () => import('@/views/Services/Trash/Form/First.vue'),
-		props: true
-	},
-	{
-		path: '/form/trash/:category/:truck/:workers/:appId',
-		component: () => import('@/views/Services/Trash/Form/First.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.trash.form.first
+		}
 	},
 	{
 		path: '/form/trash/second',
 		component: () => import('@/views/Services/Trash/Form/Second.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.trash.form.second
+		}
 	},
 	{
 		path: '/info/trash',
 		component: () => import('@/views/Services/Trash/Information.vue'),
 		meta: {
-			backFn: BackRouteFunctions.info.trash
+			backFn: BackRouteFunctions.trash.info
 		}
 	},
 

@@ -1,62 +1,18 @@
 import {BackRoutes} from "@/consts/back_routes";
 
+// noinspection JSUnusedLocalSymbols
 /**
  *
  * @type TBackRouteFn
  */
-const actionsBackRoute = (router) =>
-    BackRoutes.actions[router.currentRoute.value.params.service];
+const backToMain = (router) => '/';
 
+// noinspection JSUnusedLocalSymbols
 /**
  *
  * @type TBackRouteFn
  */
-const backToMain = (router) => BackRoutes.main;
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToHandymanCategories = (router) =>
-    BackRoutes.actions.category.handyman;
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToMovingCategories = (router) => BackRoutes.categories.moving
-
-/**
- *
- * @type TBackRouteFn
- */
-const loaderFormBackRoute = (router) => BackRoutes.form.loader;
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToActions = (router) =>
-    BackRoutes.history[router.currentRoute.value.params.service];
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToHandymanActions = (router) =>
-    BackRoutes.form.handyman[router.currentRoute.value.params.category];
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToMovingActions = (router) => BackRoutes.categories.moving;
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToTrashActions = (router) => BackRoutes.info.trash;
+const backToHandymanCategories = (params) => '/categories/handyman';
 
 /**
  *
@@ -65,11 +21,87 @@ const backToTrashActions = (router) => BackRoutes.info.trash;
 const backToHandymanHistory = (router) =>
     BackRoutes.form.from_history.handyman[router.currentRoute.value.params.category];
 
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingCategories = (params) => '/moving/actions';
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const loaderFormBackRoute = (params) => '/loader/actions';
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToActions = (params) => {
+    return params.service + '/actions';
+}
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToHandymanActions = (params) => {
+    return '/handyman/' + params.category + '/actions';
+}
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingActions = (params) => '/moving/actions';
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToTrashActions = (params) => '/trash/actions';
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToTrashCategories = (params) => '/categories/trash';
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToTrashTrucks = (params) => {
+    return '/trash/' + params.category + '/trucks';
+}
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToTrashWorkers = (params) => {
+    return '/trash/' + params.category + '/' + params.truck;
+}
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToTrashForm = (params) => {
+    return backToTrashWorkers(params) + '/' + params.workers;
+}
+
+
 // noinspection JSValidateJSDoc
 export const BackRouteFunctions = {
     backToMain: backToMain,
     actions: {
-        service: actionsBackRoute,
+        service: backToMain,
         service_category: backToHandymanCategories
     },
     categories: {
@@ -94,6 +126,16 @@ export const BackRouteFunctions = {
         loader: loaderFormBackRoute,
         handyman: backToHandymanActions,
         moving: backToMovingActions,
-        trash: backToTrashActions,
+    },
+
+    trash: {
+        trucks: backToTrashCategories,
+        categories: backToTrashActions,
+        info: backToTrashActions,
+        workers: backToTrashTrucks,
+        form: {
+            first: backToTrashWorkers,
+            second: backToTrashForm,
+        },
     }
 }

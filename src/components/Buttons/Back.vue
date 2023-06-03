@@ -50,6 +50,7 @@
          */
         const meta = router.currentRoute.value.meta;
         const fn = meta.backFn;
-        return fn(router);
+        const params = router.currentRoute.value.params;
+        return fn(params);
     });
 </script>

@@ -1,4 +1,4 @@
-import { Router } from "vue-router";
+import {RouteParams} from "vue-router";
 
 /**
  * Функция возвращает текстовую ссылку на предыдущую страницу,
@@ -6,7 +6,7 @@ import { Router } from "vue-router";
  * (таких как service, category и т/д)
  *
  * @typedef {Function} TBackRouteFn
- * @param {Router} router
+ * @param {RouteParams} params
  *
  * @returns {string}
  */

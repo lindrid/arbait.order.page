@@ -12,7 +12,7 @@
     </div>
 	<main>
 		<section class="px-5">
-			<BackBtn />
+			<BackBtn :minus1-page="true"/>
 
             <div class="
                 flex flex-wrap mt-2 flex items-center justify-center

@@ -14,7 +14,8 @@
                     Выбор машины
                 </strong>
 
-            <BackBtn :minus1-page="true" />
+            <BackBtn v-if="!appId"/>
+            <BackBtn v-if="appId" :minus1-page="true"/>
 
             <div class="
                 flex flex-wrap gap-6 mt-10 flex

@@ -14,7 +14,8 @@
                     Тип мусора
                 </strong>
 
-                <BackBtn :minus1-page="true" />
+            <BackBtn v-if="!appId"/>
+            <BackBtn v-if="appId" :minus1-page="true"/>
 
             <div class="
                 flex flex-wrap gap-6 mt-10 flex
@@ -61,14 +62,10 @@
 </script>
 
 <style scoped>
-	.section {
-		@apply w-full bg-gray-50 py-8 px-5 rounded mb-2;
-	}
-
 	.textXl {
-    font-size: 1.25rem; /* 20px */
-    line-height: 1.75rem; /* 28px */
-  }
+        font-size: 1.25rem; /* 20px */
+        line-height: 1.75rem; /* 28px */
+    }
 
     span {
       flex:1 0 auto;

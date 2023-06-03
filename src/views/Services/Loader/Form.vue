@@ -1,17 +1,15 @@
 <template>
     <section class="section">
         <Header/>
-        <a
-            @click="$router.go(-1)"
-            class=" text-black bg-green-700 hover:bg-green-800
+        <Back
+            class-def=" text-black bg-green-700 hover:bg-green-800
                       focus:outline-none focus:ring-4
                       focus:ring-green-300 font-medium rounded-lg
                       text-xl px-3 py-2.5 text-center
                       dark:bg-green-600 dark:hover:bg-green-700
                       dark:focus:ring-green-800"
-        >
-            Назад
-        </a>
+        />
+
         <form class="mt-6" @submit.prevent="saveForm()">
             <div class="2xl:mt-6 xl:mt-4 mt-2">
                 <b class="text-xl">Адрес</b>
@@ -439,6 +437,7 @@
 <script setup>
     import { PayMethod } from "@/consts/pay";
     import Header from "@/components/Header.vue";
+    import Back from "@/components/Buttons/Back.vue";
 </script>
 
 <script>
