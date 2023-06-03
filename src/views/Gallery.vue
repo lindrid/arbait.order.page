@@ -1,6 +1,7 @@
 <template>
 	<main>
-        <BackBtn />
+        <BackBtn :minus1-page="true" class-def="ml-2 text-green-500 text-xl"/>
+
         <silent-box
             :gallery="loaders"
             class="justify-center items-center flex mt-10 ml-10 gap-2"

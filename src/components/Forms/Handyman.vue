@@ -1,15 +1,14 @@
 <template>
-    <a
-        @click="$router.go(-1)"
-        class=" text-black bg-green-700 hover:bg-green-800
-              focus:outline-none focus:ring-4
-              focus:ring-green-300 font-medium rounded-lg
-              text-xl px-3 py-2.5 text-center
-              dark:bg-green-600 dark:hover:bg-green-700
-              dark:focus:ring-green-800"
-    >
-        Назад
-    </a>
+    <Back
+        label="Назад"
+        :icon="false"
+        class-def="text-black bg-green-700 hover:bg-green-800
+                        focus:outline-none focus:ring-4
+                        focus:ring-green-300 font-medium rounded-lg
+                        text-xl px-3 py-2.5 text-center mr-2 mb-2
+                        dark:bg-green-600 dark:hover:bg-green-700
+                        dark:focus:ring-green-800"
+    />
 
     <form class="mt-6" @submit.prevent="saveForm()">
         <div class="2xl:mt-6 xl:mt-4 mt-2">
@@ -351,17 +350,16 @@
               Оформить
             </button>
 
-            <a
-                @click="$router.go(-1)"
-                class=" text-black bg-green-700 hover:bg-green-800
+            <Back
+                label="Назад"
+                :icon="false"
+                class-def="text-black bg-green-700 hover:bg-green-800
                         focus:outline-none focus:ring-4
                         focus:ring-green-300 font-medium rounded-lg
                         text-xl ml-5 px-3 py-2.5 text-center mr-2 mb-2
                         dark:bg-green-600 dark:hover:bg-green-700
                         dark:focus:ring-green-800"
-            >
-                Назад
-            </a>
+            />
         </div>
     </form>
 </template>
@@ -377,12 +375,14 @@ import { HandymanCategories } from "@/consts/categories/handyman";
 import {copy, isItHardWork} from "@/services/application";
 import {Price} from "@/consts/pay";
 import {usePhoneStore} from "@/stores/app/phone";
+import Back from "@/components/Buttons/Back.vue";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
 
 export default {
+    components: {Back},
     computed: {
         applicationAddress() {
             return this.application.address;
@@ -416,22 +416,22 @@ export default {
         },
 
         isClientPhoneAdded() {
-          return this.client_has_second_phone;
+            return this.client_has_second_phone;
         },
         dateError() {
-          return this.errors.date;
+            return this.errors.date;
         },
         timeHoursError() {
-          return this.errors.time_hours;
+            return this.errors.time_hours;
         },
         timeMinutesError() {
-          return this.errors.time_minutes;
+            return this.errors.time_minutes;
         },
         workerTotalError() {
-          return this.errors.worker_total;
+            return this.errors.worker_total;
         },
         priceError() {
-          return this.errors.price;
+            return this.errors.price;
         },
         priceForWorkerError() {
             return this.errors.price_for_worker;
@@ -660,6 +660,15 @@ export default {
 
     methods: {
         /**
+         *
+         * @param {string} category
+         * @returns {string}
+         */
+        defaultBackPath(category) {
+            return '/handyman/' + category + '/actions';
+        },
+
+        /**
          * @param {string} str
          */
         isNormalInt: function (str) {
@@ -826,33 +835,13 @@ export default {
 
 
 <style scoped>
-.visually-hidden {
-  position: absolute;
-  clip: rect(0 0 0 0);
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-}
-
-.mytime, .form-group {
-  font-size: 110%
-}
-.form-control{
-  font-size: 120%;
-}
-.worker-count {
-  width: 100px;
-}
-.panel {
-  font-size: 130%;
-}
-body {
-  margin: 0;
-}
-#text {
-  height: 25vh;
-}
-.help-block{
-  color: red;
-}
+    body {
+      margin: 0;
+    }
+    #text {
+      height: 25vh;
+    }
+    .help-block{
+      color: red;
+    }
 </style>

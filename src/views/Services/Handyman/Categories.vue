@@ -9,7 +9,7 @@
                 </span>
 			</strong>
 
-                <BackBtn />
+            <BackBtn />
 
             <div class="mt-10">
                 <template v-for="(item, x) in categories" :key="x">

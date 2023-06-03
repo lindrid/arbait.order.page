@@ -15,7 +15,7 @@
             <div class="mt-12">
                 <template v-for="(item, x) in services" :key="x">
                     <div
-                        class="flex flex-wrap gap-6 flex items-center
+                        class="flex flex-wrap gap-6 items-center
                         justify-center
                         sm:px-[30px]
                         md:px-[50px]
@@ -38,9 +38,9 @@
 </template>
 
 <script setup>
-    import { useRouter } from 'vue-router'
-    import Pill from '@/components/Pill.vue'
-	import Footer from '@/components/Footer.vue'
+    import { useRouter } from 'vue-router';
+    import Pill from '@/components/Pill.vue';
+	import Footer from '@/components/Footer.vue';
     import Header from "@/components/Header.vue";
 	
 	const router = useRouter()
@@ -60,20 +60,20 @@
 	
 	const services = [
         {
-          name: "Услуга грузчиков",
-          service: 'loader'
+            name: "Услуга грузчиков",
+            service: 'loader'
         },
         {
             name: "Услуга разнорабочих",
             service: 'handyman'
         },
         {
-          name: "Переезд или доставка",
-          service: 'moving'
+            name: "Переезд или доставка",
+            service: 'moving'
         },
         {
-          name: "Вывоз и вынос мусора",
-          service: 'trash'
+            name: "Вывоз и вынос мусора",
+            service: 'trash'
         },
 	]
 </script>

@@ -4,7 +4,8 @@
             <span class="text-2xl"> {{ title }} </span>
         </div>
 		<section class="bg-gray-50 py-8 px-5 rounded">
-				<BackBtn />
+            <BackBtn :minus1-page="true" class-def="ml-2 text-green-500 text-xl"/>
+
             <div class="
                 flex flex-wrap mt-10 flex items-center justify-center
                 3xl:px-[90px] 2xl:px-[45px] px-[15px]"

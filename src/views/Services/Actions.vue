@@ -13,7 +13,9 @@
                 <strong class="text-2xl text-yellow-600"> Оформить заявку </strong>
             </div>
 
-            <BackBtn class="mx-5" />
+            <span class="mx-5">
+                <BackBtn />
+            </span>
 
             <span>
                 <div class="

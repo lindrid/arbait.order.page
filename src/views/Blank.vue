@@ -1,7 +1,7 @@
 <template>
 	<main>
 		<section class="py-8 px-5">
-			<BackBtn />
+			<BackBtn :minus1-page="true" />
             <div
                 class="mt-10 items-center justify-center flex text-2xl"
                 v-if="category !== null"

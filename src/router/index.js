@@ -1,49 +1,71 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
+import {BackRouteFunctions} from "@/services/back_routes";
 
 const routes = [
 	{
 		name: 'Home',
 		path: '/',
-		component: Home
+		component: Home,
 	},
 	{
 		name: 'ServiceActions',
 		path: '/:service/actions',
 		component: () => import('@/views/Services/Actions.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.actions.service
+		}
 	},
 	{
 		name: 'ServiceCategoryActions',
 		path: '/:service/:category/actions',
 		component: () => import('@/views/Services/Actions.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.actions.service_category
+		}
 	},
 	{
 		path: '/history/:service',
 		component: () => import('@/views/Services/History.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.history.service
+		}
 	},
 	{
 		path: '/history/:service/:category',
 		component: () => import('@/views/Services/History.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.history.service_category
+		}
 	},
 
 	/*************** Loader ***************/
 	{
 		path: '/form/loader',
-		component: () => import('@/views/Services/Loader/Form.vue')
+		component: () => import('@/views/Services/Loader/Form.vue'),
+		meta: {
+			backFn: BackRouteFunctions.form.loader
+		}
 	},
 	{
 		path: '/form/loader/:appId',
 		component: () => import('@/views/Services/Loader/Form.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.form.loader
+		}
 	},
 	{
 		name: 'InfoLoader',
 		path: '/info/loader',
-		component: () => import('@/views/Services/Loader/Information.vue')
+		component: () => import('@/views/Services/Loader/Information.vue'),
+		meta: {
+			backFn: BackRouteFunctions.info.loader
+		}
 	},
 
 	/*************** Handyman ***************/
@@ -51,17 +73,26 @@ const routes = [
 		name: 'HandymanCategories',
 		path: '/categories/handyman',
 		component: () => import('@/views/Services/Handyman/Categories.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.categories.handyman
+		}
 	},
 	{
 		path: '/form/handyman/:category',
 		component: () => import('@/views/Services/Handyman/Form.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.form.handyman
+		}
 	},
 	{
 		path: '/form/handyman/:category/:appId',
 		component: () => import('@/views/Services/Handyman/Form.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.form.from_history.handyman
+		}
 	},
 	{
 		path: '/info/handyman/digger',
@@ -84,7 +115,10 @@ const routes = [
 	{
 		path: '/categories/moving',
 		component: () => import('@/views/Services/Moving/Categories.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.categories.moving
+		}
 	},
 	{
 		path: '/categories/moving/:appId',
@@ -94,7 +128,10 @@ const routes = [
 	{
 		path: '/moving/:category/workers',
 		component: () => import('@/views/Services/Moving/Workers.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.workers.moving
+		}
 	},
 	{
 		path: '/moving/:category/workers/:appId',
@@ -122,19 +159,25 @@ const routes = [
 	{
 		name: 'InfoMoving',
 		path: '/info/moving',
-		component: () => import('@/views/Services/Moving/Information.vue')
+		component: () => import('@/views/Services/Moving/Information.vue'),
+		meta: {
+			backFn: BackRouteFunctions.info.moving
+		}
 	},
 	{
 		path: '/info/moving/:category',
 		component: () => import('@/views/Services/Moving/Information.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.info.moving
+		}
 	},
 
 	/*************** Trash ***************/
 	{
+		name: 'TrashCategories',
 		path: '/categories/trash',
-		component: () => import('@/views/Services/Trash/Categories.vue'),
-		props: true
+		component: () => import('@/views/Services/Trash/Categories.vue')
 	},
 	{
 		path: '/categories/trash/:appId',
@@ -178,7 +221,10 @@ const routes = [
 	},
 	{
 		path: '/info/trash',
-		component: () => import('@/views/Services/Trash/Information.vue')
+		component: () => import('@/views/Services/Trash/Information.vue'),
+		meta: {
+			backFn: BackRouteFunctions.info.trash
+		}
 	},
 
 	/*************** Finish ***************/
@@ -195,7 +241,7 @@ const routes = [
 	{
 		name: 'Gallery',
 		path: '/gallery',
-		component: () => import('@/views/Gallery.vue')
+		component: () => import('@/views/Gallery.vue'),
 	},
 	{
 		path: '/blank',
