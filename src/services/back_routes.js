@@ -1,5 +1,3 @@
-import {BackRoutes} from "@/consts/back_routes";
-
 // noinspection JSUnusedLocalSymbols
 /**
  *
@@ -7,41 +5,32 @@ import {BackRoutes} from "@/consts/back_routes";
  */
 const backToMain = (router) => '/';
 
-// noinspection JSUnusedLocalSymbols
 /**
  *
  * @type TBackRouteFn
  */
-const backToHandymanCategories = (params) => '/categories/handyman';
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToHandymanHistory = (router) =>
-    BackRoutes.form.from_history.handyman[router.currentRoute.value.params.category];
-
-// noinspection JSUnusedLocalSymbols
-/**
- *
- * @type TBackRouteFn
- */
-const backToMovingCategories = (params) => '/moving/actions';
-
-// noinspection JSUnusedLocalSymbols
-/**
- *
- * @type TBackRouteFn
- */
-const loaderFormBackRoute = (params) => '/loader/actions';
-
-/**
- *
- * @type TBackRouteFn
- */
-const backToActions = (params) => {
-    return params.service + '/actions';
+const backToServiceActions = (params) => {
+    return '/' + params.service + '/actions';
 }
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToServiceCategoryActions = (params) => {
+    return params.service + '/' + params.category + '/actions';
+}
+
+/************************* Loader *************************/
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToLoaderActions = (params) => '/loader/actions';
+
+/************************* Handyman *************************/
 
 /**
  *
@@ -56,7 +45,63 @@ const backToHandymanActions = (params) => {
  *
  * @type TBackRouteFn
  */
+const backToHandymanCategories = (params) => '/categories/handyman';
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToHandymanHistory = (params) => {
+    return '/history' + '/handyman/' + params.category;
+}
+
+/************************* Moving *************************/
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingCategories = (params) => '/categories/moving';
+
+// noinspection JSUnusedLocalSymbols
+/**
+ *
+ * @type TBackRouteFn
+ */
 const backToMovingActions = (params) => '/moving/actions';
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingHistory = (params) => '/history/moving';
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingCategoriesHistory = (params) => {
+    return '/categories/moving/' + params.appId
+};
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingWorkers = (params) => {
+    return '/moving/' + params.category + '/workers';
+};
+
+/**
+ *
+ * @type TBackRouteFn
+ */
+const backToMovingWorkersHistory = (params) => {
+    return '/moving/' + params.category + '/workers/' + params.appId
+};
+
+/************************* Trash *************************/
 
 // noinspection JSUnusedLocalSymbols
 /**
@@ -112,22 +157,40 @@ export const BackRouteFunctions = {
         moving: backToMovingCategories
     },
     history: {
-        service: backToActions,
-        service_category: backToMain
+        service: backToServiceActions,
+        service_category: backToServiceCategoryActions
     },
     form: {
-        loader: loaderFormBackRoute,
+        loader: backToLoaderActions,
         handyman: backToHandymanActions,
         from_history: {
             handyman: backToHandymanHistory
         }
     },
     info: {
-        loader: loaderFormBackRoute,
+        loader: backToLoaderActions,
         handyman: backToHandymanActions,
         moving: backToMovingActions,
     },
 
+    loader: {
+        form: backToLoaderActions,
+        info: backToLoaderActions
+    },
+    handyman: {
+        categories: backToMain,
+        form: backToHandymanActions,
+        form_from_history: backToHandymanHistory,
+        info: backToHandymanActions,
+    },
+    moving: {
+        categories: backToMovingActions,
+        workers: backToMovingCategories,
+        categories_from_history: backToMovingHistory,
+        workers_from_history: backToMovingCategoriesHistory,
+        form: backToMovingWorkers,
+        form_from_history: backToMovingWorkersHistory,
+    },
     trash: {
         trucks: backToTrashCategories,
         categories: backToTrashActions,

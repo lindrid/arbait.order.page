@@ -2,6 +2,7 @@
     <section class="section">
         <Header/>
         <Back
+            :icon="false"
             class-def=" text-black bg-green-700 hover:bg-green-800
                       focus:outline-none focus:ring-4
                       focus:ring-green-300 font-medium rounded-lg

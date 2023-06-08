@@ -14,8 +14,7 @@
                     Выбор машины
                 </strong>
 
-            <BackBtn v-if="!appId"/>
-            <BackBtn v-if="appId" :minus1-page="true"/>
+            <BackBtn/>
 
             <div class="
                 flex flex-wrap gap-6 mt-10 flex
@@ -54,7 +53,7 @@
 
     const props = defineProps({
         appId : {
-            type: Number,
+            type: String,
             default: null
         },
     });

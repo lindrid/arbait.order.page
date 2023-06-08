@@ -14,7 +14,7 @@
                     Нужны грузчики?
                 </strong>
 
-                <BackBtn :minus1-page="true" />
+                <BackBtn />
 
             <div class="
                 flex flex-wrap gap-6 mt-10 flex
@@ -46,24 +46,15 @@
 	const router = useRouter()
 
 	const movePage = function (category, answer, appId) {
-        if (appId === null) {
-            router.push({
-                name: 'FormMovingWorkers',
-                params: {
-                    category: category,
-                    workers: answer
-                }
-            });
-        } else {
-            router.push({
-                name: 'FormMovingWorkers',
-                params: {
-                    category: category,
-                    workers: answer,
-                    appId: appId
-                }
-            });
-        }
+        const name = appId === null ? 'FormMovingWorkers' : 'FormMovingWorkersAppId';
+        router.push({
+            name: name,
+            params: {
+                category: category,
+                workers: answer,
+                appId: appId
+            }
+        });
     }
 
     const props = defineProps({
@@ -72,7 +63,7 @@
             default: null
         },
         appId: {
-            type: Number,
+            type: String,
             default: null
         }
     });

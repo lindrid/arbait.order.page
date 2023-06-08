@@ -1,17 +1,15 @@
 <template>
     <section class="section">
         <Header/>
-        <a
-            @click="$router.go(-1)"
-            class="text-black bg-green-700 hover:bg-green-800
-              focus:outline-none focus:ring-4
-              focus:ring-green-300 font-medium rounded-lg
-              text-xl px-3 py-2.5 text-center
-              dark:bg-green-600 dark:hover:bg-green-700
-              dark:focus:ring-green-800"
-        >
-            Назад
-        </a>
+        <Back
+            :icon="false"
+            class-def=" text-black bg-green-700 hover:bg-green-800
+                      focus:outline-none focus:ring-4
+                      focus:ring-green-300 font-medium rounded-lg
+                      text-xl px-3 py-2.5 text-center
+                      dark:bg-green-600 dark:hover:bg-green-700
+                      dark:focus:ring-green-800"
+        />
         <form class="mt-6" @submit.prevent="saveForm()">
             <div class="2xl:mt-6 xl:mt-4 mt-2">
                 <b class="text-xl">Начало маршрута</b>
@@ -326,6 +324,7 @@
     import { MovingCategories } from "@/consts/categories/moving";
     import { PayMethod } from '@/consts/pay';
     import Header from "@/components/Header.vue";
+    import Back from "@/components/Buttons/Back.vue";
 </script>
 
 <script>
@@ -342,7 +341,6 @@ const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 
 export default {
-
     computed: {
         applicationAddress() {
             return this.application.address;
@@ -408,11 +406,7 @@ export default {
          * @param newAddress
          */
         applicationAddress: _.debounce(function (newAddress) {
-            if (this.saved_app_values) {
-                if (!this.appGotFromHistory) {
-                    newAppStore.save(this.application);
-                }
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -421,11 +415,7 @@ export default {
          */
         applicationWaypoints: _.debounce(function (newWaypoints) {
             console.log(newWaypoints);
-            if (this.saved_app_values) {
-                if (!this.appGotFromHistory) {
-                    newAppStore.save(this.application);
-                }
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -433,11 +423,23 @@ export default {
          * @param newAddressTo
          */
         applicationAddressTo: _.debounce(function (newAddressTo) {
-            if (this.saved_app_values) {
-                if (!this.appGotFromHistory) {
-                    newAppStore.save(this.application);
-                }
-            }
+            this.saveToStore();
+        }, 500),
+
+        /**
+         * @see applicationDriverPrice
+         * @param newDriverPrice
+         */
+        applicationDriverPrice: _.debounce(function (newDriverPrice) {
+            this.saveToStore();
+        }, 500),
+
+        /**
+         * @see applicationPriceForDriver
+         * @param newPriceForDriver
+         */
+        applicationPriceForDriver: _.debounce(function (newPriceForDriver) {
+            this.saveToStore();
         }, 500),
 
         /**
@@ -452,11 +454,15 @@ export default {
                 this.errors.date = "Неправильная дата!";
             }
 
-            if (this.saved_app_values) {
-                if (!this.appGotFromHistory) {
-                    newAppStore.save(this.application);
-                }
-            }
+            this.saveToStore();
+        }, 500),
+
+        /**
+         * @param {string} newTime The time of the application.
+         * @see applicationTime()
+         */
+        applicationTime: _.debounce(function(newTime) {
+            this.saveToStore();
         }, 500),
 
         /**
@@ -485,34 +491,13 @@ export default {
         }, 500),
 
         /**
-         * @param {string} newWorkerTotal
-         * @see applicationWorkerTotal
-         */
-        applicationWorkerTotal: _.debounce(function (newWorkerTotal) {
-            this.errors.worker_total = undefined;
-            console.log(typeof (newWorkerTotal));
-            console.log(newWorkerTotal);
-
-            if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
-                this.errors.worker_total = 'Неверное количество работников!';
-            }
-
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
-        }, 500),
-
-        /**
          * @see applicationWhatToDo
          * @param newWhatToDo
          */
         applicationWhatToDo: _.debounce(function (newWhatToDo) {
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500)
     },
-
 
     data: function () {
         return {
@@ -566,17 +551,12 @@ export default {
                 worker_total: 2,
                 dispatcher_id: 0,
             },
-            calc: {
-                'summ': true,
-                'pays': false
-            },
+
             cwaIsOpen: 0,   //parsed text area is open or not
             success: false,
             time_hours: '',
             time_minutes: '',
             action: 'create',
-
-
 
             error: false,
             errors: {
@@ -640,7 +620,8 @@ export default {
 
             if (this.workers === 'yes') {
                 console.log(this.application);
-                newAppStore.save(this.application);
+                console.log('appExists = ' + newAppStore.appExists);
+
                 this.$router.push({
                     name: 'MovingSecondForm',
                     params: {
@@ -676,11 +657,25 @@ export default {
                         this.success = true;
                         this.application.id = response.data.id;
                         historyStore.push(this.application);
+                        historyStore.delete(0);
                         this.$router.push({name: 'Finish'});
                     }
                 }).catch(function (error) {
                     console.log(error);
                 });
+            }
+        },
+
+        /**
+         * save to history or newApp store
+         */
+        saveToStore() {
+            if (this.saved_app_values) {
+                if (this.appGotFromHistory) {
+                    historyStore.save(this.application);
+                } else {
+                    newAppStore.save(this.application);
+                }
             }
         },
 
@@ -722,19 +717,10 @@ export default {
             this.time_hours = app.time.slice(0, app.time.indexOf(':'));
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         },
-
-        /**
-         *
-         * @param {Application} app
-         */
-        assignTime(app) {
-            this.time_hours = app.time.slice(0, app.time.indexOf(':'));
-            this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
-        }
     },
 
     props: {
-        appId: Number,
+        appId: String,
         category: String,
         workers: String
     },
@@ -745,32 +731,44 @@ export default {
     created () {
         this.application.date = this.current_day('-');
 
-        if (this.appId) {
-            const app = historyStore.getApp(this.appId);
-            if (app) {
-                copy(this.application, app, ['date', 'time']);
-                this.application.date = this.current_day('-');
-
-                console.log('historyStore');
-                console.log(app);
+        if (historyStore.appExists(0)) {
+            console.log('here');
+            const app = historyStore.getApp(0);
+            if (app && app.service_type === this.application.service_type) {
+                copy(this.application, app, ['id', 'time']);
+                this.saveAppTime(app);
             }
+        } else if (this.appId) {
+            const app = historyStore.getApp(Number(this.appId));
+            if (app) {
+                this.appGotFromHistory = true;
+                copy(this.application, app, ['id', 'date', 'time']);
+                this.application.date = this.current_day('-');
+            }
+            console.log('historyStore');
+            console.log(app);
         } else if (newAppStore.appExists) {
+            console.log('there');
             /**
              *
-             * @type {Application}
+             * @type {Application|null}
              */
             const app = newAppStore.app;
             if (app && app.service_type === this.application.service_type) {
                 copy(this.application, app, ['time']);
-                this.assignTime(app);
+                this.saveAppTime(app);
 
                 console.log('newAppStore');
                 console.log(app);
             }
         }
 
+        this.application.id = 0;
         this.application.driver_price = Price.perHour.MOVING[this.category];
-        this.application.price_for_driver = this.application.driver_price - Price.perHour.OUR_FOR_DRIVERS;
+        this.application.price_for_driver = this.application.driver_price -
+            Price.perHour.OUR_FOR_DRIVERS;
+        this.application.category = this.category;
+        this.saveToStore();
 
         console.log('category = ' + this.category);
         console.log('workers = ' + this.workers);
@@ -784,33 +782,13 @@ export default {
 
 
 <style scoped>
-.visually-hidden {
-  position: absolute;
-  clip: rect(0 0 0 0);
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-}
-
-.mytime, .form-group {
-  font-size: 110%
-}
-.form-control{
-  font-size: 120%;
-}
-.worker-count {
-  width: 100px;
-}
-.panel {
-  font-size: 130%;
-}
-body {
-  margin: 0;
-}
-#text {
-  height: 25vh;
-}
-.help-block{
-  color: red;
-}
+    body {
+      margin: 0;
+    }
+    #text {
+      height: 25vh;
+    }
+    .help-block{
+      color: red;
+    }
 </style>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { create } from "@/services/application";
+import {copy, create} from "@/services/application";
 import { numEquals } from "@/services/misc";
 import { usePhoneStore } from "@/stores/app/phone";
 
@@ -35,9 +35,56 @@ export const useAppHistory = defineStore('app-history',{
         /**
          * @param {Application} app
          */
-        push (app) {
+        push(app) {
             this.apps.push(create(app));
             savePhone(app.client_phone_number);
+        },
+        /**
+         * @param {Application} app
+         */
+        save(app) {
+            const foundApp = this.getApp(app.id);
+            if (foundApp) {
+                copy(foundApp, app);
+            } else {
+                this.push(app);
+            }
+        },
+        /**
+         * @param {Number} updateAppWithId
+         * @param {Application} app
+         */
+        update(updateAppWithId, app) {
+            const apps = this.apps;
+            for(let i = 0; i < apps.length; i++) {
+                if (Number(apps[i].id) === Number(updateAppWithId)) {
+                    copy(apps[i], app);
+                    break;
+                }
+            }
+        },
+        /**
+         * @param {Number} appId
+         */
+        delete(appId) {
+            const filter = this.apps.filter(app => app.id !== appId);
+            this.apps = filter;
+            console.log('filter delete:');
+            console.log(filter);
+        },
+        /**
+         * @param {Number} appId
+         * @return {Boolean}
+         */
+        appExists(appId) {
+            let found = false;
+            const filter = this.apps.filter(app => Number(app.id) === appId);
+            console.log('filter:');
+            console.log(filter);
+            if (filter.length > 0) {
+                found = true;
+            }
+            return found;
         },
         /**
          * @param {number} appId
@@ -46,7 +93,7 @@ export const useAppHistory = defineStore('app-history',{
         getApp(appId) {
             const apps = this.apps;
             for(let i = 0; i < apps.length; i++) {
-                if (Number(apps[i].id) === Number(appId)) {
+                if (Number(apps[i].id) === appId) {
                     return apps[i];
                 }
             }
@@ -91,6 +138,8 @@ export const useAppHistory = defineStore('app-history',{
                     app => numEquals(app.category, category)
                 );
             }
+
+            apps = apps.filter(app => app.id !== 0);
 
             return apps.sort((a, b) => {
                 return (a.date.trim() > b.date.trim())? -1 :

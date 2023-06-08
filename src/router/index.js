@@ -48,7 +48,7 @@ const routes = [
 		path: '/form/loader',
 		component: () => import('@/views/Services/Loader/Form.vue'),
 		meta: {
-			backFn: BackRouteFunctions.form.loader
+			backFn: BackRouteFunctions.loader.form
 		}
 	},
 	{
@@ -56,7 +56,7 @@ const routes = [
 		component: () => import('@/views/Services/Loader/Form.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.form.loader
+			backFn: BackRouteFunctions.loader.form
 		}
 	},
 	{
@@ -64,7 +64,7 @@ const routes = [
 		path: '/info/loader',
 		component: () => import('@/views/Services/Loader/Information.vue'),
 		meta: {
-			backFn: BackRouteFunctions.info.loader
+			backFn: BackRouteFunctions.loader.info
 		}
 	},
 
@@ -75,7 +75,7 @@ const routes = [
 		component: () => import('@/views/Services/Handyman/Categories.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.categories.handyman
+			backFn: BackRouteFunctions.handyman.categories
 		}
 	},
 	{
@@ -83,7 +83,7 @@ const routes = [
 		component: () => import('@/views/Services/Handyman/Form.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.form.handyman
+			backFn: BackRouteFunctions.handyman.form
 		}
 	},
 	{
@@ -91,24 +91,16 @@ const routes = [
 		component: () => import('@/views/Services/Handyman/Form.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.form.from_history.handyman
+			backFn: BackRouteFunctions.handyman.form_from_history
 		}
 	},
 	{
-		path: '/info/handyman/digger',
-		component: () => import('@/views/Services/Handyman/Information.vue')
-	},
-	{
-		path: '/info/handyman/plasterer',
-		component: () => import('@/views/Services/Handyman/Information.vue')
-	},
-	{
-		path: '/info/handyman/decorator',
-		component: () => import('@/views/Services/Handyman/Information.vue')
-	},
-	{
-		path: '/info/handyman/other',
-		component: () => import('@/views/Services/Handyman/Information.vue')
+		path: '/info/handyman/:category',
+		component: () => import('@/views/Services/Handyman/Information.vue'),
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.handyman.info
+		}
 	},
 
 	/*************** Moving ***************/
@@ -117,7 +109,7 @@ const routes = [
 		component: () => import('@/views/Services/Moving/Categories.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.categories.moving
+			backFn: BackRouteFunctions.moving.categories
 		}
 	},
 	{
@@ -125,7 +117,7 @@ const routes = [
 		component: () => import('@/views/Services/Moving/Categories.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.categories.moving
+			backFn: BackRouteFunctions.moving.categories_from_history
 		}
 	},
 	{
@@ -133,25 +125,34 @@ const routes = [
 		component: () => import('@/views/Services/Moving/Workers.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.workers.moving
+			backFn: BackRouteFunctions.moving.workers
 		}
 	},
 	{
 		path: '/moving/:category/workers/:appId',
 		component: () => import('@/views/Services/Moving/Workers.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.moving.workers_from_history
+		}
 	},
 	{
 		path: '/form/moving/:category/:workers',
 		name: 'FormMovingWorkers',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.moving.form
+		}
 	},
 	{
 		name: 'FormMovingWorkersAppId',
 		path: '/form/moving/:category/:workers/:appId',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.moving.form_from_history
+		}
 	},
 	{
 		name: 'MovingSecondForm',

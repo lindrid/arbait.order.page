@@ -323,7 +323,7 @@
     import { useNewAppStore } from '@/stores/app/new';
     import { PayMethod, Price } from '@/consts/pay';
     import { ServiceTypes } from "@/consts/service_type";
-    import { isItHardWork } from "@/services/application";
+    import {copy, isItHardWork} from "@/services/application";
 
     import router from '@/router';
     import _ from 'lodash';
@@ -406,9 +406,7 @@ export default {
                 this.increasePriceForFloor(this.application.floor_to);
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 250),
 
         /**
@@ -425,9 +423,7 @@ export default {
                 this.increasePriceForFloor(this.application.floor);
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 250),
 
         /**
@@ -442,9 +438,7 @@ export default {
                 this.increasePriceForFloor(this.application.floor_to);
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 250),
 
         /**
@@ -459,9 +453,7 @@ export default {
                 this.increasePriceForFloor(this.application.floor_to);
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 250),
 
         /**
@@ -469,9 +461,7 @@ export default {
          * @see applicationPayMethod
          */
         applicationPayMethod: _.debounce(function (newPayMethod) {
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500),
         /**
          * @param {string} newWorkerTotal
@@ -483,9 +473,7 @@ export default {
             if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
                 this.errors.worker_total = 'Неверное количество работников!';
             } else {
-                if (this.saved_app_values) {
-                    newAppStore.save(this.application);
-                }
+                this.saveToStore();
             }
         }, 500),
         /**
@@ -503,9 +491,7 @@ export default {
                 this.application.price -
                 Price.perHour.OUR_FOR_LOADERS;
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500),
     },
 
@@ -526,6 +512,7 @@ export default {
             action: 'create',
 
             saved_app_values: false,
+            appGotFromHistory: false,
 
             /**
              * @type {Application}
@@ -674,8 +661,12 @@ export default {
                 date: this.application.date,
                 time: this.application.time,
                 worker_total: this.application.worker_total,
+
                 price: this.application.price,
                 price_for_worker: this.application.price_for_worker,
+                driver_price: this.application.driver_price,
+                price_for_driver: this.application.price_for_driver,
+
                 hourly_job: this.application.hourly_job,
                 what_to_do: this.application.what_to_do,
                 give_tools: this.application.give_tools,
@@ -694,8 +685,15 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
-                    historyStore.push(this.application);
-                    newAppStore.clear();
+                    if (newAppStore.appExists) {
+                        console.log('here');
+                        historyStore.push(this.application);
+                        newAppStore.clear();
+                    } else {
+                        console.log('there');
+                        historyStore.update(0, this.application);
+                        historyStore.delete(0);
+                    }
                     phoneStore.save(this.application.client_phone_number);
                     router.push({name: 'Finish'});
                 }
@@ -743,18 +741,41 @@ export default {
         saveAppTime(app) {
             this.time_hours = app.time.slice(0, app.time.indexOf(':'));
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
-        }
+        },
+        /**
+         * save to history or newApp store
+         */
+        saveToStore() {
+            if (this.saved_app_values) {
+                if (this.appGotFromHistory) {
+                    historyStore.save(this.application);
+                } else {
+                    newAppStore.save(this.application);
+                }
+            }
+        },
     },
 
     props: {
         category: String,
     },
-    setup(props) {
-
-    },
 
     created () {
-        if (newAppStore.appExists) {
+         if (historyStore.getApp(0)) {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = historyStore.getApp(0);
+            if (app && app.service_type === this.application.service_type) {
+                this.saveAppValues(app);
+                this.saveAppTime(app);
+
+                this.appGotFromHistory = true;
+                console.log('historyStore');
+                console.log(app);
+            }
+        } else if (newAppStore.appExists) {
             /**
              *
              * @type {Application|null}
@@ -763,7 +784,8 @@ export default {
             if (app && app.service_type === this.application.service_type) {
                 this.saveAppValues(app);
                 this.saveAppTime(app);
-                console.log('application: ');
+
+                console.log('newAppStore');
                 console.log(app);
             }
         }

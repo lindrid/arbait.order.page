@@ -1,9 +1,3 @@
-<script setup>
-	import BackBtn from '@/components/Buttons/Back.vue'
-
-    const title = 'Информация';
-</script>
-
 <template>
     <div class="text-black-500 font-bold py-6 text-center">
         <span class="text-2xl"> {{ title }} </span>
@@ -12,7 +6,7 @@
     </div>
 	<main>
 		<section class="px-5">
-			<BackBtn :minus1-page="true"/>
+			<BackBtn />
 
             <div class="
                 flex flex-wrap mt-2 flex items-center justify-center
@@ -88,3 +82,15 @@
 		</section>
 	</main>
 </template>
+
+<script setup>
+import BackBtn from '@/components/Buttons/Back.vue'
+
+const title = 'Информация';
+const props = defineProps({
+    category: {
+        type: String,
+        default: 'other'
+    }
+});
+</script>
