@@ -149,28 +149,9 @@ export const BackRouteFunctions = {
         service: backToMain,
         service_category: backToHandymanCategories
     },
-    categories: {
-        handyman: backToMain,
-        moving: backToMovingActions,
-    },
-    workers: {
-        moving: backToMovingCategories
-    },
     history: {
         service: backToServiceActions,
         service_category: backToServiceCategoryActions
-    },
-    form: {
-        loader: backToLoaderActions,
-        handyman: backToHandymanActions,
-        from_history: {
-            handyman: backToHandymanHistory
-        }
-    },
-    info: {
-        loader: backToLoaderActions,
-        handyman: backToHandymanActions,
-        moving: backToMovingActions,
     },
 
     loader: {
@@ -190,15 +171,16 @@ export const BackRouteFunctions = {
         workers_from_history: backToMovingCategoriesHistory,
         form: backToMovingWorkers,
         form_from_history: backToMovingWorkersHistory,
+        info: backToMovingActions,
     },
     trash: {
         trucks: backToTrashCategories,
         categories: backToTrashActions,
-        info: backToTrashActions,
         workers: backToTrashTrucks,
         form: {
             first: backToTrashWorkers,
             second: backToTrashForm,
         },
+        info: backToTrashActions,
     }
 }

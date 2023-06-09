@@ -165,7 +165,7 @@ const routes = [
 		path: '/info/moving',
 		component: () => import('@/views/Services/Moving/Information.vue'),
 		meta: {
-			backFn: BackRouteFunctions.info.moving
+			backFn: BackRouteFunctions.moving.info
 		}
 	},
 	{
@@ -173,7 +173,7 @@ const routes = [
 		component: () => import('@/views/Services/Moving/Information.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.info.moving
+			backFn: BackRouteFunctions.moving.info
 		}
 	},
 

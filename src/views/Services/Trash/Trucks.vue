@@ -14,7 +14,7 @@
                 Выбор машины
             </strong>
 
-            <BackBtn :minus1-page="true" />
+            <BackBtn />
 
             <div class="
                 flex flex-wrap gap-6 mt-10 flex

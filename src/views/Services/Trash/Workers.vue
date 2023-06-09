@@ -19,7 +19,7 @@
                     для выноса мусора?
                 </strong>
 
-                <BackBtn :minus1-page="true" />
+                <BackBtn />
 
             <div class="
                 flex flex-wrap gap-6 mt-10 flex
@@ -33,7 +33,7 @@
                 <Pill
                     class="textXl text-center"
                     @click="movePage(category, truck,'no', appId)"
-                    :label="'Нет (вынесем сами)'"
+                    :label="'Нет'"
                 />
             </div>
 		</section>
