@@ -336,9 +336,11 @@ import { ServiceTypes } from "@/consts/service_type";
 import _ from 'lodash';
 import {MovingCategories} from "@/consts/categories/moving";
 import {copy} from "@/services/application";
+import {usePhoneStore} from "@/stores/app/phone";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
+const phoneStore = usePhoneStore();
 
 export default {
     computed: {
@@ -529,10 +531,8 @@ export default {
                     Price.perHour.LOADER.normal -
                     Price.perHour.OUR_FOR_LOADERS,
 
-                driver_price: Price.perHour.MOVING[this.category],
-                price_for_driver:
-                    Price.perHour.MOVING[this.category] -
-                    Price.perHour.OUR_FOR_DRIVERS,
+                driver_price: 0,
+                price_for_driver: 0,
 
                 hourly_job: 1,
                 edg: 0,
@@ -769,6 +769,10 @@ export default {
             Price.perHour.OUR_FOR_DRIVERS;
         this.application.category = this.category;
         this.saveToStore();
+
+        if (phoneStore.phoneExists) {
+            this.application.client_phone_number = phoneStore.phone;
+        }
 
         console.log('category = ' + this.category);
         console.log('workers = ' + this.workers);

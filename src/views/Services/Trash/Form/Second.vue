@@ -283,7 +283,6 @@
     const phoneStore = usePhoneStore();
 
 export default {
-
     computed: {
         applicationWorkerTotal() {
             return this.application.worker_total;

@@ -46,21 +46,21 @@ export const Price = {
     },
     TRASH: {
         construct: {
-            truck3: 3000,
-            truck5: 5000
+            truck3: 4500,
+            truck5: 7000
         },
         household: {
-            truck3: 2000,
-            truck5: 4000
+            truck3: 4500,
+            truck5: 7000
         },
         collect: {
-            truck3: 2500,
-            truck5: 4500
+            truck3: 4500,
+            truck5: 7000
         },
 
-        our: 1000,
+        our: 500,
         insulation: 1000,
-        glass_wool: 1500,
+        glass_wool: 1000,
         tires: 1000,
     }
 }

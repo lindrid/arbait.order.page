@@ -382,12 +382,13 @@ import { TrashCategories } from "@/consts/categories/trash";
 
 import _ from 'lodash';
 import {copy} from "@/services/application";
+import {usePhoneStore} from "@/stores/app/phone";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
+const phoneStore = usePhoneStore();
 
 export default {
-
     computed: {
         applicationAddress() {
             return this.application.address;
@@ -508,13 +509,15 @@ export default {
          * @param newInsulation
          */
         applicationInsulation: _.debounce(function (newInsulation) {
-            if (newInsulation) {
-                this.application.driver_price += Price.TRASH.insulation;
-            } else {
-                this.application.driver_price -= Price.TRASH.insulation;
-            }
-
             if (this.saved_app_values) {
+                if (newInsulation) {
+                    this.application.driver_price += Price.TRASH.insulation;
+                    this.application.price_for_driver += Price.TRASH.insulation;
+                } else {
+                    this.application.driver_price -= Price.TRASH.insulation;
+                    this.application.price_for_driver -= Price.TRASH.insulation;
+                }
+
                 if (!this.appGotFromHistory) {
                     newAppStore.save(this.application);
                 }
@@ -526,13 +529,15 @@ export default {
          * @param newGlassWool
          */
         applicationGlassWool: _.debounce(function (newGlassWool) {
-            if (newGlassWool) {
-                this.application.driver_price += Price.TRASH.glass_wool;
-            } else {
-                this.application.driver_price -= Price.TRASH.glass_wool;
-            }
-
             if (this.saved_app_values) {
+                if (newGlassWool) {
+                    this.application.driver_price += Price.TRASH.glass_wool;
+                    this.application.price_for_driver += Price.TRASH.glass_wool;
+                } else {
+                    this.application.driver_price -= Price.TRASH.glass_wool;
+                    this.application.price_for_driver -= Price.TRASH.glass_wool;
+                }
+
                 if (!this.appGotFromHistory) {
                     newAppStore.save(this.application);
                 }
@@ -544,13 +549,15 @@ export default {
          * @param newTires
          */
         applicationTires: _.debounce(function (newTires) {
-            if (newTires) {
-                this.application.driver_price += Price.TRASH.tires;
-            } else {
-                this.application.driver_price -= Price.TRASH.tires;
-            }
-
             if (this.saved_app_values) {
+                if (newTires) {
+                    this.application.driver_price += Price.TRASH.tires;
+                    this.application.price_for_driver += Price.TRASH.tires;
+                } else {
+                    this.application.driver_price -= Price.TRASH.tires;
+                    this.application.price_for_driver -= Price.TRASH.tires;
+                }
+
                 if (!this.appGotFromHistory) {
                     newAppStore.save(this.application);
                 }
@@ -596,10 +603,8 @@ export default {
                     Price.perHour.LOADER.hard -
                     Price.perHour.OUR_FOR_LOADERS,
 
-                driver_price: Price.TRASH[this.category][this.truck],
-                price_for_driver:
-                    Price.TRASH[this.category][this.truck] -
-                    Price.TRASH.our,
+                driver_price: 0,
+                price_for_driver: 0,
 
                 hourly_job: false,
                 edg: 0,
@@ -722,6 +727,7 @@ export default {
                         this.success = true;
                         this.application.id = response.data.id;
                         historyStore.push(this.application);
+                        phoneStore.save(this.application.client_phone_number);
                         this.$router.push({name: 'Finish'});
                     }
                 }).catch(function (error) {
@@ -816,10 +822,18 @@ export default {
             }
         }
 
+        if (phoneStore.phoneExists) {
+            this.application.client_phone_number = phoneStore.phone;
+        }
+
+        this.application.driver_price = Price.TRASH[this.category][this.truck];
+        this.application.price_for_driver = Price.TRASH[this.category][this.truck] -
+            Price.TRASH.our;
+
         console.log('category = ' + this.category);
         console.log('workers = ' + this.workers);
         console.log('price =' + Price.TRASH[this.category][this.truck]);
-        console.log('application.driver_price =' + this.application.driver_price);
+        console.log('application.price_for_driver =' + this.application.price_for_driver);
     },
 
     updated() {
