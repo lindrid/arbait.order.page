@@ -18,7 +18,7 @@ const backToServiceActions = (params) => {
  * @type TBackRouteFn
  */
 const backToServiceCategoryActions = (params) => {
-    return params.service + '/' + params.category + '/actions';
+    return '/' + params.service + '/' + params.category + '/actions';
 }
 
 /************************* Loader *************************/

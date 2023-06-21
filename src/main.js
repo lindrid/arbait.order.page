@@ -12,7 +12,7 @@ import '@/styles/app.css'
 import 'vue-silentbox/dist/style.css'
 
 const instance = axios.create({
-    baseURL: 'https://arbait.in/api',
+    baseURL: 'https://crm.arbait.in/api',
     withCredentials: false,
     headers: {
         Accept: 'application/json',

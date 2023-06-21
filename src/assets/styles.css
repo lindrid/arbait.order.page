@@ -1,9 +1,10 @@
 .section {
     @apply
         w-[400px]
-        max-sm:w-[300px]
+        max-sm:w-full
+        max-md:w-full
 
-        max-sm:ml-2
+        max-sm:ml-[25%]
         sm:ml-5
         md:ml-7
         lg:ml-7

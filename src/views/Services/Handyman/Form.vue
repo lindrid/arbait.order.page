@@ -4,7 +4,7 @@
 
     const props = defineProps({
         appId: {
-            type: Number,
+            type: String,
             default: null
         },
         category: {

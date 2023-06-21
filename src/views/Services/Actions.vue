@@ -18,8 +18,8 @@
             </span>
 
             <span>
-                <div class="
-                  flex flex-wrap mt-16 flex items-center justify-center
+                <span class="
+                  flex flex-wrap mt-16 items-center justify-center
                   3xl:px-[300px] 2xl:px-[150px] px-[50px]"
                 >
                     <Pill
@@ -27,11 +27,11 @@
                         @click="formPage(service, category)"
                         :label='labelNewApp'
                     />
-                </div>
+                </span>
 
-                <div class="
-                  flex flex-wrap flex items-center justify-center
-                  3xl:px-[300px] 2xl:px-[150px] px-[50px]"
+                <span class="flex flex-wrap items-center justify-center
+                            3xl:px-[300px] 2xl:px-[150px] px-[50px]"
+                    v-if="service !== 'trash'"
                 >
                     <Pill
                         v-if="
@@ -44,12 +44,12 @@
                         @click="historyPage(service, category)"
                         :label="labelRepeatApp"
                     />
-                </div>
+                </span>
 
 
                     <template v-for="(item, x) in actions" :key="x">
                         <div class="
-                            flex flex-wrap flex items-center justify-center
+                            flex flex-wrap items-center justify-center
                             3xl:px-[300px] 2xl:px-[150px] px-[50px]"
                         >
                             <span

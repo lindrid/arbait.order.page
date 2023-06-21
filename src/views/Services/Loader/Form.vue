@@ -861,14 +861,19 @@ export default {
     },
 
     props: {
-        appId: Number
+        appId: String
     },
 
     created () {
+        console.log('appId = ');
+        console.log(this.appId);
+
         this.application.date = this.current_day('-');
 
         if (this.appId) {
-            const app = historyStore.getApp(this.appId);
+            const app = historyStore.getApp(Number(this.appId));
+            console.log('app=');
+            console.log(app);
             if (app) {
                 copy(this.application, app, ['date', 'time']);
                 this.application.date = this.current_day('-');

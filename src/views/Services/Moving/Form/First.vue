@@ -637,7 +637,7 @@ export default {
                     address_to: this.application.address_to,
                     date: this.application.date,
                     time: this.application.time,
-                    worker_total: 0,
+                    worker_total: 1,
                     price: 1,
                     price_for_worker: 1,
                     driver_price: this.application.driver_price,

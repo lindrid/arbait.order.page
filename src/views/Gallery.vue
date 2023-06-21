@@ -2,10 +2,9 @@
 	<main>
         <BackBtn :minus1-page="true" class-def="ml-2 text-green-500 text-xl"/>
 
-        <silent-box
-            :gallery="loaders"
-            class="justify-center items-center flex mt-10 ml-10 gap-2"
-        ></silent-box>
+        <silent-box :gallery="loaders" class="justify-center items-center flex mt-10 ml-10 gap-2">
+
+        </silent-box>
 
         <silent-box
             :image="moving[0]"
@@ -40,7 +39,7 @@ const loaders = [
         thumbnail: '/images/1.jpeg',
         thumbnailHeight: 200,
         thumbnailWidth: 92,
-        alt: 'Image Alt',
+        alt: '1',
     },
     {
         src: '/images/2.jpeg',
@@ -48,6 +47,7 @@ const loaders = [
         thumbnail: '/images/2.jpeg',
         thumbnailHeight: 200,
         thumbnailWidth: 112,
+        alt: '2',
     },
     {
         src: '/images/3.jpeg',
@@ -55,8 +55,42 @@ const loaders = [
         thumbnail: '/images/3.jpeg',
         thumbnailHeight: 200,
         thumbnailWidth: 150,
+        alt: '3',
+    },
+    {
+        src: '/images/4.jpeg',
+        description: 'Грузчики 4',
+        thumbnail: '/images/4.jpeg',
+        thumbnailHeight: 200,
+        thumbnailWidth: 92,
+        alt: '4',
+    },
+    {
+        src: '/images/5.jpeg',
+        description: 'Грузчики 5',
+        thumbnail: '/images/5.jpeg',
+        thumbnailHeight: 200,
+        thumbnailWidth: 92,
+        alt: '5',
+    },
+    {
+        src: '/images/6.jpeg',
+        description: 'Грузчики 6',
+        thumbnail: '/images/6.jpeg',
+        thumbnailHeight: 200,
+        thumbnailWidth: 92,
+        alt: '6',
     },
 ];
+
+const silentboxItem = {
+    src: '/images/6.jpeg',
+    description: 'Грузчики 6',
+    thumbnail: '/images/6.jpeg',
+    thumbnailHeight: 200,
+    thumbnailWidth: 92,
+    alt: 'Image Alt',
+};
 
 const moving = [
     {
@@ -126,4 +160,5 @@ const handyman = [
         thumbnailWidth: 112,
     },
 ];
+
 </script>

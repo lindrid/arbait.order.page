@@ -784,7 +784,7 @@ export default {
     },
 
     props: {
-        appId: Number,
+        appId: String,
         label: String,
         category: String
     },
@@ -800,7 +800,11 @@ export default {
         this.application.date = this.current_day('-');
 
         if (this.appId) {
-            const app = historyStore.getApp(this.appId);
+            /**
+             *
+             * @type {Application | null}
+             */
+            const app = historyStore.getApp(Number(this.appId));
             if (app) {
                 copy(this.application, app, ['date', 'time']);
 
@@ -810,7 +814,7 @@ export default {
         } else if (newAppStore.appExists) {
             /**
              *
-             * @type {Application}
+             * @type {Application | null}
              */
             const app = newAppStore.app;
             if (app && app.service_type === this.application.service_type) {

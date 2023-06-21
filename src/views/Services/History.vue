@@ -102,7 +102,7 @@ const props = defineProps({
              * @param {string|null} category
              * @param {number} appId
              */
-                page: function (page, service, category, appId) {
+            page: function (page, service, category, appId) {
                 let path = '/' + page ;
                 console.log(appId);
 
