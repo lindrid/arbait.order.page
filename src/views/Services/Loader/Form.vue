@@ -475,13 +475,13 @@ export default {
             return this.application.hourly_job;
         },
         applicationWhatToDo() {
-          return this.application.what_to_do;
+            return this.application.what_to_do;
         },
         applicationPrice() {
-          return this.application.price;
+            return this.application.price;
         },
         applicationPriceForWorker() {
-          return this.application.price_for_worker;
+            return this.application.price_for_worker;
         },
         applicationPayMethod() {
             return this.application.pay_method;
@@ -522,12 +522,7 @@ export default {
          * @param newAddress
          */
         applicationAddress: _.debounce(function (newAddress) {
-            if (this.saved_app_values) {
-                console.log('watch');
-                newAppStore.save(this.application);
-                console.log('this.application: ');
-                console.log(this.application);
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -540,11 +535,10 @@ export default {
             const date = newDate.split("-");
             if (!this.isValidDate(date[0], date[1], date[2])) {
                 this.errors.date = "Неправильная дата!";
+                return;
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -556,6 +550,7 @@ export default {
             if (newHours < 0 || newHours > 24) {
                 this.error = true;
                 this.errors.time_hours = 'Неверное количество часов';
+                return;
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
@@ -567,6 +562,7 @@ export default {
             if (newMinutes < 0 || newMinutes > 60) {
                 this.error = true;
                 this.errors.time_minutes = 'Неверное количество минут';
+                return;
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
@@ -577,9 +573,7 @@ export default {
          * @param newTime
          */
         applicationTime: _.debounce(function(newTime) {
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -593,11 +587,10 @@ export default {
 
             if (!this.isNormalInt(newWorkerTotal) || newWorkerTotal < 1 || newWorkerTotal > 30) {
                 this.errors.worker_total = 'Неверное количество работников!';
+                return;
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -606,53 +599,16 @@ export default {
          * @see applicationHourlyJob
          */
         applicationHourlyJob: _.debounce(function (hourly) {
-            if (hourly) {
-                const price = isItHardWork(this.applicationWhatToDo()) ?
-                    Price.perHour.LOADER.hard :
-                    Price.perHour.LOADER.normal;
-
-                this.application.price = price;
-                this.application.price_for_worker = price -
-                    Price.perHour.OUR_FOR_LOADERS;
-            } else {
-                const price = isItHardWork(this.applicationWhatToDo()) ?
-                    Price.perDay.LOADER.hard :
-                    Price.perDay.LOADER.normal;
-
-                this.application.price = price;
-                this.application.price_for_worker = price -
-                    8 * Price.perHour.OUR_FOR_LOADERS;
-            }
-
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.setPrices();
+            this.saveToStore();
         }, 500),
 
         /**
         * @param {number} newVal
         */
         applicationWhatToDo: _.debounce(function(newVal) {
-            const hardWork = isItHardWork(newVal);
-            console.log(hardWork);
-
-            const perPrice = this.applicationHourlyJob ?
-                Price.perHour :
-                Price.perDay;
-
-            const c = this.applicationHourlyJob ? 1 : 8;
-
-            this.application.price = hardWork ?
-                perPrice.LOADER.hard :
-                perPrice.LOADER.normal;
-
-            this.application.price_for_worker =
-                this.application.price -
-                c * Price.perHour.OUR_FOR_LOADERS;
-
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.setPrices();
+            this.saveToStore();
         }, 500),
 
         /**
@@ -664,11 +620,10 @@ export default {
 
             if (newPrice <= 0) {
                 this.errors.price = 'Неверная цена!';
+                return;
             }
 
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
+            this.saveToStore();
         }, 500),
 
         /**
@@ -689,10 +644,25 @@ export default {
          * @see applicationPayMethod()
          */
         applicationPayMethod: function (newVal) {
-            if (this.saved_app_values) {
-                newAppStore.save(this.application);
-            }
-        }
+            this.saveToStore();
+        },
+
+        /**
+         * @see applicationFloor
+         */
+        applicationFloor: _.debounce(function (newFloor) {
+            console.log(newFloor);
+            this.setPrices();
+            this.saveToStore();
+        }, 250),
+
+        /**
+         * @see applicationElevator
+         */
+        applicationElevator: _.debounce(function (newElevator) {
+            this.setPrices();
+            this.saveToStore();
+        }, 250),
     },
 
     data: function () {
@@ -755,6 +725,79 @@ export default {
     },
 
     methods: {
+        /**
+         * save to history or newApp store
+         */
+        saveToStore() {
+            if (this.saved_app_values) {
+                if (this.appGotFromHistory) {
+                    historyStore.save(this.application);
+                } else {
+                    newAppStore.save(this.application);
+                }
+            }
+        },
+
+        /**
+         * Добавка к цене за этажы:
+         *
+         * 4-6 +25
+         *
+         * 7-9 +50
+         *
+         * 10-12 +75
+         *
+         * 13-15 +100
+         *
+         * @param {number} newFloor
+         */
+        increasePriceForFloor(newFloor) {
+            let addition = 0;
+            if (4 <= newFloor && newFloor <= 6) {
+                addition = 25;
+            } else if (7 <= newFloor && newFloor <= 9) {
+                addition = 50;
+            } else if (10 <= newFloor && newFloor <= 12) {
+                addition = 75;
+            } else if (12 < newFloor) {
+                addition = 100;
+            }
+
+            this.application.price += addition;
+            this.application.price_for_worker += addition;
+
+            if (this.application.price > 450) {
+                this.application.price = 450;
+            }
+
+            if (this.application.price_for_worker > 400) {
+                this.application.price_for_worker = 400;
+            }
+        },
+
+        setPrices() {
+            const hardWork = isItHardWork(this.applicationWhatToDo);
+            console.log(hardWork);
+
+            const perPrice = this.applicationHourlyJob ?
+                Price.perHour :
+                Price.perDay;
+
+            const c = this.applicationHourlyJob ? 1 : 8;
+
+            this.application.price = hardWork ?
+                perPrice.LOADER.hard :
+                perPrice.LOADER.normal;
+
+            this.application.price_for_worker =
+                this.application.price -
+                c * Price.perHour.OUR_FOR_LOADERS;
+
+            if (!!this.application.elevator === false) {
+                this.increasePriceForFloor(this.application.floor);
+            }
+        },
+
         /**
          * @param {string} str
          */
@@ -903,6 +946,7 @@ export default {
 
     updated() {
         this.saved_app_values = true;
+        this.setPrices();
     }
 }
 </script>
