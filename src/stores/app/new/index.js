@@ -30,8 +30,7 @@ export const useNewAppStore = defineStore('app-new',{
                     this.app = create(app);
                 } else {
                     copy(this.app, app);
-                    console.log('copy');
-                    console.log('waypoints:');
+                    console.log('app:');
                     console.log(app);
                 }
             }

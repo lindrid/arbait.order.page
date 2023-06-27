@@ -141,6 +141,13 @@ const backToTrashForm = (params) => {
     return backToTrashWorkers(params) + '/' + params.workers;
 }
 
+/**
+ * @type TBackRouteFn
+ *
+ */
+const backToLoaderHistory = (params) => {
+    return '/history/loader';
+}
 
 // noinspection JSValidateJSDoc
 export const BackRouteFunctions = {
@@ -156,6 +163,7 @@ export const BackRouteFunctions = {
 
     loader: {
         form: backToLoaderActions,
+        form_from_history: backToLoaderHistory,
         info: backToLoaderActions
     },
     handyman: {

@@ -3,11 +3,11 @@
         w-[400px]
         max-sm:w-full
         max-md:w-full
+        xl:w-[600px]
 
-        max-sm:ml-[25%]
-        sm:ml-5
-        md:ml-7
-        lg:ml-7
-        xl:ml-9
+        sm:ml-[2%]
+        md:ml-[3%]
+        lg:ml-[3%]
+        xl:ml-[6%]
     bg-gray-50 py-8 px-5 rounded mb-8;
 }

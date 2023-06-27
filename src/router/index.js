@@ -56,7 +56,7 @@ const routes = [
 		component: () => import('@/views/Services/Loader/Form.vue'),
 		props: true,
 		meta: {
-			backFn: BackRouteFunctions.loader.form
+			backFn: BackRouteFunctions.loader.form_from_history
 		}
 	},
 	{

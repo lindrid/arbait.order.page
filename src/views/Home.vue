@@ -38,11 +38,16 @@
 </template>
 
 <script setup>
+import {onMounted, onUpdated, ref} from "vue";
     import { useRouter } from 'vue-router';
     import Pill from '@/components/Pill.vue';
 	import Footer from '@/components/Footer.vue';
     import Header from "@/components/Header.vue";
-	
+    import Swal from 'sweetalert2';
+
+    import 'sweetalert2/src/sweetalert2.scss';
+    import {useAlertStore} from "@/stores/app/alert";
+
 	const router = useRouter()
 
 	const movePage = function (service) {
@@ -57,6 +62,16 @@
             }
         });
     }
+
+    const alertStore = useAlertStore();
+
+    onMounted(() => {
+        if (!alertStore.alerted) {
+            Swal.fire("Здравствуйте! Вы можете заказать услугу по телефону или самостоятельно," +
+                " получив скидку 10%");
+            alertStore.alerted = true;
+        }
+    })
 	
 	const services = [
         {
