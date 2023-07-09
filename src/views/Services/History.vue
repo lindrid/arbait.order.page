@@ -113,9 +113,11 @@ const props = defineProps({
                 }
 
                 console.log(path);
-                router.push({
-                    path: path + '/' + appId,
-                });
+                (async () => {
+                    await router.push({
+                        path: path + '/' + appId,
+                    });
+                })()
             },
 
             /**

@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-    const number = '+79240004030';
+    const number = '+79244298474';
 
     const openPhoneNumber = function() {
         window.open('tel:' + number);

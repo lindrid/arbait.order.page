@@ -337,6 +337,7 @@ import _ from 'lodash';
 import {MovingCategories} from "@/consts/categories/moving";
 import {copy} from "@/services/application";
 import {usePhoneStore} from "@/stores/app/phone";
+import router from "@/router";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
@@ -658,7 +659,9 @@ export default {
                         this.application.id = response.data.id;
                         historyStore.push(this.application);
                         historyStore.delete(0);
-                        this.$router.push({name: 'Finish'});
+                        (async () => {
+                            await router.push({name: 'Finish'});
+                        })()
                     }
                 }).catch(function (error) {
                     console.log(error);

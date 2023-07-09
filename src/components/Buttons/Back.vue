@@ -2,10 +2,9 @@
     <i v-if="icon" class="fa fa-chevron-left"></i>
 
     <span   v-if="minus1Page"
-
         @click="router.go(-1)"
         :class="classDef"
-    >Назад</span>
+        >Назад</span>
 
     <span   v-else>
         <router-link

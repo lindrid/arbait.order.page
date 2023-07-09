@@ -559,7 +559,7 @@ export default {
         time_minutes: _.debounce(function (newMinutes) {
             this.errors.time_minutes = undefined;
 
-            if (newMinutes < 0 || newMinutes > 60) {
+            if (newMinutes < 0 || newMinutes > 59) {
                 this.error = true;
                 this.errors.time_minutes = 'Неверное количество минут';
                 return;
@@ -868,7 +868,9 @@ export default {
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
                     phoneStore.save(this.application.client_phone_number);
-                    router.push({name: 'Finish'});
+                    (async () => {
+                        await router.push({name: 'Finish'});
+                    })()
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -911,8 +913,6 @@ export default {
         console.log('appId = ');
         console.log(this.appId);
 
-        this.application.date = this.current_day('-');
-
         if (this.appId) {
             const app = historyStore.getApp(Number(this.appId));
             console.log('app=');
@@ -927,7 +927,7 @@ export default {
         } else if (newAppStore.appExists) {
             /**
              *
-             * @type {Application}
+             * @type {Application|null}
              */
             const app = newAppStore.app;
             if (app && app.service_type === this.application.service_type) {
@@ -937,6 +937,11 @@ export default {
                 console.log('newAppStore');
                 console.log(app);
             }
+        }
+
+        const currentDay =  this.current_day('-');
+        if (this.application.date < currentDay) {
+            this.application.date = currentDay;
         }
 
         if (phoneStore.phoneExists) {

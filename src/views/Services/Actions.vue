@@ -103,6 +103,7 @@
     import {MovingCategories} from "@/consts/categories/moving";
     import {ServiceTypes} from "@/consts/service_type";
     import {HandymanCategories} from "@/consts/categories/handyman";
+    import router from "@/router";
 
     export default {
         data: function() {
@@ -180,7 +181,9 @@
                     path = '/categories/' + service;
                 }
 
-                this.router.push({ path: path });
+                (async () => {
+                    await this.router.push({ path: path });
+                })()
             },
 
             formPage: function (service, category) {

@@ -734,7 +734,9 @@ export default {
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
                     phoneStore.save(this.application.client_phone_number);
-                    router.push({name: 'Finish'});
+                    (async () => {
+                        await router.push({name: 'Finish'});
+                    })()
                 }
             }).catch(function (error) {
                 console.log(error);

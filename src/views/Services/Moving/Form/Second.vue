@@ -695,7 +695,9 @@ export default {
                         historyStore.delete(0);
                     }
                     phoneStore.save(this.application.client_phone_number);
-                    router.push({name: 'Finish'});
+                    (async () => {
+                        await router.push({name: 'Finish'});
+                    })()
                 }
             }).catch(function (error) {
                 console.log(error);

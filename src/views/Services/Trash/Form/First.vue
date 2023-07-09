@@ -383,6 +383,7 @@ import { TrashCategories } from "@/consts/categories/trash";
 import _ from 'lodash';
 import {copy} from "@/services/application";
 import {usePhoneStore} from "@/stores/app/phone";
+import router from "@/router";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
@@ -728,7 +729,9 @@ export default {
                         this.application.id = response.data.id;
                         historyStore.push(this.application);
                         phoneStore.save(this.application.client_phone_number);
-                        this.$router.push({name: 'Finish'});
+                        (async () => {
+                            await router.push({name: 'Finish'});
+                        })()
                     }
                 }).catch(function (error) {
                     console.log(error);
