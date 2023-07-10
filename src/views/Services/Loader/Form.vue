@@ -407,6 +407,8 @@
                     </span>
             </div>
 
+            <CircleProgressBar v-if="showBar" :value="10" :max="10" />
+
             <div class="2xl:mt-8 xl:mt-6 mt-4">
                 <button
                     type="submit"
@@ -439,6 +441,7 @@
     import { PayMethod } from "@/consts/pay";
     import Header from "@/components/Header.vue";
     import Back from "@/components/Buttons/Back.vue";
+    import { CircleProgressBar } from 'circle-progress.vue';
 </script>
 
 <script>
@@ -669,6 +672,7 @@ export default {
         return {
             additionClientPhoneKey: 0,
             saved_app_values: false,
+            showBar: false,
 
             client_has_second_phone: undefined,
 
@@ -841,6 +845,8 @@ export default {
             const addl_client_phone_number = this.client_has_second_phone ?
                 this.application.addl_client_phone_number : null;
 
+            this.showBar = true;
+
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
                 address: this.application.address,
@@ -868,12 +874,15 @@ export default {
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
                     phoneStore.save(this.application.client_phone_number);
+                    this.showBar = false;
                     (async () => {
                         await router.push({path: '/form/finish'});
+                        this.$Progress.finish();
                     })()
                 }
             }).catch(function (error) {
                 console.log(error);
+                this.$Progress.fail();
             })
         },
 
@@ -907,6 +916,9 @@ export default {
 
     props: {
         appId: String
+    },
+
+    mounted() {
     },
 
     created () {
