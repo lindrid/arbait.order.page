@@ -97,6 +97,18 @@ const backToMovingWorkers = (params) => {
  *
  * @type TBackRouteFn
  */
+const backToFormFirst = (params) => {
+    let result = '/form/moving/' + params.category + '/yes';
+    if (params.appId) {
+        result += '/' + params.appId;
+    }
+    return result;
+};
+
+/**
+ *
+ * @type TBackRouteFn
+ */
 const backToMovingWorkersHistory = (params) => {
     return '/moving/' + params.category + '/workers/' + params.appId
 };
@@ -178,6 +190,7 @@ export const BackRouteFunctions = {
         categories_from_history: backToMovingHistory,
         workers_from_history: backToMovingCategoriesHistory,
         form: backToMovingWorkers,
+        form_second: backToFormFirst,
         form_from_history: backToMovingWorkersHistory,
         info: backToMovingActions,
     },

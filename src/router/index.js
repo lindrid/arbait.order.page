@@ -138,7 +138,6 @@ const routes = [
 	},
 	{
 		path: '/form/moving/:category/:workers',
-		name: 'FormMovingWorkers',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
 		props: true,
 		meta: {
@@ -146,7 +145,6 @@ const routes = [
 		}
 	},
 	{
-		name: 'FormMovingWorkersAppId',
 		path: '/form/moving/:category/:workers/:appId',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
 		props: true,
@@ -155,10 +153,28 @@ const routes = [
 		}
 	},
 	{
-		name: 'MovingSecondForm',
-		path: '/form/moving/second/:category/',
+		path: '/form/moving/:category/:workers/:appId/:fromHistory',
+		component: () => import('@/views/Services/Moving/Form/First.vue'),
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.moving.form_from_history
+		}
+	},
+	{
+		path: '/form/moving/second/:category',
 		component: () => import('@/views/Services/Moving/Form/Second.vue'),
-		props: true
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.moving.form_second
+		}
+	},
+	{
+		path: '/form/moving/second/:category/:appId',
+		component: () => import('@/views/Services/Moving/Form/Second.vue'),
+		props: true,
+		meta: {
+			backFn: BackRouteFunctions.moving.form_second
+		}
 	},
 	{
 		name: 'InfoMoving',

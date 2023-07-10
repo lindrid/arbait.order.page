@@ -869,7 +869,7 @@ export default {
                     historyStore.push(this.application);
                     phoneStore.save(this.application.client_phone_number);
                     (async () => {
-                        await router.push({name: 'Finish'});
+                        await router.push({path: '/form/finish'});
                     })()
                 }
             }).catch(function (error) {
@@ -931,7 +931,7 @@ export default {
              */
             const app = newAppStore.app;
             if (app && app.service_type === this.application.service_type) {
-                copy(this.application, app, ['time']);
+                copy(this.application, app);
                 this.assignTime(app);
 
                 console.log('newAppStore');
@@ -947,11 +947,12 @@ export default {
         if (phoneStore.phoneExists) {
             this.application.client_phone_number = phoneStore.phone;
         }
+
+        this.setPrices();
     },
 
     updated() {
         this.saved_app_values = true;
-        this.setPrices();
     }
 }
 </script>

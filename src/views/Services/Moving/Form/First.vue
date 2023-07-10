@@ -197,7 +197,7 @@
 
             <div class="2xl:mt-6 xl:mt-4 mt-2">
             <span class="text-xl">
-                <b class="text-red-700">Цена за {{ MovingCategories[category].formLabel }} - </b>
+                <b class="text-red-700">Цена за {{ MovingCategories[this.application.category].formLabel }} - </b>
                 <span v-if="applicationHourlyJob">
                     {{ applicationDriverPrice }}
                     {{ Number.isInteger(applicationDriverPrice) ? 'р/час' : '' }}
@@ -409,7 +409,7 @@ export default {
          * @param newAddress
          */
         applicationAddress: _.debounce(function (newAddress) {
-            this.saveToStore();
+            this.saveToStore('address');
         }, 500),
 
         /**
@@ -418,7 +418,7 @@ export default {
          */
         applicationWaypoints: _.debounce(function (newWaypoints) {
             console.log(newWaypoints);
-            this.saveToStore();
+            this.saveToStore('waypoints');
         }, 500),
 
         /**
@@ -426,7 +426,7 @@ export default {
          * @param newAddressTo
          */
         applicationAddressTo: _.debounce(function (newAddressTo) {
-            this.saveToStore();
+            this.saveToStore('address_to');
         }, 500),
 
         /**
@@ -434,7 +434,7 @@ export default {
          * @param newDriverPrice
          */
         applicationDriverPrice: _.debounce(function (newDriverPrice) {
-            this.saveToStore();
+            this.saveToStore('driver_price');
         }, 500),
 
         /**
@@ -442,7 +442,7 @@ export default {
          * @param newPriceForDriver
          */
         applicationPriceForDriver: _.debounce(function (newPriceForDriver) {
-            this.saveToStore();
+            this.saveToStore('price_for_driver');
         }, 500),
 
         /**
@@ -457,7 +457,7 @@ export default {
                 this.errors.date = "Неправильная дата!";
             }
 
-            this.saveToStore();
+            this.saveToStore('date');
         }, 500),
 
         /**
@@ -465,7 +465,7 @@ export default {
          * @see applicationTime()
          */
         applicationTime: _.debounce(function(newTime) {
-            this.saveToStore();
+            this.saveToStore('time');
         }, 500),
 
         /**
@@ -498,7 +498,7 @@ export default {
          * @param newWhatToDo
          */
         applicationWhatToDo: _.debounce(function (newWhatToDo) {
-            this.saveToStore();
+            this.saveToStore('applicationWhatToDo');
         }, 500)
     },
 
@@ -532,8 +532,10 @@ export default {
                     Price.perHour.LOADER.normal -
                     Price.perHour.OUR_FOR_LOADERS,
 
-                driver_price: 0,
-                price_for_driver: 0,
+                driver_price: Price.perHour.MOVING[this.category],
+                price_for_driver:
+                    Price.perHour.MOVING[this.category] -
+                    Price.perHour.OUR_FOR_DRIVERS,
 
                 hourly_job: 1,
                 edg: 0,
@@ -623,12 +625,12 @@ export default {
                 console.log(this.application);
                 console.log('appExists = ' + newAppStore.appExists);
 
-                this.$router.push({
-                    name: 'MovingSecondForm',
-                    params: {
-                        category: this.category
-                    }
-                });
+                (async () => {
+                    const appId = this.appId ? '/' + this.appId : '';
+                    await router.push({
+                        path: '/form/moving/second/' + this.category + appId
+                    });
+                })()
             } else {
                 this.$axios.post('/application/store_from_site', {
                     service_type: this.application.service_type,
@@ -660,7 +662,7 @@ export default {
                         historyStore.push(this.application);
                         historyStore.delete(0);
                         (async () => {
-                            await router.push({name: 'Finish'});
+                            await router.push({path: '/form/finish'});
                         })()
                     }
                 }).catch(function (error) {
@@ -672,12 +674,16 @@ export default {
         /**
          * save to history or newApp store
          */
-        saveToStore() {
+        saveToStore(param) {
             if (this.saved_app_values) {
                 if (this.appGotFromHistory) {
                     historyStore.save(this.application);
+                    console.log('save <' + param + '> to history store');
+                    console.log('application.' + param + ' = ' + this.application[param]);
                 } else {
                     newAppStore.save(this.application);
+                    console.log('save <' + param + '> to new store');
+                    console.log('application.' + param + ' = ' + this.application[param]);
                 }
             }
         },
@@ -720,12 +726,58 @@ export default {
             this.time_hours = app.time.slice(0, app.time.indexOf(':'));
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         },
+
+        showById() {
+            const app = historyStore.getApp(Number(this.appId));
+            if (app) {
+                copy(this.application, app, ['id', 'date', 'time']);
+                this.appGotFromHistory = true;
+            } else {
+                console.log('error')
+            }
+            console.log('showById');
+            console.log(app);
+        },
+
+        showUpdated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = historyStore.getApp(0);
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+                this.appGotFromHistory = true;
+            } else {
+                this.showById();
+            }
+            console.log('showUpdated');
+            console.log(app);
+        },
+
+        showNewlyCreated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = newAppStore.app;
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+            }
+            console.log('showNewlyCreated');
+            console.log(app);
+        }
     },
 
     props: {
         appId: String,
         category: String,
-        workers: String
+        workers: String,
+        fromHistory: String
     },
     setup(props) {
 
@@ -734,51 +786,37 @@ export default {
     created () {
         this.application.date = this.current_day('-');
 
-        if (historyStore.appExists(0)) {
-            console.log('here');
-            const app = historyStore.getApp(0);
-            if (app && app.service_type === this.application.service_type) {
-                copy(this.application, app, ['id', 'time']);
-                this.saveAppTime(app);
+        if (this.fromHistory) {
+            if (this.appId) {
+                this.showById();
+            } else {
+                console.log('Error! appId is required!')
             }
-        } else if (this.appId) {
-            const app = historyStore.getApp(Number(this.appId));
-            if (app) {
-                this.appGotFromHistory = true;
-                copy(this.application, app, ['id', 'date', 'time']);
-                this.application.date = this.current_day('-');
-            }
-            console.log('historyStore');
-            console.log(app);
-        } else if (newAppStore.appExists) {
-            console.log('there');
-            /**
-             *
-             * @type {Application|null}
-             */
-            const app = newAppStore.app;
-            if (app && app.service_type === this.application.service_type) {
-                copy(this.application, app, ['time']);
-                this.saveAppTime(app);
-
-                console.log('newAppStore');
-                console.log(app);
+        } else {
+            if (historyStore.appExists(0)) {
+                this.showUpdated();
+            } else if (this.appId) {
+                this.showById();
+            } else if (newAppStore.appExists) {
+                this.showNewlyCreated();
+            } else {
+                console.log('Error! appId is required!')
             }
         }
-
-        this.application.id = 0;
-        this.application.driver_price = Price.perHour.MOVING[this.category];
-        this.application.price_for_driver = this.application.driver_price -
-            Price.perHour.OUR_FOR_DRIVERS;
-        this.application.category = this.category;
-        this.saveToStore();
 
         if (phoneStore.phoneExists) {
             this.application.client_phone_number = phoneStore.phone;
         }
 
+        this.application.category = this.category;
+        this.application.driver_price = Price.perHour.MOVING[this.category];
+        this.application.price_for_driver =
+            Price.perHour.MOVING[this.category] -
+            Price.perHour.OUR_FOR_DRIVERS;
+
         console.log('category = ' + this.category);
         console.log('workers = ' + this.workers);
+        console.log('price = ');
     },
 
     updated() {

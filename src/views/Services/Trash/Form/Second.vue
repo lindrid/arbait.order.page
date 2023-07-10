@@ -651,7 +651,7 @@ export default {
                     newAppStore.clear();
                     phoneStore.save(this.application.client_phone_number);
                     (async () => {
-                        await router.push({name: 'Finish'});
+                        await router.push({path: '/form/finish'});
                     })()
                 }
             }).catch(function (error) {

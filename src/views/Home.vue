@@ -52,7 +52,7 @@ import {onMounted, onUpdated, ref} from "vue";
 
 	const movePage = function (service) {
         if (service === 'handyman') {
-            router.push({name: 'HandymanCategories'});
+            router.push({path: '/categories/handyman'});
             return;
         }
         router.push({

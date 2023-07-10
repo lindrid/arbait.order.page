@@ -46,15 +46,13 @@
 	const router = useRouter()
 
 	const movePage = function (category, answer, appId) {
-        const name = appId === null ? 'FormMovingWorkers' : 'FormMovingWorkersAppId';
-        router.push({
-            name: name,
-            params: {
-                category: category,
-                workers: answer,
-                appId: appId
-            }
-        });
+        const url = appId === null ?
+            '/form/moving/' + category + '/' + answer :
+            '/form/moving/' + category + '/' + answer + '/' + appId + '/history'
+        ;
+        (async () => {
+            await router.push({ path: url });
+        }) ();
     }
 
     const props = defineProps({

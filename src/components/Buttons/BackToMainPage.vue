@@ -1,5 +1,5 @@
 <template>
-	<small @click="router.push({name: 'Home'})" class="text-green-500">
+	<small @click="router.push({path: '/'})" class="text-green-500">
 		<i class="fa fa-chevron-left"></i>
     <span class="text-xl">
 		  На главную
