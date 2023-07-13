@@ -4,6 +4,7 @@ import piniaPluginPersistedState from "pinia-plugin-persistedstate"
 import router from '@/router'
 import axios from '@bundled-es-modules/axios/axios.js'
 import VueSilentbox from 'vue-silentbox'
+import RadialProgress from "vue3-radial-progress";
 
 import App from '@/App.vue'
 
@@ -24,6 +25,7 @@ const pinia = createPinia();
 pinia.use(piniaPluginPersistedState);
 
 const app = createApp(App)
+    .use(RadialProgress)
     .use(router)
     .use(VueSilentbox)
     .use(pinia);

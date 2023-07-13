@@ -17,7 +17,10 @@
     import { useRouter } from 'vue-router'
 
     const router = useRouter()
-    const movePage = async to => await router.push({ name: to })
+    const movePage = async (to) => {
+        await router.push({ name: to });
+        await router.go(0);
+    }
 
     const routes = [
         {

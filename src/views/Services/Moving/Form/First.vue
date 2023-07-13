@@ -292,6 +292,14 @@
             </span>
             </div>
 
+            <radial-progress-bar
+                v-if="showBar"
+                :diameter="200"
+                :completed-steps="progressBar.completed"
+                :total-steps="progressBar.total">
+                <b style="font-size: x-large">Загрузка</b>
+            </radial-progress-bar>
+
             <div class="2xl:mt-8 xl:mt-6 mt-4">
                 <button
                     type="submit"
@@ -338,12 +346,17 @@ import {MovingCategories} from "@/consts/categories/moving";
 import {copy} from "@/services/application";
 import {usePhoneStore} from "@/stores/app/phone";
 import router from "@/router";
+import RadialProgress from "vue3-radial-progress";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
 
 export default {
+    components: {
+        RadialProgress
+    },
+
     computed: {
         applicationAddress() {
             return this.application.address;
@@ -504,6 +517,12 @@ export default {
 
     data: function () {
         return {
+            showBar: false,
+            progressBar: {
+                completed: 0,
+                total: 5
+            },
+
             additionClientPhoneKey: 0,
 
             client_has_second_phone: undefined,
@@ -630,8 +649,14 @@ export default {
                     await router.push({
                         path: '/form/moving/second/' + this.category + appId
                     });
+                    await router.go(0);
                 })()
             } else {
+                this.showBar = true;
+                for(let i = 0; i < this.progressBar.total; i++) {
+                    this.progressingTheBar(200);
+                }
+
                 this.$axios.post('/application/store_from_site', {
                     service_type: this.application.service_type,
                     category: MovingCategories[this.category].val,
@@ -661,8 +686,11 @@ export default {
                         this.application.id = response.data.id;
                         historyStore.push(this.application);
                         historyStore.delete(0);
+                        this.progressBar.completed = this.progressBar.total;
+
                         (async () => {
                             await router.push({path: '/form/finish'});
+                            await router.go(0);
                         })()
                     }
                 }).catch(function (error) {
@@ -770,6 +798,13 @@ export default {
             }
             console.log('showNewlyCreated');
             console.log(app);
+        },
+
+        progressingTheBar(timeout) {
+            const app = this;
+            setTimeout(function () {
+                app.progressBar.completed++;
+            }, timeout);
         }
     },
 

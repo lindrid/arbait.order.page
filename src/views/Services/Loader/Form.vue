@@ -282,6 +282,14 @@
                 </fieldset>
             </div>
 
+            <radial-progress-bar
+                    v-if="showBar"
+                    :diameter="200"
+                    :completed-steps="progressBar.completed"
+                    :total-steps="progressBar.total">
+                <b style="font-size: x-large">Загрузка</b>
+            </radial-progress-bar>
+
             <div class="2xl:mt-6 xl:mt-4 mt-2">
                 <b class="text-xl block">Этаж</b>
                 <input id="floor"
@@ -407,8 +415,6 @@
                     </span>
             </div>
 
-            <CircleProgressBar v-if="showBar" :value="10" :max="10" />
-
             <div class="2xl:mt-8 xl:mt-6 mt-4">
                 <button
                     type="submit"
@@ -441,7 +447,6 @@
     import { PayMethod } from "@/consts/pay";
     import Header from "@/components/Header.vue";
     import Back from "@/components/Buttons/Back.vue";
-    import { CircleProgressBar } from 'circle-progress.vue';
 </script>
 
 <script>
@@ -454,13 +459,16 @@ import {copy, isItHardWork} from "@/services/application";
 import {Price} from "@/consts/pay";
 import {ServiceTypes} from "@/consts/service_type";
 import {usePhoneStore} from "@/stores/app/phone";
+import RadialProgress from "vue3-radial-progress";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
 
 export default {
-
+    components: {
+        RadialProgress
+    },
     computed: {
         applicationAddress() {
             return this.application.address;
@@ -670,9 +678,14 @@ export default {
 
     data: function () {
         return {
+            showBar: false,
+            progressBar: {
+                completed: 0,
+                total: 5
+            },
+
             additionClientPhoneKey: 0,
             saved_app_values: false,
-            showBar: false,
 
             client_has_second_phone: undefined,
 
@@ -846,6 +859,9 @@ export default {
                 this.application.addl_client_phone_number : null;
 
             this.showBar = true;
+            for(let i = 0; i < this.progressBar.total; i++) {
+                this.progressingTheBar(200);
+            }
 
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
@@ -874,10 +890,11 @@ export default {
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
                     phoneStore.save(this.application.client_phone_number);
-                    this.showBar = false;
+                    this.progressBar.completed = this.progressBar.total;
+
                     (async () => {
                         await router.push({path: '/form/finish'});
-                        this.$Progress.finish();
+                        await router.go(0);
                     })()
                 }
             }).catch(function (error) {
@@ -911,6 +928,13 @@ export default {
         assignTime(app) {
             this.time_hours = app.time.slice(0, app.time.indexOf(':'));
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
+        },
+
+        progressingTheBar(timeout) {
+            const app = this;
+            setTimeout(function () {
+                app.progressBar.completed++;
+            }, timeout);
         }
     },
 

@@ -255,6 +255,14 @@
             </span>
         </div>
 
+        <radial-progress-bar
+                v-if="showBar"
+                :diameter="200"
+                :completed-steps="progressBar.completed"
+                :total-steps="progressBar.total">
+            <b style="font-size: x-large">Загрузка</b>
+        </radial-progress-bar>
+
         <div class="2xl:mt-8 xl:mt-6 mt-4">
             <b class="text-xl block">Способ оплаты</b>
             <fieldset class="ml-4">
@@ -376,13 +384,17 @@ import {copy, isItHardWork} from "@/services/application";
 import {Price} from "@/consts/pay";
 import {usePhoneStore} from "@/stores/app/phone";
 import Back from "@/components/Buttons/Back.vue";
+import RadialProgress from "vue3-radial-progress";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
 
 export default {
-    components: {Back},
+    components: {
+        Back,
+        RadialProgress
+    },
     computed: {
         applicationAddress() {
             return this.application.address;
@@ -595,6 +607,12 @@ export default {
 
     data: function () {
         return {
+            showBar: false,
+            progressBar: {
+                completed: 0,
+                total: 5
+            },
+
             additionClientPhoneKey: 0,
 
             PAY_METHOD_CARD: 1,
@@ -607,6 +625,12 @@ export default {
              * @type {Application}
              */
             application: {
+                showBar: false,
+                progressBar: {
+                    completed: 0,
+                    total: 5
+                },
+
                 id: 0,
                 service_type: ServiceTypes['handyman'].val,
                 category: HandymanCategories[this.category].val,
@@ -708,6 +732,11 @@ export default {
                 return;
             }
 
+            this.showBar = true;
+            for(let i = 0; i < this.progressBar.total; i++) {
+                this.progressingTheBar(200);
+            }
+
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
                 category: this.application.category,
@@ -734,8 +763,11 @@ export default {
                     this.application.id = response.data.id;
                     historyStore.push(this.application);
                     phoneStore.save(this.application.client_phone_number);
+                    this.progressBar.completed = this.progressBar.total;
+
                     (async () => {
                         await router.push({path: '/form/finish'});
+                        await router.go(0);
                     })()
                 }
             }).catch(function (error) {
@@ -782,6 +814,13 @@ export default {
             this.application.price_for_worker =
                 this.application.price -
                 c * Price.perHour.OUR_FOR_HANDYMEN;
+        },
+
+        progressingTheBar(timeout) {
+            const app = this;
+            setTimeout(function () {
+                app.progressBar.completed++;
+            }, timeout);
         }
     },
 

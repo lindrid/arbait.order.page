@@ -59,6 +59,14 @@
             </textarea>
         </div>
 
+        <radial-progress-bar
+            v-if="showBar"
+            :diameter="200"
+            :completed-steps="progressBar.completed"
+            :total-steps="progressBar.total">
+            <b style="font-size: x-large">Загрузка</b>
+        </radial-progress-bar>
+
         <div class="2xl:mt-6 xl:mt-8 mt-6">
             <b class="text-xl block">Этаж</b>
             <input
@@ -277,12 +285,17 @@
     import { MovingCategories } from "@/consts/categories/moving";
     import {TrashCategories} from "@/consts/categories/trash";
     import {usePhoneStore} from "@/stores/app/phone";
+    import RadialProgress from "vue3-radial-progress";
 
     const historyStore = useAppHistory();
     const newAppStore = useNewAppStore();
     const phoneStore = usePhoneStore();
 
 export default {
+    components: {
+        RadialProgress
+    },
+
     computed: {
         applicationWorkerTotal() {
             return this.application.worker_total;
@@ -452,6 +465,12 @@ export default {
 
     data: function () {
         return {
+            showBar: false,
+            progressBar: {
+                completed: 0,
+                total: 5
+            },
+
             additionClientPhoneKey: 0,
 
             client_has_second_phone: undefined,
@@ -611,6 +630,11 @@ export default {
                 return;
             }
 
+            this.showBar = true;
+            for(let i = 0; i < this.progressBar.total; i++) {
+                this.progressingTheBar(200);
+            }
+
             this.$axios.post('/application/store_from_site', {
                 service_type: this.application.service_type,
                 category: TrashCategories[this.application.category].val,
@@ -650,8 +674,11 @@ export default {
                     this.application.id = response.data.id;
                     newAppStore.clear();
                     phoneStore.save(this.application.client_phone_number);
+                    this.progressBar.completed = this.progressBar.total;
+
                     (async () => {
                         await router.push({path: '/form/finish'});
+                        await router.go(0);
                     })()
                 }
             }).catch(function (error) {
@@ -698,6 +725,13 @@ export default {
         saveAppTime(app) {
             this.time_hours = app.time.slice(0, app.time.indexOf(':'));
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
+        },
+
+        progressingTheBar(timeout) {
+            const app = this;
+            setTimeout(function () {
+                app.progressBar.completed++;
+            }, timeout);
         }
     },
 
