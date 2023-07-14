@@ -48,7 +48,7 @@
 	const movePage = function (category, answer, appId) {
         const url = appId === null ?
             '/form/moving/' + category + '/' + answer :
-            '/form/moving/' + category + '/' + answer + '/' + appId + '/history'
+            '/form/moving/' + category + '/' + answer + '/' + appId
         ;
         (async () => {
             await router.push({ path: url });

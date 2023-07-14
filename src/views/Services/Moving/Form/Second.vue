@@ -61,14 +61,6 @@
             </textarea>
             </div>
 
-            <radial-progress-bar
-                v-if="showBar"
-                :diameter="200"
-                :completed-steps="progressBar.completed"
-                :total-steps="progressBar.total">
-                <b style="font-size: x-large">Загрузка</b>
-            </radial-progress-bar>
-
             <div class="2xl:mt-6 xl:mt-8 mt-6">
                 <b class="text-xl block">Начало: этаж</b>
                 <input
@@ -168,6 +160,14 @@
                     Есть лифт (конец)
                 </label>
             </div>
+
+            <radial-progress-bar
+                v-if="showBar"
+                :diameter="200"
+                :completed-steps="progressBar.completed"
+                :total-steps="progressBar.total">
+                <b style="font-size: x-large">Загрузка</b>
+            </radial-progress-bar>
 
             <div class="flex items-start 2xl:mt-10 xl:mt-8 mt-4">
                 <div class="flex items-center h-5">
@@ -338,10 +338,12 @@
     import { MovingCategories } from "@/consts/categories/moving";
     import {usePhoneStore} from "@/stores/app/phone";
     import RadialProgress from "vue3-radial-progress";
+    import {useRepeatStore} from "@/stores/app/repeat";
 
     const historyStore = useAppHistory();
     const newAppStore = useNewAppStore();
     const phoneStore = usePhoneStore();
+    const repeatStore = useRepeatStore();
 
 export default {
     components: {
@@ -678,15 +680,11 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
-                    if (newAppStore.appExists) {
-                        console.log('here');
-                        historyStore.push(this.application);
-                        newAppStore.clear();
-                    } else {
-                        console.log('there');
-                        historyStore.update(0, this.application);
-                        historyStore.delete(0);
-                    }
+
+                    historyStore.push(this.application);
+                    newAppStore.clear();
+                    repeatStore.clear();
+                    historyStore.delete(0);
                     phoneStore.save(this.application.client_phone_number);
                     this.progressBar.completed = this.progressBar.total;
 
@@ -753,6 +751,54 @@ export default {
             }
         },
 
+        showById() {
+            const app = historyStore.getApp(Number(this.appId));
+            if (app) {
+                copy(this.application, app, ['id', 'date', 'time']);
+                this.appGotFromHistory = true;
+            } else {
+                console.log('error')
+            }
+            console.log('showById');
+            console.log(app);
+        },
+
+        showUpdated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = historyStore.getApp(0);
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+                this.appGotFromHistory = true;
+            } else {
+                this.showById();
+            }
+            console.log('showUpdated');
+            console.log(app);
+        },
+
+        showNewlyCreated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = newAppStore.app;
+            if (app === null) {
+                return;
+            }
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+            }
+            console.log('showNewlyCreated');
+            console.log(app);
+        },
+
         progressingTheBar(timeout) {
             const app = this;
             setTimeout(function () {
@@ -766,32 +812,19 @@ export default {
     },
 
     created () {
-         if (historyStore.getApp(0)) {
-            /**
-             *
-             * @type {Application|null}
-             */
-            const app = historyStore.getApp(0);
-            if (app && app.service_type === this.application.service_type) {
-                this.saveAppValues(app);
-                this.saveAppTime(app);
+        const isItNewApp = !this.appId;
 
-                this.appGotFromHistory = true;
-                console.log('historyStore');
-                console.log(app);
-            }
-        } else if (newAppStore.appExists) {
-            /**
-             *
-             * @type {Application|null}
-             */
-            const app = newAppStore.app;
-            if (app && app.service_type === this.application.service_type) {
-                this.saveAppValues(app);
-                this.saveAppTime(app);
-
-                console.log('newAppStore');
-                console.log(app);
+        if (isItNewApp) {
+            this.showNewlyCreated();
+        } else {
+            if (historyStore.appExists(0)) {
+                if (repeatStore.equal(Number(this.appId))) {
+                    this.showUpdated();
+                } else {
+                    this.showById();
+                }
+            } else {
+                this.showById();
             }
         }
 

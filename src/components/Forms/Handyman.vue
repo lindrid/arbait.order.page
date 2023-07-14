@@ -385,10 +385,12 @@ import {Price} from "@/consts/pay";
 import {usePhoneStore} from "@/stores/app/phone";
 import Back from "@/components/Buttons/Back.vue";
 import RadialProgress from "vue3-radial-progress";
+import {useRepeatStore} from "@/stores/app/repeat";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
+const repeatStore = useRepeatStore();
 
 export default {
     components: {
@@ -459,7 +461,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newDate The date of the application.
@@ -476,7 +478,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newHours
@@ -490,7 +492,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 250),
 
         time_minutes: _.debounce(function (newMinutes) {
             this.errors.time_minutes = undefined;
@@ -501,7 +503,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationTime()
@@ -511,7 +513,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newWorkerTotal
@@ -529,7 +531,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        }, 250),
 
         /**
          *
@@ -537,7 +539,7 @@ export default {
          * @see applicationHourlyJob
          */
         applicationHourlyJob: function(hourly) {
-            this.setPrice(hourly, this.application.give_tools);
+            this.setPrice();
 
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
@@ -551,7 +553,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newPrice
@@ -567,7 +569,7 @@ export default {
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newPriceForWorker
@@ -579,14 +581,14 @@ export default {
             if (newPriceForWorker <= 0) {
                 this.errors.price_for_worker = 'Неверная цена для рабочего!';
             }
-        }, 500),
+        }, 250),
 
         /**
          * @param newGiveTools
          * @see applicationTools()
          */
         applicationTools: function (newGiveTools) {
-            this.setPrice(this.application.hourly_job, newGiveTools);
+            this.setPrice();
 
             if (this.saved_app_values) {
                 newAppStore.save(this.application);
@@ -683,6 +685,17 @@ export default {
     },
 
     methods: {
+        saveToStore() {
+            if (this.saved_app_values) {
+                if (this.appGotFromHistory) {
+                    historyStore.save(this.application);
+                    repeatStore.save(Number(this.appId));
+                } else {
+                    newAppStore.save(this.application);
+                }
+            }
+        },
+
         /**
          *
          * @param {string} category
@@ -761,7 +774,11 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
+
                     historyStore.push(this.application);
+                    newAppStore.clear();
+                    repeatStore.clear();
+                    historyStore.delete(0);
                     phoneStore.save(this.application.client_phone_number);
                     this.progressBar.completed = this.progressBar.total;
 
@@ -802,18 +819,66 @@ export default {
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         },
 
-        setPrice(hourly, give_tools) {
-            const perPrice = hourly ?
+        setPrice() {
+            const perPrice = this.application.hourly_job ?
                 Price.perHour :
                 Price.perDay;
 
-            const c = hourly ? 1 : 8;
-            const toolsPrice = give_tools ? c * Price.perHour.TOOLS : 0;
+            const c = this.application.hourly_job ? 1 : 8;
+            const toolsPrice = this.application.give_tools ? c * Price.perHour.TOOLS : 0;
 
             this.application.price = perPrice.HANDYMAN[this.category] - toolsPrice;
             this.application.price_for_worker =
                 this.application.price -
                 c * Price.perHour.OUR_FOR_HANDYMEN;
+        },
+
+        showById() {
+            const app = historyStore.getApp(Number(this.appId));
+            if (app) {
+                copy(this.application, app, ['id', 'date', 'time']);
+                this.appGotFromHistory = true;
+            } else {
+                console.log('error')
+            }
+            console.log('showById');
+            console.log(app);
+        },
+
+        showUpdated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = historyStore.getApp(0);
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+                this.appGotFromHistory = true;
+            } else {
+                this.showById();
+            }
+            console.log('showUpdated');
+            console.log(app);
+        },
+
+        showNewlyCreated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = newAppStore.app;
+            if (app === null) {
+                return;
+            }
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+            }
+            console.log('showNewlyCreated');
+            console.log(app);
         },
 
         progressingTheBar(timeout) {
@@ -840,30 +905,19 @@ export default {
 
         this.application.date = this.current_day('-');
 
-        if (this.appId) {
-            /**
-             *
-             * @type {Application | null}
-             */
-            const app = historyStore.getApp(Number(this.appId));
-            if (app) {
-                copy(this.application, app, ['date', 'time']);
+        const isItNewApp = !this.appId;
 
-                console.log('historyStore');
-                console.log(app);
-            }
-        } else if (newAppStore.appExists) {
-            /**
-             *
-             * @type {Application | null}
-             */
-            const app = newAppStore.app;
-            if (app && app.service_type === this.application.service_type) {
-                copy(this.application, app);
-                this.assignTime(app);
-
-                console.log('newAppStore');
-                console.log(app);
+        if (isItNewApp) {
+            this.showNewlyCreated();
+        } else {
+            if (historyStore.appExists(0)) {
+                if (repeatStore.equal(Number(this.appId))) {
+                    this.showUpdated();
+                } else {
+                    this.showById();
+                }
+            } else {
+                this.showById();
             }
         }
 

@@ -347,10 +347,12 @@ import {copy} from "@/services/application";
 import {usePhoneStore} from "@/stores/app/phone";
 import router from "@/router";
 import RadialProgress from "vue3-radial-progress";
+import {useRepeatStore} from "@/stores/app/repeat";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
+const repeatStore = useRepeatStore();
 
 export default {
     components: {
@@ -423,7 +425,7 @@ export default {
          */
         applicationAddress: _.debounce(function (newAddress) {
             this.saveToStore('address');
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationWaypoints
@@ -432,7 +434,7 @@ export default {
         applicationWaypoints: _.debounce(function (newWaypoints) {
             console.log(newWaypoints);
             this.saveToStore('waypoints');
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationAddressTo
@@ -440,7 +442,7 @@ export default {
          */
         applicationAddressTo: _.debounce(function (newAddressTo) {
             this.saveToStore('address_to');
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationDriverPrice
@@ -448,7 +450,7 @@ export default {
          */
         applicationDriverPrice: _.debounce(function (newDriverPrice) {
             this.saveToStore('driver_price');
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationPriceForDriver
@@ -456,7 +458,7 @@ export default {
          */
         applicationPriceForDriver: _.debounce(function (newPriceForDriver) {
             this.saveToStore('price_for_driver');
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newDate The date of the application.
@@ -471,7 +473,7 @@ export default {
             }
 
             this.saveToStore('date');
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newTime The time of the application.
@@ -479,7 +481,7 @@ export default {
          */
         applicationTime: _.debounce(function(newTime) {
             this.saveToStore('time');
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newHours
@@ -493,7 +495,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 250),
 
         time_minutes: _.debounce(function (newMinutes) {
             this.errors.time_minutes = undefined;
@@ -504,7 +506,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationWhatToDo
@@ -512,7 +514,7 @@ export default {
          */
         applicationWhatToDo: _.debounce(function (newWhatToDo) {
             this.saveToStore('applicationWhatToDo');
-        }, 500)
+        }, 250)
     },
 
     data: function () {
@@ -684,8 +686,12 @@ export default {
                     if (response.status === 200) {
                         this.success = true;
                         this.application.id = response.data.id;
+
                         historyStore.push(this.application);
+                        newAppStore.clear();
+                        repeatStore.clear();
                         historyStore.delete(0);
+                        phoneStore.save(this.application.client_phone_number);
                         this.progressBar.completed = this.progressBar.total;
 
                         (async () => {
@@ -706,6 +712,7 @@ export default {
             if (this.saved_app_values) {
                 if (this.appGotFromHistory) {
                     historyStore.save(this.application);
+                    repeatStore.save(Number(this.appId));
                     console.log('save <' + param + '> to history store');
                     console.log('application.' + param + ' = ' + this.application[param]);
                 } else {
@@ -791,6 +798,9 @@ export default {
              * @type {Application|null}
              */
             const app = newAppStore.app;
+            if (app === null) {
+                return;
+            }
             const hasAppSameType = app.service_type === this.application.service_type
             if (app && hasAppSameType) {
                 copy(this.application, app);
@@ -812,7 +822,7 @@ export default {
         appId: String,
         category: String,
         workers: String,
-        fromHistory: String
+        new: String
     },
     setup(props) {
 
@@ -821,21 +831,19 @@ export default {
     created () {
         this.application.date = this.current_day('-');
 
-        if (this.fromHistory) {
-            if (this.appId) {
-                this.showById();
-            } else {
-                console.log('Error! appId is required!')
-            }
+        const isItNewApp = !this.appId;
+
+        if (isItNewApp) {
+            this.showNewlyCreated();
         } else {
             if (historyStore.appExists(0)) {
-                this.showUpdated();
-            } else if (this.appId) {
-                this.showById();
-            } else if (newAppStore.appExists) {
-                this.showNewlyCreated();
+                if (repeatStore.equal(Number(this.appId))) {
+                    this.showUpdated();
+                } else {
+                    this.showById();
+                }
             } else {
-                console.log('Error! appId is required!')
+                this.showById();
             }
         }
 

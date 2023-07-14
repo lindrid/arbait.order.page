@@ -153,7 +153,7 @@ const routes = [
 		}
 	},
 	{
-		path: '/form/moving/:category/:workers/:appId/:fromHistory',
+		path: '/form/moving/:category/:workers/:appId',
 		component: () => import('@/views/Services/Moving/Form/First.vue'),
 		props: true,
 		meta: {

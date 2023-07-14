@@ -460,10 +460,12 @@ import {Price} from "@/consts/pay";
 import {ServiceTypes} from "@/consts/service_type";
 import {usePhoneStore} from "@/stores/app/phone";
 import RadialProgress from "vue3-radial-progress";
+import {useRepeatStore} from "@/stores/app/repeat";
 
 const historyStore = useAppHistory();
 const newAppStore = useNewAppStore();
 const phoneStore = usePhoneStore();
+const repeatStore = useRepeatStore();
 
 export default {
     components: {
@@ -534,7 +536,7 @@ export default {
          */
         applicationAddress: _.debounce(function (newAddress) {
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newDate The date of the application.
@@ -550,7 +552,7 @@ export default {
             }
 
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newHours
@@ -565,7 +567,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 250),
 
         time_minutes: _.debounce(function (newMinutes) {
             this.errors.time_minutes = undefined;
@@ -577,7 +579,7 @@ export default {
             }
 
             this.application.time = this.time_hours + ':' + this.time_minutes;
-        }, 500),
+        }, 250),
 
         /**
          * @see applicationTime()
@@ -585,7 +587,7 @@ export default {
          */
         applicationTime: _.debounce(function(newTime) {
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
          * @param {string} newWorkerTotal
@@ -602,7 +604,7 @@ export default {
             }
 
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
          *
@@ -612,7 +614,7 @@ export default {
         applicationHourlyJob: _.debounce(function (hourly) {
             this.setPrices();
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
         * @param {number} newVal
@@ -620,7 +622,7 @@ export default {
         applicationWhatToDo: _.debounce(function(newVal) {
             this.setPrices();
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newPrice
@@ -635,7 +637,7 @@ export default {
             }
 
             this.saveToStore();
-        }, 500),
+        }, 250),
 
         /**
          * @param {number} newPriceForWorker
@@ -647,7 +649,7 @@ export default {
             if (newPriceForWorker <= 0) {
                 this.errors.price_for_worker = 'Неверная цена для рабочего!';
             }
-        }, 500),
+        }, 250),
 
         /**
          *
@@ -749,10 +751,20 @@ export default {
             if (this.saved_app_values) {
                 if (this.appGotFromHistory) {
                     historyStore.save(this.application);
+                    repeatStore.save(Number(this.appId));
                 } else {
                     newAppStore.save(this.application);
                 }
             }
+        },
+
+        /**
+        *
+        * @param {Application} app
+        */
+        saveAppTime(app) {
+            this.time_hours = app.time.slice(0, app.time.indexOf(':'));
+            this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         },
 
         /**
@@ -888,7 +900,11 @@ export default {
                 if (response.status === 200) {
                     this.success = true;
                     this.application.id = response.data.id;
+
                     historyStore.push(this.application);
+                    newAppStore.clear();
+                    repeatStore.clear();
+                    historyStore.delete(0);
                     phoneStore.save(this.application.client_phone_number);
                     this.progressBar.completed = this.progressBar.total;
 
@@ -930,6 +946,55 @@ export default {
             this.time_minutes = app.time.slice(app.time.indexOf(':') + 1);
         },
 
+
+        showById() {
+            const app = historyStore.getApp(Number(this.appId));
+            if (app) {
+                copy(this.application, app, ['id', 'date', 'time']);
+                this.appGotFromHistory = true;
+            } else {
+                console.log('error')
+            }
+            console.log('showById');
+            console.log(app);
+        },
+
+        showUpdated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = historyStore.getApp(0);
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+                this.appGotFromHistory = true;
+            } else {
+                this.showById();
+            }
+            console.log('showUpdated');
+            console.log(app);
+        },
+
+        showNewlyCreated() {
+            /**
+             *
+             * @type {Application|null}
+             */
+            const app = newAppStore.app;
+            if (app === null) {
+                return;
+            }
+            const hasAppSameType = app.service_type === this.application.service_type
+            if (app && hasAppSameType) {
+                copy(this.application, app);
+                this.saveAppTime(app);
+            }
+            console.log('showNewlyCreated');
+            console.log(app);
+        },
+
         progressingTheBar(timeout) {
             const app = this;
             setTimeout(function () {
@@ -949,29 +1014,19 @@ export default {
         console.log('appId = ');
         console.log(this.appId);
 
-        if (this.appId) {
-            const app = historyStore.getApp(Number(this.appId));
-            console.log('app=');
-            console.log(app);
-            if (app) {
-                copy(this.application, app, ['date', 'time']);
-                this.application.date = this.current_day('-');
+        const isItNewApp = !this.appId;
 
-                console.log('historyStore');
-                console.log(app);
-            }
-        } else if (newAppStore.appExists) {
-            /**
-             *
-             * @type {Application|null}
-             */
-            const app = newAppStore.app;
-            if (app && app.service_type === this.application.service_type) {
-                copy(this.application, app);
-                this.assignTime(app);
-
-                console.log('newAppStore');
-                console.log(app);
+        if (isItNewApp) {
+            this.showNewlyCreated();
+        } else {
+            if (historyStore.appExists(0)) {
+                if (repeatStore.equal(Number(this.appId))) {
+                    this.showUpdated();
+                } else {
+                    this.showById();
+                }
+            } else {
+                this.showById();
             }
         }
 
