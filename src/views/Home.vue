@@ -38,10 +38,10 @@
 </template>
 
 <script setup>
-import {onMounted, onUpdated, ref} from "vue";
+    import {onMounted} from "vue";
     import { useRouter } from 'vue-router';
     import Pill from '@/components/Pill.vue';
-	import Footer from '@/components/Footer.vue';
+    import Footer from '@/components/Footer.vue';
     import Header from "@/components/Header.vue";
     import Swal from 'sweetalert2';
 

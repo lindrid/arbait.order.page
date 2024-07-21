@@ -26,10 +26,12 @@
         {
             name: 'О нас',
             to: 'About'
-        },
-        {
+        }, {
             name: 'Галерея',
             to: 'Gallery'
+        }, {
+            name: 'Оферта',
+            to: 'Offer'
         }
     ]
 </script>
